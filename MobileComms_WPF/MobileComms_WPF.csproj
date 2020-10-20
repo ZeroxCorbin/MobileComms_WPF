@@ -177,20 +177,20 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Git_Managed\ARCLManager\ARCLManager\ARCLManager.csproj">
-      <Project>{dfa6f990-2a4c-49bd-823f-eed3743306d9}</Project>
-      <Name>ARCLManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Git_Managed\SocketManager\SocketManager.csproj">
-      <Project>{df3f3fe4-77f1-48da-8012-aafd67f8d4c8}</Project>
-      <Name>SocketManager</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Support\favicon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Support\question-mark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ARCLManager\ARCLManager\ARCLManager.csproj">
+      <Project>{2435e804-208a-499f-9ec8-9dbef397c8fc}</Project>
+      <Name>ARCLManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SocketManager\SocketManager.csproj">
+      <Project>{6bcde318-55a4-4fde-97c2-20e6f97daf1a}</Project>
+      <Name>SocketManager</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

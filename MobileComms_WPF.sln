@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileComms_WPF", "MobileComms_WPF\MobileComms_WPF.csproj", "{7DC280D2-A637-452F-A7A2-2ABB401E3E7B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ARCLManager", "..\..\Git_Managed\ARCLManager\ARCLManager\ARCLManager.csproj", "{DFA6F990-2A4C-49BD-823F-EED3743306D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ARCLManager", "..\ARCLManager\ARCLManager\ARCLManager.csproj", "{2435E804-208A-499F-9EC8-9DBEF397C8FC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocketManager", "..\..\Git_Managed\SocketManager\SocketManager.csproj", "{DF3F3FE4-77F1-48DA-8012-AAFD67F8D4C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocketManager", "..\SocketManager\SocketManager.csproj", "{6BCDE318-55A4-4FDE-97C2-20E6F97DAF1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,18 +22,18 @@ Global
 		{7DC280D2-A637-452F-A7A2-2ABB401E3E7B}.MobileConfiguration|Any CPU.Build.0 = Release|Any CPU
 		{7DC280D2-A637-452F-A7A2-2ABB401E3E7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DC280D2-A637-452F-A7A2-2ABB401E3E7B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DFA6F990-2A4C-49BD-823F-EED3743306D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DFA6F990-2A4C-49BD-823F-EED3743306D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DFA6F990-2A4C-49BD-823F-EED3743306D9}.MobileConfiguration|Any CPU.ActiveCfg = MobileConfiguration|Any CPU
-		{DFA6F990-2A4C-49BD-823F-EED3743306D9}.MobileConfiguration|Any CPU.Build.0 = MobileConfiguration|Any CPU
-		{DFA6F990-2A4C-49BD-823F-EED3743306D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DFA6F990-2A4C-49BD-823F-EED3743306D9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DF3F3FE4-77F1-48DA-8012-AAFD67F8D4C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF3F3FE4-77F1-48DA-8012-AAFD67F8D4C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DF3F3FE4-77F1-48DA-8012-AAFD67F8D4C8}.MobileConfiguration|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF3F3FE4-77F1-48DA-8012-AAFD67F8D4C8}.MobileConfiguration|Any CPU.Build.0 = Debug|Any CPU
-		{DF3F3FE4-77F1-48DA-8012-AAFD67F8D4C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DF3F3FE4-77F1-48DA-8012-AAFD67F8D4C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2435E804-208A-499F-9EC8-9DBEF397C8FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2435E804-208A-499F-9EC8-9DBEF397C8FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2435E804-208A-499F-9EC8-9DBEF397C8FC}.MobileConfiguration|Any CPU.ActiveCfg = MobileConfiguration|Any CPU
+		{2435E804-208A-499F-9EC8-9DBEF397C8FC}.MobileConfiguration|Any CPU.Build.0 = MobileConfiguration|Any CPU
+		{2435E804-208A-499F-9EC8-9DBEF397C8FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2435E804-208A-499F-9EC8-9DBEF397C8FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BCDE318-55A4-4FDE-97C2-20E6F97DAF1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BCDE318-55A4-4FDE-97C2-20E6F97DAF1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BCDE318-55A4-4FDE-97C2-20E6F97DAF1A}.MobileConfiguration|Any CPU.ActiveCfg = Release|Any CPU
+		{6BCDE318-55A4-4FDE-97C2-20E6F97DAF1A}.MobileConfiguration|Any CPU.Build.0 = Release|Any CPU
+		{6BCDE318-55A4-4FDE-97C2-20E6F97DAF1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BCDE318-55A4-4FDE-97C2-20E6F97DAF1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
