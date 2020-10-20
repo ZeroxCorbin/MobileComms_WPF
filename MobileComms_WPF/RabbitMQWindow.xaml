@@ -1,0 +1,128 @@
+﻿<Window x:Class="MobileComms_WPF.RabbitMQWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MobileComms_WPF"
+        mc:Ignorable="d"
+        Title="Rabbit-MQ" Height="450" Width="800" Icon="Support/favicon.ico" Loaded="Window_Loaded" Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" StateChanged="Window_StateChanged">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="34"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Content="Rabbit-MQ (Messaging Queue)" FontSize="18" HorizontalContentAlignment="Center">
+                    <Label.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF4c88d6" Offset="0"/>
+                            <GradientStop Color="White" Offset="0.3"/>
+                        </LinearGradientBrush>
+                    </Label.Background>
+                </Label>
+                <Grid Grid.Row="1">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.5*"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="0.5*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="1" Content="Host Name / IP" Padding="5,3" HorizontalContentAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="TxtConnectionString" Text="10.151.33.100" Height="22" VerticalContentAlignment="Center"/>
+
+                    <Label Grid.Row="0" Grid.Column="2" Content="User Name" Padding="5,3" HorizontalContentAlignment="Center" />
+                    <Label Grid.Row="1" Grid.Column="2" Content="toolkitadmin" Padding="5,4" HorizontalContentAlignment="Right" HorizontalAlignment="Center" />
+
+                    <Label Grid.Row="0" Grid.Column="3" Content="Toolkit Password" Padding="5,3" HorizontalContentAlignment="Center" />
+                    <PasswordBox Grid.Row="1" Grid.Column="3" x:Name="TxtPassword" Height="22" VerticalContentAlignment="Center" Password="P5FrtRVaO4iKFxlMQX3a"/>
+                </Grid>
+            </Grid>
+        </Border>
+        <Grid Grid.Column="0" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+
+            <Border Grid.Column="0" Grid.Row="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="34"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Content="Queue List" FontSize="18" HorizontalContentAlignment="Center">
+                        <Label.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF4c88d6" Offset="0"/>
+                                <GradientStop Color="White" Offset="0.3"/>
+                            </LinearGradientBrush>
+                        </Label.Background>
+                    </Label>
+                    <TreeView Grid.Row="1" Grid.Column="0" Name="TrvQueueList"/>
+                </Grid>
+            </Border>
+            <Border Grid.Column="1" Grid.Row="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="34"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Content="Queue Comms" FontSize="18" HorizontalContentAlignment="Center">
+                        <Label.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF4c88d6" Offset="0"/>
+                                <GradientStop Color="White" Offset="0.3"/>
+                            </LinearGradientBrush>
+                        </Label.Background>
+                    </Label>
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="34"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="34"/>
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Row="0" Name="TxtQueueName" Height="22" VerticalContentAlignment="Center"/>
+                        <Button Grid.Row="2" Name="BtnSend" Click="BtnSend_Click" Width="94" Height="28" Content="Send" HorizontalAlignment="Center"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Name="TxtJsonData"/>
+                    </Grid>
+
+                </Grid>
+            </Border>
+        </Grid>
+        <Border Grid.Column="0" Grid.Row="2" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="34"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="Command Responses" FontSize="18" HorizontalContentAlignment="Center">
+                    <Label.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF4c88d6" Offset="0"/>
+                            <GradientStop Color="White" Offset="0.3"/>
+                        </LinearGradientBrush>
+                    </Label.Background>
+                </Label>
+                <TextBox Grid.Row="1" x:Name="TxtResponse" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

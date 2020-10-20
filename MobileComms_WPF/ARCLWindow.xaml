@@ -1,0 +1,155 @@
+﻿<Window x:Class="MobileComms_WPF.ARCLWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MobileComms_WPF"
+        mc:Ignorable="d"
+        Title="ARCLWindow" LocationChanged="Window_LocationChanged" StateChanged="Window_StateChanged" Closing="Window_Closing" Loaded="Window_Loaded" SizeChanged="Window_SizeChanged" Icon="Support/favicon.ico">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="34"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="ARCL Commands" FontSize="18" HorizontalContentAlignment="Center">
+                    <Label.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF4c88d6" Offset="0"/>
+                            <GradientStop Color="White" Offset="0.3"/>
+                        </LinearGradientBrush>
+                    </Label.Background>
+                </Label>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" x:Name="TxtConnectionString" Text="192.168.0.20:7171:adept" Width="160" Height="22" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+
+                    <Button Grid.Column="1" x:Name="BtnConnect" Content="Connect" Click="BtnConnect_Click" Width="90" BorderBrush="{x:Null}" HorizontalAlignment="Left"/>
+                </Grid>
+            </Grid>
+        </Border>
+        <Border Grid.Column="1" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="34"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="Command to Send" FontSize="18" HorizontalContentAlignment="Center">
+                    <Label.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF4c88d6" Offset="0"/>
+                            <GradientStop Color="White" Offset="0.3"/>
+                        </LinearGradientBrush>
+                    </Label.Background>
+                </Label>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Grid.Row="0" x:Name="TxtCommand2Send" Height="22"/>
+                    <Button Grid.Row="0" Grid.Column="1" x:Name="BtnSend" Height="28" Width="96" Content="Send" Click="BtnSend_Click"/>
+
+                </Grid>
+            </Grid>
+        </Border>
+        <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="34"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Content="Pre. 2016" FontSize="18" HorizontalContentAlignment="Center">
+                        <Label.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF4c88d6" Offset="0"/>
+                                <GradientStop Color="White" Offset="0.3"/>
+                            </LinearGradientBrush>
+                        </Label.Background>
+                    </Label>
+                    <TreeView Grid.Row="1" x:Name="TvARCLCommands1" SelectedItemChanged="TvARCLCommands_SelectedItemChanged" MouseDoubleClick="TvARCLCommands_MouseDoubleClick"/>
+
+                </Grid>
+            </Border>
+            <Border Grid.Column="1" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="34"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Content="I617-E-01" FontSize="18" HorizontalContentAlignment="Center">
+                        <Label.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF4c88d6" Offset="0"/>
+                                <GradientStop Color="White" Offset="0.3"/>
+                            </LinearGradientBrush>
+                        </Label.Background>
+                    </Label>
+                    <TreeView Grid.Row="1" Grid.Column="1" x:Name="TvARCLCommands2" SelectedItemChanged="TvARCLCommands_SelectedItemChanged" MouseDoubleClick="TvARCLCommands_MouseDoubleClick"/>
+
+                </Grid>
+            </Border>
+            <Border Grid.Column="2" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="34"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Content="I617-E-02" FontSize="18" HorizontalContentAlignment="Center">
+                        <Label.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF4c88d6" Offset="0"/>
+                                <GradientStop Color="White" Offset="0.3"/>
+                            </LinearGradientBrush>
+                        </Label.Background>
+                    </Label>
+                    <TreeView Grid.Row="1" Grid.Column="2" x:Name="TvARCLCommands3" SelectedItemChanged="TvARCLCommands_SelectedItemChanged" MouseDoubleClick="TvARCLCommands_MouseDoubleClick"/>
+
+                </Grid>
+            </Border>
+
+
+        </Grid>
+        <Border Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="34"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="Command Responses" FontSize="18" HorizontalContentAlignment="Center">
+                    <Label.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF4c88d6" Offset="0"/>
+                            <GradientStop Color="White" Offset="0.3"/>
+                        </LinearGradientBrush>
+                    </Label.Background>
+                </Label>
+                <TextBox Grid.Row="1" x:Name="TxtResponse" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
+            </Grid>
+        </Border>
+
+    </Grid>
+</Window>
