@@ -184,7 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ARCLManager\ARCLManager\ARCLManager.csproj">
-      <Project>{2435e804-208a-499f-9ec8-9dbef397c8fc}</Project>
+      <Project>{2373ebda-fa6b-4396-97f2-1f7c193cd93a}</Project>
       <Name>ARCLManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SocketManager\SocketManager.csproj">

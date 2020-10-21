@@ -3,12 +3,13 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Npgsql;
 using System.Windows.Threading;
-using System.Text;
-using Classes.IntegrationToolkit;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Windows.Media;
+using static Classes.IntegrationToolkit.SQL;
+using System.Text;
+using System.Data;
 
 namespace MobileComms_WPF
 {
@@ -17,6 +18,7 @@ namespace MobileComms_WPF
     /// </summary>
     public partial class SQLWindow : Window
     {
+
 
         public SQLWindow(Window owner)
         {
@@ -73,23 +75,23 @@ namespace MobileComms_WPF
         {
             if(sender is TreeViewItem tv)
             {
-                if(tv.Tag is KeyValuePair<string, Dictionary<SQL.QueryTypes, string>> lst)
+                if(tv.Tag is KeyValuePair<string, Dictionary<QueryTypes, string>> lst)
                 {
                     CmdMoveType.ItemsSource = lst.Value.Keys;
                     CmdMoveType.SelectedIndex = 0;
 
-                    if(CmdMoveType.SelectedItem is SQL.QueryTypes type)
+                    if(CmdMoveType.SelectedItem is QueryTypes type)
                     {
-                        if(type == SQL.QueryTypes.SELECT)
+                        if(type == QueryTypes.SELECT)
                         {
                             TxtQueryStart.Text = $"SELECT * FROM {tv.Header}";
                             //var obj = Activator.CreateInstance(t);
                         }
-                        else if(type == SQL.QueryTypes.INSERT)
+                        else if(type == QueryTypes.INSERT)
                         {
                             TxtQueryStart.Text = $"INSERT INTO {tv.Header}";
                         }
-                        else if(type == SQL.QueryTypes.UPDATE)
+                        else if(type == QueryTypes.UPDATE)
                         {
 
                         }
@@ -104,10 +106,14 @@ namespace MobileComms_WPF
                         }
                         foreach(var prop in t.GetProperties())
                         {
+                            string name = Regex.Replace(prop.Name, @"[A-Z]", delegate (Match match)
+                            {
+                                return $"_{char.ToLower(match.ToString()[0])}";
+                            });
                             if(prop.PropertyType == typeof(string))
-                                TxtJsonData.Text += $"{prop.Name}=''\r\n";
+                                TxtJsonData.Text += $"{name}=''\r\n";
                             else
-                                TxtJsonData.Text += $"{prop.Name}=\r\n";
+                                TxtJsonData.Text += $"{name}=\r\n";
                         }
                     }
                 }
@@ -126,18 +132,33 @@ namespace MobileComms_WPF
 
         private void BtnSend_Click(object sender, RoutedEventArgs e)
         {
-            if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.SELECT)
+            if(CmdMoveType.SelectedItem == null) return;
+
+            if(((QueryTypes)CmdMoveType.SelectedItem) == QueryTypes.SELECT)
             {
-                string ret = SQLSelect(TxtConnectionString.Text, TxtPassword.Password, $"{TxtQueryStart.Text} {TxtQueryDetails.Text}");
+                //DgvTableRows.ItemsSource = Select($"{TxtQueryStart.Text} {TxtQueryDetails.Text}").Tables[0].DefaultView;
                 Dispatcher.BeginInvoke(DispatcherPriority.Render,
-                        (Action<string>)((s) =>
+                        (Action)(() =>
                         {
-                            TxtResponse.Text = s;
-                        }), ret);
+                            System.Data.DataSet ds = Select($"{TxtQueryStart.Text} {TxtQueryDetails.Text}");
+                            if(ds.Tables.Count > 0)
+                            {
+                                DgvTableRows.ItemsSource = ds.Tables[0].DefaultView;
+                                TxtResponse.Text = "";
+                            }
+
+                            else
+                            {
+                                if(IsException)
+                                    TxtResponse.Text = DbException.Message;
+                                DgvTableRows.ItemsSource = null;
+                            }
+
+                        }));
             }
             else
             {
-                string ret = SQLInsert(TxtConnectionString.Text, TxtPassword.Password, $"{TxtQueryStart.Text} {TxtQueryDetails.Text}");
+                string ret = Insert($"{TxtQueryStart.Text} {TxtQueryDetails.Text}");
                 Dispatcher.BeginInvoke(DispatcherPriority.Render,
                         (Action<string>)((s) =>
                         {
@@ -147,66 +168,7 @@ namespace MobileComms_WPF
 
         }
 
-        private string SQLSelect(string host, string password, string query)
-        {
-            var connString = $"Host={host};Username=toolkitadmin;Password={password};Database=IntegrationDB;TrustServerCertificate=true;SSLMode=Require";
 
-            using var conn = new NpgsqlConnection(connString);
-            try
-            {
-                conn.Open();
-                if(conn.State == System.Data.ConnectionState.Open)
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    using var cmd = new NpgsqlCommand(query, conn);
-                    using var reader = cmd.ExecuteReader();
-                    while(reader.Read())
-                    {
-                        object[] objs = new object[reader.FieldCount];
-                        reader.GetValues(objs);
-                        foreach(object obj in objs)
-                        {
-                            sb.Append($"{obj} ");
-                        }
-                        sb.Append($"\r\n");
-                    }
-                        
-
-                    return sb.ToString();
-                }
-            }
-            catch(Npgsql.PostgresException ex)
-            {
-                return ex.Message;
-            }
-            return "Ooops!";
-        }
-
-        private string SQLInsert(string host, string password, string query)
-        {
-            var connString = $"Host={host};Username=toolkitadmin;Password={password};Database=IntegrationDB;TrustServerCertificate=true;SSLMode=Require";
-
-            try
-            {
-                using var conn = new NpgsqlConnection(connString);
-
-                conn.Open();
-                if(conn.State == System.Data.ConnectionState.Open)
-                {
-                    using var cmd = new NpgsqlCommand(query, conn);
-
-                    //cmd.Parameters.AddWithValue("p", "some_value");
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            catch(Npgsql.PostgresException ex)
-            {
-                return ex.Message;
-            }
-            return "Complete";
-
-        }
         private void Window_LocationChanged(object sender, EventArgs e)
         {
             if(!IsLoaded) return;
@@ -239,7 +201,7 @@ namespace MobileComms_WPF
         {
             string[] spl = TxtJsonData.Text.Split('\n');
 
-            if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.SELECT)
+            if(((QueryTypes)CmdMoveType.SelectedItem) == QueryTypes.SELECT)
             {
                 List<string> lst = new List<string>();
 
@@ -258,7 +220,7 @@ namespace MobileComms_WPF
                 foreach(string s in lst)
                     TxtQueryDetails.Text += $" {s}";
             }
-            if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.INSERT)
+            if(((QueryTypes)CmdMoveType.SelectedItem) == QueryTypes.INSERT)
             {
                 List<string> lst = new List<string>();
 
@@ -304,6 +266,27 @@ namespace MobileComms_WPF
                     }
                 }
             }
+        }
+
+        private void BtnGetScheme_Click(object sender, RoutedEventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            DgvTableRows.ItemsSource = GetScheme($"{((TreeViewItem)TrvQueueList.SelectedItem).Header}").Tables[0].DefaultView;
+
+            //Dispatcher.BeginInvoke(DispatcherPriority.Render,
+            //        (Action<string>)((s) =>
+            //        {
+            //            TxtResponse.Text = s;
+            //        }), ret);
+        }
+
+        private void BtnConnect_Click(object sender, RoutedEventArgs e)
+        {
+            if(Connect(TxtConnectionString.Text, TxtPassword.Password))
+                BtnConnect.Background = Brushes.LightGreen;
+            else
+                BtnConnect.Background = Brushes.Salmon;
         }
     }
 }

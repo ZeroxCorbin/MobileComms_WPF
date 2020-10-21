@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Npgsql;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Classes.IntegrationToolkit
 {
-    public static class SQL
+    public class SQL
     {
         public enum QueryTypes
         {
@@ -42,5 +44,109 @@ namespace Classes.IntegrationToolkit
 
             { "subscription_config_view", new Dictionary<QueryTypes, string>() { { QueryTypes.SELECT, "Subscription_GET" }, { QueryTypes.UPDATE, "Subscription_PUT" } } },
         };
+
+        public static string ConnectionString(string host, string password) => $"Host={host};Username=toolkitadmin;Password={password};Database=IntegrationDB;TrustServerCertificate=true;SSLMode=Require";
+        public static NpgsqlConnection Connection { get; private set; }
+
+        public static bool IsException { get; private set; }
+        public static PostgresException DbException { get; private set; }
+
+        private static void Reset()
+        {
+            DbException = null;
+            IsException = false;
+        }
+        public static bool Connect(string host, string password)
+        {
+            Reset();
+
+            Connection = new NpgsqlConnection(ConnectionString(host, password));
+
+            try
+            {
+                Connection.Open();
+                return true;
+            }
+            catch(PostgresException ex)
+            {
+                DbException = ex;
+                IsException = true;
+                return false;
+            }
+        }
+        public static void Close() => Connection?.Close();
+
+        public static DataSet Select(string query)
+        {
+            Reset();
+
+            try
+            {
+                if(Connection != null && Connection.State == ConnectionState.Open) 
+                {
+                    using var cmd = new NpgsqlCommand(query, Connection);
+                    DataSet ds = new DataSet();
+                    NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
+                    da.Fill(ds);
+                    return ds;
+                }
+                return new DataSet();
+            }
+            catch(PostgresException ex)
+            {
+                DbException = ex;
+                IsException = true;
+                return new DataSet();
+            }
+        }
+        public static DataSet GetScheme(string view)
+        {
+            Reset();
+
+            try
+            {
+                if(Connection != null && Connection.State == ConnectionState.Open)
+                {
+                    string query = $"SELECT \"definition\" FROM \"pg_views\" WHERE \"viewname\" = '{view}' AND \"schemaname\" = 'public'";
+
+                    using var cmd = new NpgsqlCommand(query, Connection);
+                    DataSet ds = new DataSet();
+                    NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
+                    da.Fill(ds);
+                    return ds;
+                }
+                return new DataSet();
+            }
+            catch(PostgresException ex)
+            {
+                DbException = ex;
+                IsException = true;
+                return new DataSet();
+            }
+        }
+        public static string Insert(string query)
+        {
+            Reset();
+
+            try
+            {
+                if(Connection != null && Connection.State == ConnectionState.Open)
+                {
+                    using var cmd = new NpgsqlCommand(query, Connection);
+
+                    //cmd.Parameters.AddWithValue("p", "some_value");
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch(PostgresException ex)
+            {
+                DbException = ex;
+                IsException = true;
+                return "";
+            }
+            return "Complete";
+
+        }
+
     }
 }

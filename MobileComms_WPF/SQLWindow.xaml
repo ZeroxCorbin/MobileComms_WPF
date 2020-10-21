@@ -5,19 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MobileComms_WPF"
         mc:Ignorable="d"
-        Title="Rabbit-MQ" Height="572" Width="800" Icon="Support/favicon.ico" Loaded="Window_Loaded" Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" StateChanged="Window_StateChanged">
+        Title="Rabbit-MQ" Height="693.226" Width="807.062" Icon="Support/favicon.ico" Loaded="Window_Loaded" Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" StateChanged="Window_StateChanged">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="128"/>
             <RowDefinition Height="1.5*"/>
             <RowDefinition Height="2*"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
         <Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="34"/>
-                    <RowDefinition Height="48"/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
 
                 <Label Grid.Row="0" Content="SQL (Structured Query Language)" FontSize="18" HorizontalContentAlignment="Center">
@@ -29,7 +30,7 @@
                     </Label.Background>
                 </Label>
                 <Grid Grid.Row="1">
-                    
+
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0.5*"/>
                         <ColumnDefinition/>
@@ -39,27 +40,40 @@
                         <ColumnDefinition Width="0.5*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" Grid.Column="1" Content="Host Name / IP" Padding="5,3" HorizontalContentAlignment="Center" />
                     <TextBox Grid.Row="1" Grid.Column="1" x:Name="TxtConnectionString" Text="10.151.33.100" Height="22" VerticalContentAlignment="Center"/>
 
                     <Label Grid.Row="0" Grid.Column="2" Content="User Name" Padding="5,3" HorizontalContentAlignment="Center" />
                     <Label Grid.Row="1" Grid.Column="2" Content="toolkitadmin" Padding="5,4" HorizontalContentAlignment="Right" HorizontalAlignment="Center" />
-  
+
                     <Label Grid.Row="0" Grid.Column="3" Content="Toolkit Password" Padding="5,3" HorizontalContentAlignment="Center" />
                     <PasswordBox Grid.Row="1" Grid.Column="3" x:Name="TxtPassword" Height="22" VerticalContentAlignment="Center" Password="P5FrtRVaO4iKFxlMQX3a"/>
 
                     <Label Grid.Row="0" Grid.Column="4" Content="Database Name" Padding="5,3" HorizontalContentAlignment="Center" />
                     <Label Grid.Row="1" Grid.Column="4" Content="IntegrationDB" Padding="5,4" HorizontalContentAlignment="Right" HorizontalAlignment="Center" />
+
+                    <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.5*"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="0.5*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Content="Connection String" Padding="5,3" HorizontalContentAlignment="Right" />
+                        <TextBox Grid.Column="1" x:Name="TxtDBConnectionString" IsReadOnly="True"/>
+                        <Button Grid.Column="2" Content="Connect" x:Name="BtnConnect" Width="94" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Click="BtnConnect_Click"/>
+                    </Grid>
+
                 </Grid>
             </Grid>
         </Border>
         <Grid Grid.Column="0" Grid.Row="1">
             <Grid.ColumnDefinitions>
 
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="0.5*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
@@ -123,8 +137,8 @@
 
                         <Label Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Content="Variables" Padding="5,3" HorizontalContentAlignment="Center" />
                         <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Name="TxtQueryDetails" Height="22" VerticalContentAlignment="Center"/>
-                       
-                        <Button Grid.Row="4" Grid.Column="3" Name="BtnSend" Click="BtnSend_Click" Width="94" Content="Send" HorizontalAlignment="Center"/>
+                        <Button Grid.Row="4" Grid.Column="2" Name="BtnGetScheme" Width="94" Content="Get" HorizontalAlignment="Center" Click="BtnGetScheme_Click"/>
+                        <Button Grid.Row="4" Grid.Column="3" Name="BtnSend" Click="BtnSend_Click" Width="94" Content="Send" HorizontalAlignment="Center" Height="24" Margin="17,0" VerticalAlignment="Bottom"/>
                     </Grid>
 
                 </Grid>
@@ -132,6 +146,23 @@
 
         </Grid>
         <Border Grid.Column="0" Grid.Row="2" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="34"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="Table Rows" FontSize="18" HorizontalContentAlignment="Center">
+                    <Label.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF4c88d6" Offset="0"/>
+                            <GradientStop Color="White" Offset="0.3"/>
+                        </LinearGradientBrush>
+                    </Label.Background>
+                </Label>
+                <DataGrid x:Name="DgvTableRows" Grid.Row="1"/>
+            </Grid>
+        </Border>
+        <Border Grid.Column="0" Grid.Row="3" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="34"/>
