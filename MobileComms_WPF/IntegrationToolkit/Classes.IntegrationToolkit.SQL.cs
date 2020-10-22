@@ -45,7 +45,8 @@ namespace Classes.IntegrationToolkit
             { "subscription_config_view", new Dictionary<QueryTypes, string>() { { QueryTypes.SELECT, "Subscription_GET" }, { QueryTypes.UPDATE, "Subscription_PUT" } } },
         };
 
-        public static string ConnectionString(string host, string password) => $"Host={host};Username=toolkitadmin;Password={password};Database=IntegrationDB;TrustServerCertificate=true;SSLMode=Require";
+        public static string UserName => "toolkitadmin";
+        public static string ConnectionString(string host, string password) => $"Host={host};Username={UserName};Password={password};Database=IntegrationDB;TrustServerCertificate=true;SSLMode=Require";
         public static NpgsqlConnection Connection { get; private set; }
 
         public static bool IsException { get; private set; }
@@ -74,8 +75,12 @@ namespace Classes.IntegrationToolkit
                 return false;
             }
         }
-        public static void Close() => Connection?.Close();
+        public static void Close()
+        {
+            Reset();
 
+            Connection?.Close();
+        }
         public static DataSet Select(string query)
         {
             Reset();

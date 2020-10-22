@@ -209,136 +209,134 @@ namespace Classes.IntegrationToolkit
             }
         };
 
-        public static string RESTPost(string url, string user, string pass, string jSONData)
+
+        public static string UserName => "toolkitadmin";
+        public static string ConnectionString(string host) => $"https://{host}:8443";
+        public static string  ConnectionString(string host, string resource) => $"https://{host}:8443{resource}";
+
+        public static bool IsException { get; private set; }
+        public static Exception RESTException { get; private set; }
+
+        public static string RESTPost(string url, string pass, string jSONData)
         {
             ServicePointManager.ServerCertificateValidationCallback += (sender1, certificate, chain, sslPolicyErrors) => true;
 
-            byte[] cred = UTF8Encoding.UTF8.GetBytes($"{user}:{pass}");
-            using(HttpClient client = new HttpClient())
-            {
-                client.BaseAddress = new System.Uri(url);
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(cred));
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            byte[] cred = UTF8Encoding.UTF8.GetBytes($"{UserName}:{pass}");
+            using HttpClient client = new HttpClient();
+            client.BaseAddress = new System.Uri(url);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(cred));
+            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpContent content = new StringContent(jSONData, UTF8Encoding.UTF8, "application/json");
-                try
-                {
-                    return client.PostAsync(url, content).Result.Content.ReadAsStringAsync().Result;
-                }
-                catch(Exception ex)
-                {
-                    return null;
-                }
-                finally
-                {
-                    ServicePointManager.ServerCertificateValidationCallback -= (sender1, certificate, chain, sslPolicyErrors) => true;
-                }
+            HttpContent content = new StringContent(jSONData, UTF8Encoding.UTF8, "application/json");
+            try
+            {
+                return client.PostAsync(url, content).Result.Content.ReadAsStringAsync().Result;
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+            finally
+            {
+                ServicePointManager.ServerCertificateValidationCallback -= (sender1, certificate, chain, sslPolicyErrors) => true;
             }
 
         }
-        public static string RESTPut(string url, string user, string pass, string jSONData)
+        public static string RESTPut(string url, string pass, string jSONData)
         {
             ServicePointManager.ServerCertificateValidationCallback += (sender1, certificate, chain, sslPolicyErrors) => true;
 
-            byte[] cred = UTF8Encoding.UTF8.GetBytes($"{user}:{pass}");
-            using(HttpClient client = new HttpClient())
-            {
-                client.BaseAddress = new System.Uri(url);
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(cred));
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            byte[] cred = UTF8Encoding.UTF8.GetBytes($"{UserName}:{pass}");
+            using HttpClient client = new HttpClient();
+            client.BaseAddress = new System.Uri(url);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(cred));
+            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpContent content = new StringContent(jSONData, UTF8Encoding.UTF8, "application/json");
-                try
-                {
-                    return client.PutAsync(url, content).Result.Content.ReadAsStringAsync().Result;
-                }
-                catch(Exception ex)
-                {
-                    return null;
-                }
-                finally
-                {
-                    ServicePointManager.ServerCertificateValidationCallback -= (sender1, certificate, chain, sslPolicyErrors) => true;
-                }
+            HttpContent content = new StringContent(jSONData, UTF8Encoding.UTF8, "application/json");
+            try
+            {
+                return client.PutAsync(url, content).Result.Content.ReadAsStringAsync().Result;
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+            finally
+            {
+                ServicePointManager.ServerCertificateValidationCallback -= (sender1, certificate, chain, sslPolicyErrors) => true;
             }
 
         }
-        public static string RESTDelete(string url, string user, string pass)
+        public static string RESTDelete(string url, string pass)
         {
             ServicePointManager.ServerCertificateValidationCallback += (sender1, certificate, chain, sslPolicyErrors) => true;
 
-            byte[] cred = UTF8Encoding.UTF8.GetBytes($"{user}:{pass}");
-            using(HttpClient client = new HttpClient())
-            {
-                client.BaseAddress = new System.Uri(url);
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(cred));
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            byte[] cred = UTF8Encoding.UTF8.GetBytes($"{UserName}:{pass}");
+            using HttpClient client = new HttpClient();
+            client.BaseAddress = new System.Uri(url);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(cred));
+            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-                try
-                {
-                    return client.DeleteAsync(url).Result.Content.ReadAsStringAsync().Result;
-                }
-                catch(Exception ex)
-                {
-                    return null;
-                }
-                finally
-                {
-                    ServicePointManager.ServerCertificateValidationCallback -= (sender1, certificate, chain, sslPolicyErrors) => true;
-                }
+            try
+            {
+                return client.DeleteAsync(url).Result.Content.ReadAsStringAsync().Result;
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+            finally
+            {
+                ServicePointManager.ServerCertificateValidationCallback -= (sender1, certificate, chain, sslPolicyErrors) => true;
             }
 
         }
-        public static string RESTGet(string url, string user, string pass)
+        public static string RESTGet(string url, string pass)
         {
             ServicePointManager.ServerCertificateValidationCallback += (sender1, certificate, chain, sslPolicyErrors) => true;
             
-            byte[] cred = UTF8Encoding.UTF8.GetBytes($"{user}:{pass}");
-            using(HttpClient client = new HttpClient())
-            {
-                client.BaseAddress = new System.Uri(url);
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(cred));
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            byte[] cred = UTF8Encoding.UTF8.GetBytes($"{UserName}:{pass}");
+            using HttpClient client = new HttpClient();
+            client.BaseAddress = new System.Uri(url);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(cred));
+            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-                try
-                {
-                    return client.GetAsync(url).Result.Content.ReadAsStringAsync().Result;
-                }
-                catch(Exception ex)
-                {
-                    return null;
-                }
-                finally
-                {
-                    ServicePointManager.ServerCertificateValidationCallback -= (sender1, certificate, chain, sslPolicyErrors) => true;
-                }
+            try
+            {
+                return client.GetAsync(url).Result.Content.ReadAsStringAsync().Result;
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+            finally
+            {
+                ServicePointManager.ServerCertificateValidationCallback -= (sender1, certificate, chain, sslPolicyErrors) => true;
             }
         }
-        public static Stream RESTStream(string url, string user, string pass)
+        public static Stream RESTStream(string url, string pass)
         {
             ServicePointManager.ServerCertificateValidationCallback += (sender1, certificate, chain, sslPolicyErrors) => true;
 
-            byte[] cred = UTF8Encoding.UTF8.GetBytes($"{user}:{pass}");
-            using(HttpClient client = new HttpClient())
-            {
-                client.BaseAddress = new System.Uri(url);
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(cred));
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("text/event-stream"));
+            byte[] cred = UTF8Encoding.UTF8.GetBytes($"{UserName}:{pass}");
+            using HttpClient client = new HttpClient();
+            client.BaseAddress = new System.Uri(url);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(cred));
+            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("text/event-stream"));
 
-                try
-                {
-                    return client.GetStreamAsync(url).Result;
-                }
-                catch(Exception ex)
-                {
-                    return null;
-                }
-                finally
-                {
-                    ServicePointManager.ServerCertificateValidationCallback -= (sender1, certificate, chain, sslPolicyErrors) => true;
-                }
+            try
+            {
+                return client.GetStreamAsync(url).Result;
             }
-            
+            catch(Exception ex)
+            {
+                return null;
+            }
+            finally
+            {
+                ServicePointManager.ServerCertificateValidationCallback -= (sender1, certificate, chain, sslPolicyErrors) => true;
+            }
+
 
         }
 

@@ -64,6 +64,9 @@ namespace MobileComms_WPF
                 this.Height = App.Settings.RabbitMQWindow.Height;
                 this.Width = App.Settings.RabbitMQWindow.Width;
             }
+
+            TxtHost.Text = App.Settings.RabbitMQHost;
+            TxtPassword.Password = App.Settings.RabbitMQPassword;
         }
         private void LoadQueueList()
         {
@@ -102,7 +105,7 @@ namespace MobileComms_WPF
         private void BtnSend_Click(object sender, RoutedEventArgs e)
         {
 
-            ConnectionFactory factory = new ConnectionFactory { Uri = new Uri($"amqps://toolkitadmin:{TxtPassword.Password}@{TxtConnectionString.Text}/") };
+            ConnectionFactory factory = new ConnectionFactory { Uri = new Uri($"amqps://toolkitadmin:{TxtPassword.Password}@{TxtHost.Text}/") };
             factory.Ssl.AcceptablePolicyErrors = System.Net.Security.SslPolicyErrors.RemoteCertificateNameMismatch | System.Net.Security.SslPolicyErrors.RemoteCertificateChainErrors;
 
             using IConnection conn = factory.CreateConnection();

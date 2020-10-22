@@ -42,13 +42,13 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" Grid.Column="1" Content="Host Name / IP" Padding="5,3" HorizontalContentAlignment="Center" />
-                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="TxtConnectionString" Text="10.151.33.100" Height="22" VerticalContentAlignment="Center"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="TxtHost" Text="" Height="22" VerticalContentAlignment="Center"/>
 
                     <Label Grid.Row="0" Grid.Column="2" Content="User Name" Padding="5,3" HorizontalContentAlignment="Center" />
                     <Label Grid.Row="1" Grid.Column="2" Content="toolkitadmin" Padding="5,4" HorizontalContentAlignment="Right" HorizontalAlignment="Center" />
 
                     <Label Grid.Row="0" Grid.Column="3" Content="Toolkit Password" Padding="5,3" HorizontalContentAlignment="Center" />
-                    <PasswordBox Grid.Row="1" Grid.Column="3" x:Name="TxtPassword" Height="22" VerticalContentAlignment="Center" Password="P5FrtRVaO4iKFxlMQX3a"/>
+                    <PasswordBox Grid.Row="1" Grid.Column="3" x:Name="TxtPassword" Height="22" VerticalContentAlignment="Center"/>
                 </Grid>
             </Grid>
         </Border>

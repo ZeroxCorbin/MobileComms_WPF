@@ -47,9 +47,6 @@ namespace MobileComms_WPF
             BeginReading();
         }
 
-
-
-
         //private bool IsLoading { get; set; } = true;
         public RESTWindow(Window owner)
         {
@@ -90,6 +87,9 @@ namespace MobileComms_WPF
                 this.Height = App.Settings.RESTWindow.Height;
                 this.Width = App.Settings.RESTWindow.Width;
             }
+
+            TxtHost.Text = App.Settings.RESTHost;
+            TxtPassword.Password = App.Settings.RESTPassword;
         }
         private void LoadResourceList()
         {
@@ -114,24 +114,24 @@ namespace MobileComms_WPF
                 case REST.REST_ACTIONS.GET:
                     if(TxtResourceName.Text.Contains("/Stream"))
                     {
-                        Stream = REST.RESTStream($"https://{TxtConnectionString.Text}:8443{TxtResourceName.Text}", "toolkitadmin", TxtPassword.Password);//, TxtUserName.Text, TxtPassword.Password);
+                        Stream = REST.RESTStream(REST.ConnectionString(TxtHost.Text, TxtResourceName.Text), TxtPassword.Password);//, TxtUserName.Text, TxtPassword.Password);
                         if(Stream.CanRead)
                             BeginReading();
                     }
                     else
-                        TxtResponse.Text = REST.RESTGet($"https://{TxtConnectionString.Text}:8443{TxtResourceName.Text}", "toolkitadmin", TxtPassword.Password);
+                        TxtResponse.Text = REST.RESTGet($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password);
                     break;
 
                 case REST.REST_ACTIONS.PUT:
-                    TxtResponse.Text = REST.RESTPut($"https://{TxtConnectionString.Text}:8443{TxtResourceName.Text}", "toolkitadmin", TxtPassword.Password, TxtJsonData.Text);
+                    TxtResponse.Text = REST.RESTPut($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password, TxtJsonData.Text);
                     break;
 
                 case REST.REST_ACTIONS.POST:
-                    TxtResponse.Text = REST.RESTPost($"https://{TxtConnectionString.Text}:8443{TxtResourceName.Text}", "toolkitadmin", TxtPassword.Password, TxtJsonData.Text);
+                    TxtResponse.Text = REST.RESTPost($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password, TxtJsonData.Text);
                     break;
 
                 case REST.REST_ACTIONS.DELETE:
-                    TxtResponse.Text = REST.RESTDelete($"https://{TxtConnectionString.Text}:8443{TxtResourceName.Text}", "toolkitadmin", TxtPassword.Password);
+                    TxtResponse.Text = REST.RESTDelete($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password);
                     break;
             }
 
@@ -226,6 +226,27 @@ namespace MobileComms_WPF
 
             App.Settings.RESTWindow.Height = Height;
             App.Settings.RESTWindow.Width = Width;
+        }
+
+        private void BtnConnect_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnOpenSwagger_Click(object sender, RoutedEventArgs e)
+        {
+            //using(WebBrowser WebBrowser1 = new WebBrowser())
+            //{
+            //    String auth =
+            //        System.Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(TxtHost.Text + ":" + TxtPassword.Password));
+            //    string headers = "Authorization: Basic " + auth + "\r\n";
+            //    WebBrowser1.Navigate($"https://{TxtHost.Text}/swagger/", "_blank", null, headers);
+
+            //}
+            ////string authHdr = "Authorization: Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes(TxtHost.Text + ":" + TxtPassword.Password)) + "\r\n";
+
+            ////webBrowserCtl.Navigate("http://example.com", null, null, authHdr);
+            System.Diagnostics.Process.Start($"https://{TxtHost.Text}/swagger/");
         }
     }
 }

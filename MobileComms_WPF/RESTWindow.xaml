@@ -17,7 +17,7 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="34"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
 
                 <Label Grid.Row="0" Content="REST (REpresentational State Transfer)" FontSize="18" HorizontalContentAlignment="Center">
@@ -30,36 +30,39 @@
                 </Label>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="76*"/>
-                        <ColumnDefinition Width="28*"/>
-                        <ColumnDefinition Width="311*"/>
-                        <ColumnDefinition Width="208*"/>
-                        <ColumnDefinition Width="208*"/>
-                        <ColumnDefinition Width="104*"/>
+                        <ColumnDefinition Width="0.5*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="124"/>
+
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="0.5*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Grid.Column="2" Content="Host Name / IP" Padding="5,3" HorizontalContentAlignment="Center" />
-                    <Grid Grid.Row="1" Grid.Column="2">
-                        <Grid.ColumnDefinitions>
 
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="1*"/>
+                    </Grid.RowDefinitions>
+                    <Button Grid.Column="0" Grid.Row="1" x:Name="BtnOpenSwagger" Width="90" BorderBrush="{x:Null}" HorizontalAlignment="Right" Content="Swagger" Click="BtnOpenSwagger_Click" />
+                    <Label Grid.Row="0" Grid.Column="1" Content="Host Name / IP" HorizontalContentAlignment="Center" />
+                    <Grid Grid.Row="1" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="51*"/>
+                            <ColumnDefinition Width="180*"/>
+                            <ColumnDefinition Width="40*"/>
                         </Grid.ColumnDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="https://" Padding="5,4" HorizontalContentAlignment="Right" />
 
-                        <TextBox Grid.Column="1"  x:Name="TxtConnectionString" Text="10.151.33.100" Height="22" VerticalContentAlignment="Center"/>
+                        <TextBox Grid.Column="1"  x:Name="TxtHost" Background="#19FFFF00" VerticalContentAlignment="Center" Height="24"/>
                         <Label Grid.Row="0" Grid.Column="2" Content=":8443" Padding="5,4" />
 
 
                     </Grid>
-                    <Label Grid.Row="0" Grid.Column="3" Content="User Name" Padding="5,3" HorizontalContentAlignment="Center" />
-                    <Label Grid.Row="1" Grid.Column="3" Content="toolkitadmin" Padding="5,4" HorizontalContentAlignment="Right" HorizontalAlignment="Center" Margin="65,0" />
-                    <Label Grid.Row="0" Grid.Column="4" Content="Toolkit Password" Padding="5,3" HorizontalContentAlignment="Center" />
-                    <PasswordBox Grid.Row="1" Grid.Column="4" x:Name="TxtPassword" Height="22" VerticalContentAlignment="Center" Password="P5FrtRVaO4iKFxlMQX3a" Margin="0,1"/>
+
+                    <Label Grid.Row="0" Grid.Column="2" Content="User Name"  HorizontalContentAlignment="Center" />
+                    <Label Grid.Row="1" Grid.Column="2" Content="toolkitadmin" Padding="5,4" HorizontalContentAlignment="Center" />
+
+                    <Label Grid.Row="0" Grid.Column="3" Content="Toolkit Password" HorizontalContentAlignment="Center" />
+                    <PasswordBox Grid.Row="1" Grid.Column="3" x:Name="TxtPassword" Height="24" Background="#19FFFF00" VerticalContentAlignment="Center"/>
 
                 </Grid>
             </Grid>

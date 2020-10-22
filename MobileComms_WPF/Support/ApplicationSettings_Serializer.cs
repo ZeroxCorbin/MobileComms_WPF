@@ -42,11 +42,16 @@ namespace ApplicationSettingsNS
         [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
         public partial class ApplicationSettings
         {
-            public string ARCLConnectionString { get; set; } = "192.168.0.20:7171:adept";
+            public string ARCLConnectionString { get; set; } = "10.151.33.100:7171:adept";
 
-            public string RESTServerPath { get; set; } = "https://[IP]:8443";
-            public string RESTUserName { get; set; } = "toolkitadmin";
-            public string RESTPassword { get; set; } = "";
+            public string RESTHost { get; set; } = "10.151.33.100";
+            public string RESTPassword { get; set; } = "P5FrtRVaO4iKFxlMQX3a";
+
+            public string SQLHost { get; set; } = "10.151.33.100";
+            public string SQLPassword { get; set; } = "P5FrtRVaO4iKFxlMQX3a";
+
+            public string RabbitMQHost { get; set; } = "10.151.33.100";
+            public string RabbitMQPassword { get; set; } = "P5FrtRVaO4iKFxlMQX3a";
 
             public WindowSettings MainWindow { get; set; } = new WindowSettings();
             public WindowSettings ARCLWindow { get; set; } = new WindowSettings();

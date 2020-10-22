@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MobileComms_WPF"
         mc:Ignorable="d"
-        Title="Rabbit-MQ" Height="693.226" Width="807.062" Icon="Support/favicon.ico" Loaded="Window_Loaded" Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" StateChanged="Window_StateChanged">
+        Title="PostgresSQL" Height="675.837" Width="1022.892" Icon="Support/favicon.ico" Loaded="Window_Loaded" Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" StateChanged="Window_StateChanged">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="128"/>
             <RowDefinition Height="1.5*"/>
             <RowDefinition Height="2*"/>
-            <RowDefinition Height="1*"/>
+            <!--<RowDefinition Height="1*"/>-->
         </Grid.RowDefinitions>
 
         <Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
@@ -21,7 +21,7 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Content="SQL (Structured Query Language)" FontSize="18" HorizontalContentAlignment="Center">
+                <Label Grid.Row="0" Content="PostgresSQL (Structured Query Language)" FontSize="18" HorizontalContentAlignment="Center">
                     <Label.Background>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                             <GradientStop Color="#FF4c88d6" Offset="0"/>
@@ -29,43 +29,38 @@
                         </LinearGradientBrush>
                     </Label.Background>
                 </Label>
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="1" Margin="0">
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0.5*"/>
                         <ColumnDefinition/>
+                        <ColumnDefinition Width="128"/>
                         <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="128"/>
                         <ColumnDefinition Width="0.5*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="24"/>
-                        <RowDefinition Height="24"/>
-                        <RowDefinition Height="24"/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Grid.Column="1" Content="Host Name / IP" Padding="5,3" HorizontalContentAlignment="Center" />
-                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="TxtConnectionString" Text="10.151.33.100" Height="22" VerticalContentAlignment="Center"/>
+                    <Label Grid.Row="0" Grid.Column="1" Content="Host Name / IP" HorizontalContentAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="TxtHost" Text="" VerticalContentAlignment="Center" TextChanged="TxtHost_TextChanged" Height="24" Background="#19FFFF00"/>
 
-                    <Label Grid.Row="0" Grid.Column="2" Content="User Name" Padding="5,3" HorizontalContentAlignment="Center" />
-                    <Label Grid.Row="1" Grid.Column="2" Content="toolkitadmin" Padding="5,4" HorizontalContentAlignment="Right" HorizontalAlignment="Center" />
+                    <Label Grid.Row="0" Grid.Column="2" Content="User Name" HorizontalContentAlignment="Center" />
+                    <Label Grid.Row="1" Grid.Column="2" Content="toolkitadmin" Padding="5,4" HorizontalContentAlignment="Right" HorizontalAlignment="Center" VerticalAlignment="Top" />
 
-                    <Label Grid.Row="0" Grid.Column="3" Content="Toolkit Password" Padding="5,3" HorizontalContentAlignment="Center" />
-                    <PasswordBox Grid.Row="1" Grid.Column="3" x:Name="TxtPassword" Height="22" VerticalContentAlignment="Center" Password="P5FrtRVaO4iKFxlMQX3a"/>
+                    <Label Grid.Row="0" Grid.Column="3" Content="Toolkit Password" HorizontalContentAlignment="Center" />
+                    <PasswordBox Grid.Row="1" Grid.Column="3" x:Name="TxtPassword" VerticalContentAlignment="Center" Height="24" Background="#19FFFF00"/>
 
-                    <Label Grid.Row="0" Grid.Column="4" Content="Database Name" Padding="5,3" HorizontalContentAlignment="Center" />
-                    <Label Grid.Row="1" Grid.Column="4" Content="IntegrationDB" Padding="5,4" HorizontalContentAlignment="Right" HorizontalAlignment="Center" />
+                    <Label Grid.Row="0" Grid.Column="4" Content="Database Name" HorizontalContentAlignment="Center" />
+                    <Label Grid.Row="1" Grid.Column="4" Content="IntegrationDB" Padding="5,4" HorizontalContentAlignment="Right" HorizontalAlignment="Center" VerticalAlignment="Top" />
 
-                    <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="6">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.5*"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="0.5*"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Content="Connection String" Padding="5,3" HorizontalContentAlignment="Right" />
-                        <TextBox Grid.Column="1" x:Name="TxtDBConnectionString" IsReadOnly="True"/>
-                        <Button Grid.Column="2" Content="Connect" x:Name="BtnConnect" Width="94" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Click="BtnConnect_Click"/>
-                    </Grid>
+
+                    <Label Grid.Column="0" Grid.Row="2" Content="Connection String" Padding="5,3" HorizontalContentAlignment="Right" />
+                        <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" x:Name="TxtDBConnectionString" IsReadOnly="True" Background="#19000000" Height="24" VerticalContentAlignment="Center"/>
+                    <Button Grid.Column="4" Grid.Row="2" Content="Connect" x:Name="BtnConnect" Width="94" HorizontalContentAlignment="Center" Click="BtnConnect_Click" Background="LightSalmon" BorderBrush="{x:Null}"/>
+              
 
                 </Grid>
             </Grid>
@@ -78,14 +73,14 @@
             </Grid.ColumnDefinitions>
 
 
-            <Border Grid.Column="0" Grid.Row="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+            <Border x:Name="BrdViewList"  Grid.Column="0" Grid.Row="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="34"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0" Content="View List" FontSize="18" HorizontalContentAlignment="Center">
+                    <Label Grid.Row="0" Content="Views List" FontSize="18" HorizontalContentAlignment="Center">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#FF4c88d6" Offset="0"/>
@@ -96,7 +91,7 @@
                     <TreeView Grid.Row="1" Grid.Column="0" Name="TrvQueueList"/>
                 </Grid>
             </Border>
-            <Border Grid.Column="1" Grid.Row="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+            <Border x:Name="BrdQuery" Grid.Column="1" Grid.Row="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="34"/>
@@ -127,25 +122,24 @@
                             <RowDefinition Height="1*"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="Type" Padding="5,3" HorizontalContentAlignment="Center" />
-                        <ComboBox Grid.Row="1" Grid.Column="0" x:Name="CmdMoveType" IsReadOnly="True" SelectedIndex="0"/>
+                        <ComboBox Grid.Row="1" Grid.Column="0" x:Name="CmdMoveType" IsReadOnly="True" SelectedIndex="0" SelectionChanged="CmdMoveType_SelectionChanged" Width="110"/>
 
-                        <Label Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Content="Type" Padding="5,3" HorizontalContentAlignment="Center" />
-                        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Name="TxtQueryStart" Height="22" VerticalContentAlignment="Center"/>
+                        <Label Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Content="Query (SQL Command)" Padding="5,3" HorizontalContentAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Name="TxtQueryStart" Height="24" VerticalContentAlignment="Center" Background="#19FFFF00"/>
 
                         <Label Grid.Row="2" Grid.Column="0" Content="Variables" Padding="5,3" HorizontalContentAlignment="Center" />
-                        <TextBox Grid.Row="3" Grid.Column="0" Grid.RowSpan="3" Name="TxtJsonData" TextChanged="TxtJsonData_TextChanged"/>
+                        <TextBox Grid.Row="3" Grid.Column="0" Grid.RowSpan="3" Name="TxtJsonData" TextChanged="TxtJsonData_TextChanged" Background="#19FFFF00"/>
 
-                        <Label Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Content="Variables" Padding="5,3" HorizontalContentAlignment="Center" />
-                        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Name="TxtQueryDetails" Height="22" VerticalContentAlignment="Center"/>
-                        <Button Grid.Row="4" Grid.Column="2" Name="BtnGetScheme" Width="94" Content="Get" HorizontalAlignment="Center" Click="BtnGetScheme_Click"/>
-                        <Button Grid.Row="4" Grid.Column="3" Name="BtnSend" Click="BtnSend_Click" Width="94" Content="Send" HorizontalAlignment="Center" Height="24" Margin="17,0" VerticalAlignment="Bottom"/>
+                        <Label Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Content="Query Conditions" Padding="5,3" HorizontalContentAlignment="Center" />
+                        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Name="TxtQueryDetails" Height="24" VerticalContentAlignment="Center" Background="#19FFFF00"/>
+                        <Button Grid.Row="4" Grid.Column="2" Name="BtnSend" Click="BtnSend_Click" Width="94" HorizontalAlignment="Center" Height="24" BorderBrush="{x:Null}" VerticalAlignment="Bottom"/>
                     </Grid>
 
                 </Grid>
             </Border>
 
         </Grid>
-        <Border Grid.Column="0" Grid.Row="2" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+        <Border x:Name="BrdTableRows" Grid.Column="0" Grid.Row="2" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="34"/>
@@ -159,10 +153,10 @@
                         </LinearGradientBrush>
                     </Label.Background>
                 </Label>
-                <DataGrid x:Name="DgvTableRows" Grid.Row="1"/>
+                <DataGrid x:Name="DgvTableRows" Grid.Row="1" IsReadOnly="True"/>
             </Grid>
         </Border>
-        <Border Grid.Column="0" Grid.Row="3" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+        <!--<Border x:Name="BrdCommandResponse" Grid.Column="0" Grid.Row="3" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="34"/>
@@ -178,6 +172,6 @@
                 </Label>
                 <TextBox Grid.Row="1" x:Name="TxtResponse" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
             </Grid>
-        </Border>
+        </Border>-->
     </Grid>
 </Window>

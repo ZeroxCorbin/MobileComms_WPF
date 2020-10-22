@@ -7,9 +7,9 @@ using System.Windows.Threading;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
-using static Classes.IntegrationToolkit.SQL;
 using System.Text;
 using System.Data;
+using Classes.IntegrationToolkit;
 
 namespace MobileComms_WPF
 {
@@ -18,14 +18,14 @@ namespace MobileComms_WPF
     /// </summary>
     public partial class SQLWindow : Window
     {
-
-
         public SQLWindow(Window owner)
         {
             Owner = owner;
 
             InitializeComponent();
+
             Window_LoadSettings();
+
             LoadQueueList();
         }
         private void Window_LoadSettings()
@@ -58,6 +58,11 @@ namespace MobileComms_WPF
                 this.Height = App.Settings.SQLWindow.Height;
                 this.Width = App.Settings.SQLWindow.Width;
             }
+
+            TxtHost.Text = App.Settings.SQLHost;
+            TxtPassword.Password = App.Settings.SQLPassword;
+
+            DisConnected();
         }
         private void LoadQueueList()
         {
@@ -73,25 +78,28 @@ namespace MobileComms_WPF
 
         private void Tvi_Selected(object sender, RoutedEventArgs e)
         {
+            if(CmdMoveType.ItemsSource == null)
+                CmdMoveType.Items.Clear();
+
             if(sender is TreeViewItem tv)
             {
-                if(tv.Tag is KeyValuePair<string, Dictionary<QueryTypes, string>> lst)
+                if(tv.Tag is KeyValuePair<string, Dictionary<SQL.QueryTypes, string>> lst)
                 {
                     CmdMoveType.ItemsSource = lst.Value.Keys;
                     CmdMoveType.SelectedIndex = 0;
 
-                    if(CmdMoveType.SelectedItem is QueryTypes type)
+                    if(CmdMoveType.SelectedItem is SQL.QueryTypes type)
                     {
-                        if(type == QueryTypes.SELECT)
+                        if(type == SQL.QueryTypes.SELECT)
                         {
                             TxtQueryStart.Text = $"SELECT * FROM {tv.Header}";
                             //var obj = Activator.CreateInstance(t);
                         }
-                        else if(type == QueryTypes.INSERT)
+                        else if(type == SQL.QueryTypes.INSERT)
                         {
                             TxtQueryStart.Text = $"INSERT INTO {tv.Header}";
                         }
-                        else if(type == QueryTypes.UPDATE)
+                        else if(type == SQL.QueryTypes.UPDATE)
                         {
 
                         }
@@ -127,30 +135,30 @@ namespace MobileComms_WPF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            ((TreeViewItem)TrvQueueList.Items[0]).IsSelected = true;
         }
 
         private void BtnSend_Click(object sender, RoutedEventArgs e)
         {
             if(CmdMoveType.SelectedItem == null) return;
 
-            if(((QueryTypes)CmdMoveType.SelectedItem) == QueryTypes.SELECT)
+            if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.SELECT)
             {
                 //DgvTableRows.ItemsSource = Select($"{TxtQueryStart.Text} {TxtQueryDetails.Text}").Tables[0].DefaultView;
                 Dispatcher.BeginInvoke(DispatcherPriority.Render,
                         (Action)(() =>
                         {
-                            System.Data.DataSet ds = Select($"{TxtQueryStart.Text} {TxtQueryDetails.Text}");
+                            System.Data.DataSet ds = SQL.Select($"{TxtQueryStart.Text} {TxtQueryDetails.Text}");
                             if(ds.Tables.Count > 0)
                             {
                                 DgvTableRows.ItemsSource = ds.Tables[0].DefaultView;
-                                TxtResponse.Text = "";
+                                //TxtResponse.Text = "";
                             }
 
                             else
                             {
-                                if(IsException)
-                                    TxtResponse.Text = DbException.Message;
+                                if(SQL.IsException)
+                                    //TxtResponse.Text = SQL.DbException.Message;
                                 DgvTableRows.ItemsSource = null;
                             }
 
@@ -158,12 +166,12 @@ namespace MobileComms_WPF
             }
             else
             {
-                string ret = Insert($"{TxtQueryStart.Text} {TxtQueryDetails.Text}");
-                Dispatcher.BeginInvoke(DispatcherPriority.Render,
-                        (Action<string>)((s) =>
-                        {
-                            TxtResponse.Text = s;
-                        }), ret);
+                //string ret = SQL.Insert($"{TxtQueryStart.Text} {TxtQueryDetails.Text}");
+                //Dispatcher.BeginInvoke(DispatcherPriority.Render,
+                //        (Action<string>)((s) =>
+                //        {
+                //            TxtResponse.Text = s;
+                //        }), ret);
             }
 
         }
@@ -201,7 +209,7 @@ namespace MobileComms_WPF
         {
             string[] spl = TxtJsonData.Text.Split('\n');
 
-            if(((QueryTypes)CmdMoveType.SelectedItem) == QueryTypes.SELECT)
+            if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.SELECT)
             {
                 List<string> lst = new List<string>();
 
@@ -220,7 +228,7 @@ namespace MobileComms_WPF
                 foreach(string s in lst)
                     TxtQueryDetails.Text += $" {s}";
             }
-            if(((QueryTypes)CmdMoveType.SelectedItem) == QueryTypes.INSERT)
+            if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.INSERT)
             {
                 List<string> lst = new List<string>();
 
@@ -272,7 +280,7 @@ namespace MobileComms_WPF
         {
             StringBuilder sb = new StringBuilder();
 
-            DgvTableRows.ItemsSource = GetScheme($"{((TreeViewItem)TrvQueueList.SelectedItem).Header}").Tables[0].DefaultView;
+            DgvTableRows.ItemsSource = SQL.GetScheme($"{((TreeViewItem)TrvQueueList.SelectedItem).Header}").Tables[0].DefaultView;
 
             //Dispatcher.BeginInvoke(DispatcherPriority.Render,
             //        (Action<string>)((s) =>
@@ -283,10 +291,72 @@ namespace MobileComms_WPF
 
         private void BtnConnect_Click(object sender, RoutedEventArgs e)
         {
-            if(Connect(TxtConnectionString.Text, TxtPassword.Password))
-                BtnConnect.Background = Brushes.LightGreen;
+            if(BtnConnect.Tag == null)
+            {
+                if(SQL.Connect(TxtHost.Text, TxtPassword.Password))
+                {
+                    BtnConnect.Tag = "";
+                    BtnConnect.Background = Brushes.LightGreen;
+
+                    Connected();
+                }
+                else
+                {
+                    BtnConnect.Background = Brushes.LightSalmon;
+
+                    DisConnected();
+                }
+            }
             else
-                BtnConnect.Background = Brushes.Salmon;
+            {
+                BtnConnect.Tag = null;
+
+                SQL.Close();
+
+                BtnConnect.Background = Brushes.LightSalmon;
+
+                DisConnected();
+            }
+
+
+        }
+
+        private void Connected()
+        {      
+            BrdViewList.IsEnabled = true;
+
+            if(TxtQueryStart.Text.Length > 0)
+            {
+                //BrdCommandResponse.IsEnabled = true;
+                BrdQuery.IsEnabled = true;
+                BrdTableRows.IsEnabled = true;
+            }
+
+            TxtPassword.IsEnabled = false;
+            TxtHost.IsEnabled = false;
+        }
+        private void DisConnected()
+        {
+            //BrdCommandResponse.IsEnabled = false;
+            BrdQuery.IsEnabled = false;
+            BrdTableRows.IsEnabled = false;
+            BrdViewList.IsEnabled = false;
+
+            TxtPassword.IsEnabled = true;
+            TxtHost.IsEnabled = true;
+        }
+        private void TxtHost_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            App.Settings.SQLHost = TxtHost.Text;
+
+            TxtDBConnectionString.Text = SQL.ConnectionString(TxtHost.Text, "Your_ITK_Password");
+        }
+
+        private void CmdMoveType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(!IsLoaded) return;
+
+            BtnSend.Content=CmdMoveType.SelectedItem;
         }
     }
 }
