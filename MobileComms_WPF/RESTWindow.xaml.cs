@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -137,11 +138,17 @@ namespace MobileComms_WPF
 
         }
 
-
-
         private void Tvic_Selected(object sender, RoutedEventArgs e)
         {
-            TxtResourceName.Text = (string)((TreeViewItem)sender).Header;
+            string resource = (string)((TreeViewItem)sender).Header;
+
+
+            TxtResourceName.Text = resource;
+            TxtResourceName.Tag = resource;
+            TxtResourceValue.Text = "";
+
+            LblResourceValue.Content = Regex.Match(resource, @"{.*}").Value.Replace("{", "").Replace("}", "");
+
 
             string name = (string)((TreeViewItem)((TreeViewItem)sender).Parent).Header;
 
@@ -151,31 +158,43 @@ namespace MobileComms_WPF
             {
                 TxtJsonSchema.Text = string.Empty;
                 TxtJsonData.Text = string.Empty;
-                return;
             }
-
-            var obj = Activator.CreateInstance(t);
+            else
+            {
+                var obj = Activator.CreateInstance(t);
+                TxtJsonSchema.Text = JsonConvert.SerializeObject(obj).Replace(",\"", ",\r\n\"").Replace("null", "\"\"");
+            }
+            
 
             if(name.Contains("GET"))
             {
                 RestAction = REST.REST_ACTIONS.GET;
                 BtnSend.Content = Enum.GetName(typeof(REST.REST_ACTIONS), RestAction );
-                TxtJsonSchema.Text = JsonConvert.SerializeObject(obj).Replace(",\"", ",\r\n\"").Replace("null", "\"\"");
+                //TxtJsonSchema.Text = JsonConvert.SerializeObject(obj).Replace(",\"", ",\r\n\"").Replace("null", "\"\"");
                 TxtJsonData.Text = string.Empty;
+                TxtJsonData.IsEnabled = false;
+
+                TxtResourceValue.IsEnabled = true;
             }
             else if(name.Contains("PUT"))
             {
                 RestAction = REST.REST_ACTIONS.PUT;
                 BtnSend.Content = Enum.GetName(typeof(REST.REST_ACTIONS), RestAction);
-                TxtJsonData.Text = JsonConvert.SerializeObject(obj).Replace(",\"", ",\r\n\"").Replace("null", "\"\"");
-                TxtJsonSchema.Text = TxtJsonData.Text;
+
+                TxtJsonData.Text = TxtJsonSchema.Text;
+                TxtJsonData.IsEnabled = true;
+
+                TxtResourceValue.IsEnabled = false;
             }
             else if(name.Contains("POST"))
             {
                 RestAction = REST.REST_ACTIONS.POST;
                 BtnSend.Content = Enum.GetName(typeof(REST.REST_ACTIONS), RestAction);
-                TxtJsonData.Text = JsonConvert.SerializeObject(obj).Replace(",\"", ",\r\n\"").Replace("null", "\"\"");
-                TxtJsonSchema.Text = TxtJsonData.Text;
+                //TxtJsonSchema.Text = JsonConvert.SerializeObject(obj).Replace(",\"", ",\r\n\"").Replace("null", "\"\"");
+                TxtJsonData.Text = TxtJsonSchema.Text;
+                TxtJsonData.IsEnabled = true;
+
+                TxtResourceValue.IsEnabled = false;
             }
             else if(name.Contains("DELETE"))
             {
@@ -183,6 +202,9 @@ namespace MobileComms_WPF
                 BtnSend.Content = Enum.GetName(typeof(REST.REST_ACTIONS), RestAction);
                 TxtJsonSchema.Text = string.Empty;
                 TxtJsonData.Text = string.Empty;
+                TxtJsonData.IsEnabled = false;
+
+                TxtResourceValue.IsEnabled = true;
             }
 
             if(TxtResourceName.Text.Contains("/Stream"))
@@ -247,6 +269,21 @@ namespace MobileComms_WPF
 
             ////webBrowserCtl.Navigate("http://example.com", null, null, authHdr);
             System.Diagnostics.Process.Start($"https://{TxtHost.Text}/swagger/");
+        }
+
+        private void TxtResourceValue_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(TxtResourceValue.Text.Length > 0)
+            {
+                TxtResourceName.Text = Regex.Replace((string)TxtResourceName.Tag, @"{.*}", delegate (Match match)
+                {
+                    return TxtResourceValue.Text;
+                });
+            }
+            else
+            {
+                TxtResourceName.Text = (string)TxtResourceName.Tag;
+            }
         }
     }
 }

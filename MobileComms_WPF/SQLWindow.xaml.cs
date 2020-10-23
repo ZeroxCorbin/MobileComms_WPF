@@ -84,53 +84,13 @@ namespace MobileComms_WPF
             if(sender is TreeViewItem tv)
             {
                 if(tv.Tag is KeyValuePair<string, Dictionary<SQL.QueryTypes, string>> lst)
-                {
+                { 
+                    CmdMoveType.Tag = lst;
                     CmdMoveType.ItemsSource = lst.Value.Keys;
+                    CmdMoveType.SelectedIndex = -1;
                     CmdMoveType.SelectedIndex = 0;
-
-                    if(CmdMoveType.SelectedItem is SQL.QueryTypes type)
-                    {
-                        if(type == SQL.QueryTypes.SELECT)
-                        {
-                            TxtQueryStart.Text = $"SELECT * FROM {tv.Header}";
-                            //var obj = Activator.CreateInstance(t);
-                        }
-                        else if(type == SQL.QueryTypes.INSERT)
-                        {
-                            TxtQueryStart.Text = $"INSERT INTO {tv.Header}";
-                        }
-                        else if(type == SQL.QueryTypes.UPDATE)
-                        {
-
-                        }
-
-                        TxtJsonData.Text = "";
-                        Type t = Type.GetType($"Classes.IntegrationToolkit.JSON_Types.{lst.Value[type]}");
-
-                        if(t == null)
-                        {
-                            TxtJsonData.Text = string.Empty;
-                            return;
-                        }
-                        foreach(var prop in t.GetProperties())
-                        {
-                            string name = Regex.Replace(prop.Name, @"[A-Z]", delegate (Match match)
-                            {
-                                return $"_{char.ToLower(match.ToString()[0])}";
-                            });
-                            if(prop.PropertyType == typeof(string))
-                                TxtJsonData.Text += $"{name}=''\r\n";
-                            else
-                                TxtJsonData.Text += $"{name}=\r\n";
-                        }
-                    }
                 }
             }
-
-            //if(CmdMoveType.SelectedIndex == 0)
-            //    TxtJsonData.Text = $"SELECT * FROM {TxtViewName.Text}";
-            //if(CmdMoveType.SelectedIndex == 1)
-            //    TxtJsonData.Text = $"SELECT * FROM {TxtViewName.Text}";
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -152,26 +112,54 @@ namespace MobileComms_WPF
                             if(ds.Tables.Count > 0)
                             {
                                 DgvTableRows.ItemsSource = ds.Tables[0].DefaultView;
-                                //TxtResponse.Text = "";
+                                TxtResponse.Text = "";
                             }
 
                             else
                             {
                                 if(SQL.IsException)
-                                    //TxtResponse.Text = SQL.DbException.Message;
+                                    TxtResponse.Text = SQL.DbException.Message;
                                 DgvTableRows.ItemsSource = null;
                             }
 
                         }));
             }
-            else
+            else if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.INSERT)
             {
-                //string ret = SQL.Insert($"{TxtQueryStart.Text} {TxtQueryDetails.Text}");
-                //Dispatcher.BeginInvoke(DispatcherPriority.Render,
-                //        (Action<string>)((s) =>
-                //        {
-                //            TxtResponse.Text = s;
-                //        }), ret);
+                
+                Dispatcher.BeginInvoke(DispatcherPriority.Render,
+                        (Action)(() =>
+                        {
+                            int ret = SQL.Insert($"{TxtQueryStart.Text} {TxtQueryDetails.Text}");
+                            if(ret < 0)
+                            {
+                                if(SQL.IsException)
+                                    TxtResponse.Text = SQL.DbException.Message;
+                                else
+                                    TxtResponse.Text = "The SQL Connection is not Active.";
+                            }
+                            else
+                                TxtResponse.Text = $"INSERT affected {ret} rows.";
+
+
+                        }));
+            }
+            else if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.UPDATE)
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Render,
+                        (Action)(() =>
+                        {
+                            int ret = SQL.Update($"{TxtQueryStart.Text} {TxtQueryDetails.Text}");
+                            if(ret < 0)
+                            {
+                                if(SQL.IsException) 
+                                    TxtResponse.Text = SQL.DbException.Message;
+                                else
+                                    TxtResponse.Text = "The SQL Connection is not Active.";
+                            }
+                            else
+                                TxtResponse.Text = $"UPDATE affected {ret} rows.";
+                        }));
             }
 
         }
@@ -228,7 +216,7 @@ namespace MobileComms_WPF
                 foreach(string s in lst)
                     TxtQueryDetails.Text += $" {s}";
             }
-            if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.INSERT)
+            else if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.INSERT)
             {
                 List<string> lst = new List<string>();
 
@@ -273,6 +261,10 @@ namespace MobileComms_WPF
                         continue;
                     }
                 }
+            }
+            else if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.UPDATE)
+            {
+                
             }
         }
 
@@ -322,7 +314,7 @@ namespace MobileComms_WPF
         }
 
         private void Connected()
-        {      
+        {
             BrdViewList.IsEnabled = true;
 
             if(TxtQueryStart.Text.Length > 0)
@@ -356,7 +348,47 @@ namespace MobileComms_WPF
         {
             if(!IsLoaded) return;
 
-            BtnSend.Content=CmdMoveType.SelectedItem;
+            BtnSend.Content = CmdMoveType.SelectedItem;
+
+            if(CmdMoveType.SelectedItem is SQL.QueryTypes type)
+            {
+                if(type == SQL.QueryTypes.SELECT)
+                {
+                    TxtQueryStart.Text = $"SELECT * FROM {((TreeViewItem)TrvQueueList.SelectedItem).Header}";
+                    TxtJsonData.IsEnabled = true;
+                }
+                else if(type == SQL.QueryTypes.INSERT)
+                {
+                    TxtQueryStart.Text = $"INSERT INTO {((TreeViewItem)TrvQueueList.SelectedItem).Header}";
+                    TxtJsonData.IsEnabled = true;
+                }
+                else if(type == SQL.QueryTypes.UPDATE)
+                {
+                    TxtQueryStart.Text = $"UPDATE {((TreeViewItem)TrvQueueList.SelectedItem).Header}";
+                    TxtQueryDetails.Text = "SET subscription_interval = '1s' WHERE namekey =''";
+                    TxtJsonData.IsEnabled = false;
+                }
+
+                TxtJsonData.Text = "";
+                Type t = Type.GetType($"Classes.IntegrationToolkit.JSON_Types.{((KeyValuePair<string, Dictionary<SQL.QueryTypes, string>>)CmdMoveType.Tag).Value[type]}");
+
+                if(t == null)
+                {
+                    TxtJsonData.Text = string.Empty;
+                    return;
+                }
+                foreach(var prop in t.GetProperties())
+                {
+                    string name = Regex.Replace(prop.Name, @"[A-Z]", delegate (Match match)
+                    {
+                        return $"_{char.ToLower(match.ToString()[0])}";
+                    });
+                    if(prop.PropertyType == typeof(string))
+                        TxtJsonData.Text += $"{name}=''\r\n";
+                    else
+                        TxtJsonData.Text += $"{name}=\r\n";
+                }
+            }
         }
     }
 }

@@ -128,11 +128,13 @@
                         <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Name="TxtQueryStart" Height="24" VerticalContentAlignment="Center" Background="#19FFFF00"/>
 
                         <Label Grid.Row="2" Grid.Column="0" Content="Variables" Padding="5,3" HorizontalContentAlignment="Center" />
-                        <TextBox Grid.Row="3" Grid.Column="0" Grid.RowSpan="3" Name="TxtJsonData" TextChanged="TxtJsonData_TextChanged" Background="#19FFFF00"/>
+                        <TextBox Grid.Row="3" Grid.Column="0" Grid.RowSpan="3" Name="TxtJsonData" TextChanged="TxtJsonData_TextChanged" Background="#19FFFF00" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
                         <Label Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Content="Query Conditions" Padding="5,3" HorizontalContentAlignment="Center" />
                         <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Name="TxtQueryDetails" Height="24" VerticalContentAlignment="Center" Background="#19FFFF00"/>
                         <Button Grid.Row="4" Grid.Column="2" Name="BtnSend" Click="BtnSend_Click" Width="94" HorizontalAlignment="Center" Height="24" BorderBrush="{x:Null}" VerticalAlignment="Bottom"/>
+
+                        <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" x:Name="TxtResponse" HorizontalScrollBarVisibility="Auto" Background="#19000000"  VerticalScrollBarVisibility="Auto" />
                     </Grid>
 
                 </Grid>

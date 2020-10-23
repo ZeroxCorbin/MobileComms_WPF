@@ -129,7 +129,7 @@ namespace Classes.IntegrationToolkit
                 return new DataSet();
             }
         }
-        public static string Insert(string query)
+        public static int Insert(string query)
         {
             Reset();
 
@@ -140,17 +140,39 @@ namespace Classes.IntegrationToolkit
                     using var cmd = new NpgsqlCommand(query, Connection);
 
                     //cmd.Parameters.AddWithValue("p", "some_value");
-                    cmd.ExecuteNonQuery();
+                    return cmd.ExecuteNonQuery();
                 }
+                return -1;
             }
             catch(PostgresException ex)
             {
                 DbException = ex;
                 IsException = true;
-                return "";
+                return -1;
             }
-            return "Complete";
+        }
 
+        public static int Update(string query)
+        {
+            Reset();
+
+            try
+            {
+                if(Connection != null && Connection.State == ConnectionState.Open)
+                {
+                    using var cmd = new NpgsqlCommand(query, Connection);
+
+                    //cmd.Parameters.AddWithValue("p", "some_value");
+                    return cmd.ExecuteNonQuery();
+                }
+                return -1;
+            }
+            catch(PostgresException ex)
+            {
+                DbException = ex;
+                IsException = true;
+                return -1;
+            }
         }
 
     }

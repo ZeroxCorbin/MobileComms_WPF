@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MobileComms_WPF"
         mc:Ignorable="d"
-        Title="REST" LocationChanged="Window_LocationChanged" StateChanged="Window_StateChanged" Closing="Window_Closing" SizeChanged="Window_SizeChanged" Icon="Support/favicon.ico" Height="571.253" Width="956.953">
+        Title="REST" LocationChanged="Window_LocationChanged" StateChanged="Window_StateChanged" Closing="Window_Closing" SizeChanged="Window_SizeChanged" Icon="Support/favicon.ico" Height="745.253" Width="956.953">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
             <RowDefinition Height="2*"/>
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height="2.5*"/>
         </Grid.RowDefinitions>
 
         <Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
@@ -70,13 +70,12 @@
         <Grid Grid.Column="0" Grid.Row="1">
             <Grid.ColumnDefinitions>
 
-                <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
 
-            <Border Grid.Column="0" Grid.Row="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+            <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="34"/>
@@ -94,7 +93,66 @@
                     <TreeView Grid.Row="1" Grid.Column="0" Name="TrvCommandList"/>
                 </Grid>
             </Border>
-            <Border Grid.Column="1" Grid.Row="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+
+            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="34"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Content="Resource to Send" FontSize="18" HorizontalContentAlignment="Center">
+                        <Label.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF4c88d6" Offset="0"/>
+                                <GradientStop Color="White" Offset="0.3"/>
+                            </LinearGradientBrush>
+                        </Label.Background>
+                    </Label>
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Resource URI" Padding="5,3" HorizontalContentAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Name="TxtResourceName" Background="#19000000" VerticalContentAlignment="Center"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" x:Name="LblResourceValue" Padding="5,3" HorizontalContentAlignment="Right" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Name="TxtResourceValue" Background="#19FFFF00" VerticalContentAlignment="Center" TextChanged="TxtResourceValue_TextChanged"/>
+
+                        <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Content="JSON Body" Padding="5,3" HorizontalContentAlignment="Center" />
+                        <TextBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="3" Background="#19FFFF00" Name="TxtJsonData"/>
+                       
+                        <Button Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" Name="BtnSend" Click="BtnSend_Click" Height="28" Width="94" Content="Send" BorderBrush="{x:Null}" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                        <Label Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Content="Send Error" Padding="5,3" HorizontalContentAlignment="Center" />
+                        <TextBox Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="3" x:Name="TxtResponse" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Background="#19000000" TextWrapping="Wrap" />
+
+                    </Grid>
+
+                </Grid>
+            </Border>
+        </Grid>
+
+
+        <Grid Grid.Column="0" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="34"/>
@@ -113,14 +171,14 @@
 
                 </Grid>
             </Border>
-            <Border Grid.Column="2" Grid.Row="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+            <Border Grid.Column="1" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="34"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0" Content="Resource to Send" FontSize="18" HorizontalContentAlignment="Center">
+                    <Label Grid.Row="0" Content="Returned JSON" FontSize="18" HorizontalContentAlignment="Center">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#FF4c88d6" Offset="0"/>
@@ -128,24 +186,12 @@
                             </LinearGradientBrush>
                         </Label.Background>
                     </Label>
-                    <Grid Grid.Row="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="34"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="34"/>
-                        </Grid.RowDefinitions>
-                        <TextBox Grid.Row="0" Name="TxtResourceName" Height="22" VerticalContentAlignment="Center"/>
-                        <Button Grid.Row="2" Name="BtnSend" Click="BtnSend_Click" Width="94" Height="28" Content="Send" HorizontalAlignment="Center"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" Name="TxtJsonData"/>
-                    </Grid>
+                    <TreeView x:Name="TrvReturnedJSON" Grid.Row="1"/>
 
                 </Grid>
             </Border>
         </Grid>
-
-
-
-        <Border Grid.Column="0" Grid.Row="2" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+        <!--<Border Grid.Column="0" Grid.Row="2" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="34"/>
@@ -161,6 +207,6 @@
                 </Label>
                 <TextBox Grid.Row="1" x:Name="TxtResponse" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" />
             </Grid>
-        </Border>
+        </Border>-->
     </Grid>
 </Window>
