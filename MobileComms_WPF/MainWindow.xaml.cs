@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -18,29 +19,29 @@ namespace MobileComms_WPF
         {
             InitializeComponent();
 
-            if (Keyboard.IsKeyDown(Key.LeftShift))
+            if(Keyboard.IsKeyDown(Key.LeftShift))
             {
                 App.Settings.MainWindow = new ApplicationSettings_Serializer.ApplicationSettings.WindowSettings();
                 App.Settings.ARCLWindow = new ApplicationSettings_Serializer.ApplicationSettings.WindowSettings();
                 App.Settings.RESTWindow = new ApplicationSettings_Serializer.ApplicationSettings.WindowSettings();
             }
 
-            if (double.IsNaN(App.Settings.MainWindow.Left))
+            if(double.IsNaN(App.Settings.MainWindow.Left))
                 this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             else
             {
                 this.Left = App.Settings.MainWindow.Left;
                 this.Top = App.Settings.MainWindow.Top;
 
-                if (!CheckOnScreen.IsOnScreen(this))
+                if(!CheckOnScreen.IsOnScreen(this))
                     this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             }
 
-           
         }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (WindowStartupLocation == WindowStartupLocation.CenterScreen)
+            if(WindowStartupLocation == WindowStartupLocation.CenterScreen)
             {
                 WindowStartupLocation = WindowStartupLocation.Manual;
                 IsLoading = false;
@@ -58,18 +59,25 @@ namespace MobileComms_WPF
         private ARCLWindow ARCLWindow { get; set; } = null;
         private void BtnARCLWindow_Click(object sender, RoutedEventArgs e)
         {
-            if (ARCLWindow == null)
+            if(ARCLWindow == null)
             {
-                ARCLWindow = new ARCLWindow();
-                ARCLWindow.Closed += ListenNodeWindow_Closed;
+                ARCLWindow = new ARCLWindow(this);
+                ARCLWindow.Closed += ARCLWindow_Closed;
                 ARCLWindow.Activated += AnyWindow_Activated;
-                ARCLWindow.Owner = this;
                 ARCLWindow.Show();
 
-                //WindowShow();
+                ARCLWindow.Owner = null;
+            }
+            else if(ARCLWindow.WindowState == WindowState.Minimized)
+            {
+                ARCLWindow.WindowState = App.Settings.ARCLWindow.WindowState;
+            }
+            else
+            {
+                ARCLWindow.Focus();
             }
         }
-        private void ListenNodeWindow_Closed(object sender, EventArgs e)
+        private void ARCLWindow_Closed(object sender, EventArgs e)
         {
             ARCLWindow = null;
             WindowClose();
@@ -77,15 +85,24 @@ namespace MobileComms_WPF
         private RESTWindow RESTWindow { get; set; } = null;
         private void BtnRESTWindow_Click(object sender, RoutedEventArgs e)
         {
-            if (RESTWindow == null)
+            if(RESTWindow == null)
             {
                 RESTWindow = new RESTWindow(this);
                 RESTWindow.Closed += RESTWindow_Closed;
                 RESTWindow.Activated += AnyWindow_Activated;
                 RESTWindow.Show();
 
-                //WindowShow();
+                RESTWindow.Owner = null;
             }
+            else if(RESTWindow.WindowState == WindowState.Minimized)
+            {
+                RESTWindow.WindowState = App.Settings.RESTWindow.WindowState;
+            }
+            else
+            {
+                RESTWindow.Focus();
+            }
+
         }
         private void RESTWindow_Closed(object sender, EventArgs e)
         {
@@ -122,7 +139,15 @@ namespace MobileComms_WPF
                 SQLWindow.Activated += AnyWindow_Activated;
                 SQLWindow.Show();
 
-                //WindowShow();
+                SQLWindow.Owner = null;
+            }
+            else if(SQLWindow.WindowState == WindowState.Minimized)
+            {
+                SQLWindow.WindowState = App.Settings.SQLWindow.WindowState;
+            }
+            else
+            {
+                SQLWindow.Focus();
             }
         }
         private void SQLWindow_Closed(object sender, EventArgs e)
@@ -131,11 +156,21 @@ namespace MobileComms_WPF
             WindowClose();
         }
 
-        private void AnyWindow_Activated(object sender, EventArgs e) => MoveToForeground.DoOnProcess("TM_Comms_WPF");
+        private void AnyWindow_Activated(object sender, EventArgs e)
+        {
+            MoveToForeground.DoOnProcess("TM_Comms_WPF");
+
+            if(SQLWindow != null && SQLWindow.WindowState == WindowState.Maximized)
+            {
+                SQLWindow.Owner = null;
+                this.Focus();
+            }
+               
+        }
 
         private void Window_LocationChanged(object sender, EventArgs e)
         {
-            if (IsLoading) return;
+            if(IsLoading) return;
 
             App.Settings.MainWindow.Top = Top;
             App.Settings.MainWindow.Left = Left;
@@ -144,6 +179,7 @@ namespace MobileComms_WPF
         {
             ARCLWindow?.Close();
             RESTWindow?.Close();
+            SQLWindow?.Close();
         }
 
 

@@ -2,12 +2,18 @@
 using Classes.IntegrationToolkit;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace MobileComms_WPF
@@ -19,9 +25,7 @@ namespace MobileComms_WPF
     {
         REST.REST_ACTIONS RestAction { get; set; } = REST.REST_ACTIONS.GET;
 
-        private Stream Stream { get; set; }
-
-       
+        private Stream Stream { get; set; } = null;
         public void BeginReading()
         {
             byte[] buffer = new byte[10000];
@@ -34,6 +38,8 @@ namespace MobileComms_WPF
         }
         public void EndReading(IAsyncResult ar)
         {
+            if(Stream == null) return;
+
             int numberOfBytesRead = Stream.EndRead(ar);
 
             if(numberOfBytesRead == 0)
@@ -48,6 +54,18 @@ namespace MobileComms_WPF
             BeginReading();
         }
 
+        private void StreamStarted()
+        {
+            TrvCommandList.IsEnabled = false;
+            BtnSend.Background = Brushes.LightGreen;
+        }
+
+        private void StreamStoped()
+        {
+            TrvCommandList.IsEnabled = true;
+            BtnSend.Background = Brushes.LightGray;
+        }
+
         //private bool IsLoading { get; set; } = true;
         public RESTWindow(Window owner)
         {
@@ -58,6 +76,7 @@ namespace MobileComms_WPF
 
             LoadResourceList();
         }
+
         private void Window_LoadSettings()
         {
             if(Keyboard.IsKeyDown(Key.LeftShift))
@@ -92,6 +111,54 @@ namespace MobileComms_WPF
             TxtHost.Text = App.Settings.RESTHost;
             TxtPassword.Password = App.Settings.RESTPassword;
         }
+
+        //Window Changes
+        private double TopLast;
+        private double TopLeft;
+        private void Window_LocationChanged(object sender, EventArgs e)
+        {
+            if(!IsLoaded) return;
+
+            TopLast = App.Settings.RESTWindow.Top;
+            TopLeft = App.Settings.RESTWindow.Left;
+
+            App.Settings.RESTWindow.Top = Top;
+            App.Settings.RESTWindow.Left = Left;
+        }
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(!IsLoaded) return;
+            if(WindowState != WindowState.Normal) return;
+
+            App.Settings.RESTWindow.Height = Height;
+            App.Settings.RESTWindow.Width = Width;
+        }
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if(!IsLoaded) return;
+
+            if(this.WindowState != WindowState.Normal)
+            {
+                App.Settings.RESTWindow.Top = TopLast;
+                App.Settings.RESTWindow.Left = TopLeft;
+            }
+            if(this.WindowState == WindowState.Minimized) return;
+
+            App.Settings.RESTWindow.WindowState = this.WindowState;
+        }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            SetJSONVisibility();
+
+            ((TreeViewItem)TrvCommandList.Items[0]).IsExpanded = true;
+            ((TreeViewItem)((TreeViewItem)TrvCommandList.Items[0]).Items[1]).IsSelected = true;
+            TxtResourceValue.Text = "0";
+        }
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            //CleanSock();
+        }
+
         private void LoadResourceList()
         {
             foreach(var kv in REST.Commands)
@@ -110,38 +177,101 @@ namespace MobileComms_WPF
 
         private void BtnSend_Click(object sender, RoutedEventArgs e)
         {
+            TxtResponse.Text = string.Empty;
+            DgvReturnedJSON.ItemsSource = null;
+            TxtReturnedJSON.Text = string.Empty;
+
             switch(RestAction)
             {
                 case REST.REST_ACTIONS.GET:
-                    if(TxtResourceName.Text.Contains("/Stream"))
+
+                    string resp = REST.Get($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password);
+
+                    if(REST.IsException)
                     {
-                        Stream = REST.RESTStream(REST.ConnectionString(TxtHost.Text, TxtResourceName.Text), TxtPassword.Password);//, TxtUserName.Text, TxtPassword.Password);
-                        if(Stream.CanRead)
-                            BeginReading();
+                        TxtResponse.Text = REST.RESTException.Message;
                     }
+
                     else
-                        TxtResponse.Text = REST.RESTGet($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password);
+                    {
+                        if(resp.StartsWith("{\"code"))
+                        {
+                            TxtResponse.Text = resp;
+                            return;
+                        }
+                        //var lst = JsonConvert.DeserializeObject<IList>(resp);
+                        //DgvReturnedJSON.ItemsSource = lst;
+                        TxtReturnedJSON.Text = resp;
+
+                        string name;
+                        TreeViewItem selected = (TreeViewItem)TrvCommandList.SelectedItem;
+                        if(selected.Parent != null)
+                            name = (string)((TreeViewItem)selected.Parent).Header;
+                        else
+                            name = (string)selected.Header;
+
+                        DeserializeJSONtoDataGrid(name, resp);
+
+                    }
                     break;
 
                 case REST.REST_ACTIONS.PUT:
-                    TxtResponse.Text = REST.RESTPut($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password, TxtJsonData.Text);
+                    TxtResponse.Text = REST.Put($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password, TxtJsonData.Text);
                     break;
 
                 case REST.REST_ACTIONS.POST:
-                    TxtResponse.Text = REST.RESTPost($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password, TxtJsonData.Text);
+                    TxtResponse.Text = REST.Post($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password, TxtJsonData.Text);
                     break;
 
                 case REST.REST_ACTIONS.DELETE:
-                    TxtResponse.Text = REST.RESTDelete($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password);
+                    TxtResponse.Text = REST.Delete($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password);
+                    break;
+                case REST.REST_ACTIONS.STREAM:
+                    if(Stream == null)
+                    {
+                        Stream = REST.Stream(REST.ConnectionString(TxtHost.Text, TxtResourceName.Text), TxtPassword.Password);
+                        if(Stream.CanRead)
+                        {
+                            BeginReading();
+                            StreamStarted();
+                        }
+
+                    }
+                    else
+                    {
+                        Stream.Close();
+                        Stream = null;
+                        StreamStoped();
+                    }
                     break;
             }
 
         }
 
+        private void DeserializeJSONtoDataGrid(string className, string json)
+        {
+            Type t = Type.GetType($"Classes.IntegrationToolkit.JSON_Types.{className}");
+            if(t == null)
+            {
+                TxtJsonSchema.Text = string.Empty;
+                TxtJsonData.Text = string.Empty;
+            }
+            else
+            {
+
+                Type genericListType = typeof(IList<>).MakeGenericType(t);
+                var lst = (IList)JsonConvert.DeserializeObject(json, genericListType);
+
+                DgvReturnedJSON.ItemsSource = lst;
+            }
+        }
+
         private void Tvic_Selected(object sender, RoutedEventArgs e)
         {
-            string resource = (string)((TreeViewItem)sender).Header;
 
+            TreeViewItem selected = (TreeViewItem)sender;
+
+            string resource = (string)selected.Header;
 
             TxtResourceName.Text = resource;
             TxtResourceName.Tag = resource;
@@ -149,8 +279,7 @@ namespace MobileComms_WPF
 
             LblResourceValue.Content = Regex.Match(resource, @"{.*}").Value.Replace("{", "").Replace("}", "");
 
-
-            string name = (string)((TreeViewItem)((TreeViewItem)sender).Parent).Header;
+            string name = (string)((TreeViewItem)selected.Parent).Header;
 
             Type t = Type.GetType($"Classes.IntegrationToolkit.JSON_Types.{name}");
 
@@ -164,13 +293,12 @@ namespace MobileComms_WPF
                 var obj = Activator.CreateInstance(t);
                 TxtJsonSchema.Text = JsonConvert.SerializeObject(obj).Replace(",\"", ",\r\n\"").Replace("null", "\"\"");
             }
-            
+
 
             if(name.Contains("GET"))
             {
                 RestAction = REST.REST_ACTIONS.GET;
-                BtnSend.Content = Enum.GetName(typeof(REST.REST_ACTIONS), RestAction );
-                //TxtJsonSchema.Text = JsonConvert.SerializeObject(obj).Replace(",\"", ",\r\n\"").Replace("null", "\"\"");
+                BtnSend.Content = Enum.GetName(typeof(REST.REST_ACTIONS), RestAction);
                 TxtJsonData.Text = string.Empty;
                 TxtJsonData.IsEnabled = false;
 
@@ -190,7 +318,6 @@ namespace MobileComms_WPF
             {
                 RestAction = REST.REST_ACTIONS.POST;
                 BtnSend.Content = Enum.GetName(typeof(REST.REST_ACTIONS), RestAction);
-                //TxtJsonSchema.Text = JsonConvert.SerializeObject(obj).Replace(",\"", ",\r\n\"").Replace("null", "\"\"");
                 TxtJsonData.Text = TxtJsonSchema.Text;
                 TxtJsonData.IsEnabled = true;
 
@@ -208,47 +335,31 @@ namespace MobileComms_WPF
             }
 
             if(TxtResourceName.Text.Contains("/Stream"))
+            {
                 BtnSend.Content = "GET: Stream";
-        }
 
+                RestAction = REST.REST_ACTIONS.STREAM;
+
+                TxtJsonSchema.Text = string.Empty;
+                TxtJsonData.Text = string.Empty;
+
+                TxtJsonData.IsEnabled = false;
+                TxtResourceValue.IsEnabled = true;
+            }
+
+        }
         private void Tvi_Selected(object sender, RoutedEventArgs e)
         {
+            TreeViewItem tvi = (TreeViewItem)sender;
+            if(tvi.IsSelected)
+                tvi.IsSelected = false;
 
-
-            //foreach(var prop in t.GetProperties())
-            //{
-            //    TxtJson.Text += prop.Name + "\r\n";
-            //}
+            if(!tvi.IsExpanded)
+                tvi.IsExpanded = true;
         }
 
-        //Window Changes
-        private void Window_LocationChanged(object sender, EventArgs e)
-        {
-            if(!IsLoaded) return;
 
-            App.Settings.RESTWindow.Top = Top;
-            App.Settings.RESTWindow.Left = Left;
-        }
-        private void Window_StateChanged(object sender, EventArgs e)
-        {
-            if(!IsLoaded) return;
 
-            if(this.WindowState == WindowState.Minimized) return;
-
-            App.Settings.RESTWindow.WindowState = this.WindowState;
-        }
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            //CleanSock();
-        }
-
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if(!IsLoaded) return;
-
-            App.Settings.RESTWindow.Height = Height;
-            App.Settings.RESTWindow.Width = Width;
-        }
 
         private void BtnConnect_Click(object sender, RoutedEventArgs e)
         {
@@ -283,6 +394,32 @@ namespace MobileComms_WPF
             else
             {
                 TxtResourceName.Text = (string)TxtResourceName.Tag;
+            }
+        }
+
+        private void ChkJSONString_Click(object sender, RoutedEventArgs e)
+        {
+            SetJSONVisibility();
+
+
+        }
+        private void SetJSONVisibility()
+        {
+            if((bool)ChkJSONString.IsChecked)
+            {
+                TxtReturnedJSON.Visibility = Visibility.Visible;
+                TxtReturnedJSON.IsEnabled = true;
+
+                DgvReturnedJSON.Visibility = Visibility.Collapsed;
+                DgvReturnedJSON.IsEnabled = false;
+            }
+            else
+            {
+                TxtReturnedJSON.Visibility = Visibility.Collapsed;
+                TxtReturnedJSON.IsEnabled = false;
+
+                DgvReturnedJSON.Visibility = Visibility.Visible;
+                DgvReturnedJSON.IsEnabled = true;
             }
         }
     }

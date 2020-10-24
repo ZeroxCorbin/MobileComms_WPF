@@ -64,6 +64,41 @@ namespace MobileComms_WPF
 
             DisConnected();
         }
+
+        private double TopLast;
+        private double TopLeft;
+        private void Window_LocationChanged(object sender, EventArgs e)
+        {
+            if(!IsLoaded) return;
+
+            TopLast = App.Settings.SQLWindow.Top;
+            TopLeft = App.Settings.SQLWindow.Left;
+
+            App.Settings.SQLWindow.Top = Top;
+            App.Settings.SQLWindow.Left = Left;
+        }
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(!IsLoaded) return;
+            if(WindowState != WindowState.Normal) return;
+
+            App.Settings.SQLWindow.Height = Height;
+            App.Settings.SQLWindow.Width = Width;
+        }
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if(!IsLoaded) return;
+
+            if(this.WindowState != WindowState.Normal)
+            {
+                App.Settings.SQLWindow.Top = TopLast;
+                App.Settings.SQLWindow.Left = TopLeft;
+            }
+            if(this.WindowState == WindowState.Minimized) return;
+
+            App.Settings.SQLWindow.WindowState = this.WindowState;
+        } 
+        
         private void LoadQueueList()
         {
             foreach(var kv in Classes.IntegrationToolkit.SQL.Views)
@@ -165,32 +200,11 @@ namespace MobileComms_WPF
         }
 
 
-        private void Window_LocationChanged(object sender, EventArgs e)
-        {
-            if(!IsLoaded) return;
 
-            App.Settings.SQLWindow.Top = Top;
-            App.Settings.SQLWindow.Left = Left;
-        }
-        private void Window_StateChanged(object sender, EventArgs e)
-        {
-            if(!IsLoaded) return;
 
-            if(this.WindowState == WindowState.Minimized) return;
-
-            App.Settings.SQLWindow.WindowState = this.WindowState;
-        }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             //CleanSock();
-        }
-
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if(!IsLoaded) return;
-
-            App.Settings.SQLWindow.Height = Height;
-            App.Settings.SQLWindow.Width = Width;
         }
 
         private void TxtJsonData_TextChanged(object sender, TextChangedEventArgs e)

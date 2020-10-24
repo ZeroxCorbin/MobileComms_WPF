@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MobileComms_WPF"
         mc:Ignorable="d"
-        Title="PostgresSQL" Height="675.837" Width="1022.892" Icon="Support/favicon.ico" Loaded="Window_Loaded" Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" StateChanged="Window_StateChanged">
+        Title="PostgresSQL" Height="675.837" Width="1022.892" Icon="Support/favicon.ico" Loaded="Window_Loaded" Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" StateChanged="Window_StateChanged" MinWidth="1024" MinHeight="768">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="128"/>
-            <RowDefinition Height="1.5*"/>
-            <RowDefinition Height="2*"/>
-            <!--<RowDefinition Height="1*"/>-->
+            <RowDefinition Height="1.5*" MinHeight="210"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="2.5*" MinHeight="210"/>
         </Grid.RowDefinitions>
 
         <Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
@@ -88,7 +88,18 @@
                             </LinearGradientBrush>
                         </Label.Background>
                     </Label>
-                    <TreeView Grid.Row="1" Grid.Column="0" Name="TrvQueueList"/>
+                    <TreeView Grid.Row="1" Grid.Column="0" Name="TrvQueueList">
+                        <TreeView.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                      Color="LightGreen" />
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                      Color="Black" />
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                      Color="LightGreen" />
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+                      Color="Black" />
+                        </TreeView.Resources>
+                    </TreeView>
                 </Grid>
             </Border>
             <Border x:Name="BrdQuery" Grid.Column="1" Grid.Row="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
@@ -141,7 +152,17 @@
             </Border>
 
         </Grid>
-        <Border x:Name="BrdTableRows" Grid.Column="0" Grid.Row="2" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+        
+        <GridSplitter Grid.Row="2" Height="5"  HorizontalAlignment="Stretch" >
+            <GridSplitter.Background>
+                <RadialGradientBrush>
+                    <GradientStop Color="#FF4C88D6" Offset="0.19"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </RadialGradientBrush>
+            </GridSplitter.Background>
+        </GridSplitter>
+        
+        <Border x:Name="BrdTableRows" Grid.Column="0" Grid.Row="3" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="34"/>
@@ -155,7 +176,7 @@
                         </LinearGradientBrush>
                     </Label.Background>
                 </Label>
-                <DataGrid x:Name="DgvTableRows" Grid.Row="1" IsReadOnly="True"/>
+                <DataGrid x:Name="DgvTableRows" Grid.Row="1"/>
             </Grid>
         </Border>
         <!--<Border x:Name="BrdCommandResponse" Grid.Column="0" Grid.Row="3" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">

@@ -50,7 +50,7 @@ namespace Classes.IntegrationToolkit
         public static NpgsqlConnection Connection { get; private set; }
 
         public static bool IsException { get; private set; }
-        public static PostgresException DbException { get; private set; }
+        public static Exception DbException { get; private set; }
 
         private static void Reset()
         {
@@ -68,7 +68,7 @@ namespace Classes.IntegrationToolkit
                 Connection.Open();
                 return true;
             }
-            catch(PostgresException ex)
+            catch(Exception ex)
             {
                 DbException = ex;
                 IsException = true;

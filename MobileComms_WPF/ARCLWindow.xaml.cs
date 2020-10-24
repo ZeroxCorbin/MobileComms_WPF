@@ -22,12 +22,14 @@ namespace MobileComms_WPF
     public partial class ARCLWindow : Window
     {
 
-
         ARCL.ARCLConnection Connection { get; } = new ARCL.ARCLConnection();
-        public ARCLWindow()
+        public ARCLWindow(Window owner)
         {
+            Owner = owner;
+
             InitializeComponent();
 
+            Window_LoadSettings();
 
             ARCLTypes.ARCLCommands commands = new ARCLTypes.ARCLCommands();
             foreach(var kv in commands.ARCLCommands_2016_ARCL_en)
@@ -124,7 +126,71 @@ namespace MobileComms_WPF
             Connection.ConnectState += Connection_ConnectState;
             Connection.DataReceived += Connection_DataReceived;
         }
+        private void Window_LoadSettings()
+        {
+            if(Keyboard.IsKeyDown(Key.LeftShift))
+                App.Settings.ARCLWindow = new ApplicationSettings_Serializer.ApplicationSettings.WindowSettings();
 
+            if(double.IsNaN(App.Settings.ARCLWindow.Left))
+            {
+                App.Settings.ARCLWindow.Left = Owner.Left;
+                App.Settings.ARCLWindow.Top = Owner.Top + Owner.Height;
+                App.Settings.ARCLWindow.Height = 768;
+                App.Settings.ARCLWindow.Width = 1024;
+            }
+
+            this.Left = App.Settings.ARCLWindow.Left;
+            this.Top = App.Settings.ARCLWindow.Top;
+            this.Height = App.Settings.ARCLWindow.Height;
+            this.Width = App.Settings.ARCLWindow.Width;
+
+            if(!CheckOnScreen.IsOnScreen(this))
+            {
+                App.Settings.ARCLWindow.Left = Owner.Left;
+                App.Settings.ARCLWindow.Top = Owner.Top + Owner.Height;
+                App.Settings.ARCLWindow.Height = 768;
+                App.Settings.ARCLWindow.Width = 1024;
+
+                this.Left = App.Settings.ARCLWindow.Left;
+                this.Top = App.Settings.ARCLWindow.Top;
+                this.Height = App.Settings.ARCLWindow.Height;
+                this.Width = App.Settings.ARCLWindow.Width;
+            }
+        }
+
+        private double TopLast;
+        private double TopLeft;
+        private void Window_LocationChanged(object sender, EventArgs e)
+        {
+            if(!IsLoaded) return;
+
+            TopLast = App.Settings.ARCLWindow.Top;
+            TopLeft = App.Settings.ARCLWindow.Left;
+
+            App.Settings.ARCLWindow.Top = Top;
+            App.Settings.ARCLWindow.Left = Left;
+        }
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(!IsLoaded) return;
+            if(WindowState != WindowState.Normal) return;
+
+            App.Settings.ARCLWindow.Height = Height;
+            App.Settings.ARCLWindow.Width = Width;
+        }
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if(!IsLoaded) return;
+
+            if(this.WindowState != WindowState.Normal)
+            {
+                App.Settings.ARCLWindow.Top = TopLast;
+                App.Settings.ARCLWindow.Left = TopLeft;
+            }
+            if(this.WindowState == WindowState.Minimized) return;
+
+            App.Settings.ARCLWindow.WindowState = this.WindowState;
+        }
 
         private void Connection_ConnectState(object sender, bool state)
         {
@@ -195,7 +261,6 @@ namespace MobileComms_WPF
         }
         private CommandData CommandInCheck { get; set; }
         private List<CommandData> Commands2Check { get; set; }
-        private bool IsLoading { get; set; } = true;
 
         private void BtnTest1_Click(object sender, RoutedEventArgs e)
         {
@@ -297,20 +362,7 @@ namespace MobileComms_WPF
         }
 
         //Window Changes
-        private void Window_LocationChanged(object sender, EventArgs e)
-        {
-            if(IsLoading) return;
 
-            App.Settings.ARCLWindow.Top = Top;
-            App.Settings.ARCLWindow.Left = Left;
-        }
-        private void Window_StateChanged(object sender, EventArgs e)
-        {
-            if(IsLoading) return;
-            if(this.WindowState == WindowState.Minimized) return;
-
-            App.Settings.ARCLWindow.WindowState = this.WindowState;
-        }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             //CleanSock();
@@ -319,44 +371,7 @@ namespace MobileComms_WPF
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
-            if(Keyboard.IsKeyDown(Key.LeftShift))
-                App.Settings.ARCLWindow = new ApplicationSettings_Serializer.ApplicationSettings.WindowSettings();
-
-            if(double.IsNaN(App.Settings.ARCLWindow.Left))
-            {
-                App.Settings.ARCLWindow.Left = Owner.Left;
-                App.Settings.ARCLWindow.Top = Owner.Top + Owner.Height;
-                App.Settings.ARCLWindow.Height = 768;
-                App.Settings.ARCLWindow.Width = 1024;
-            }
-
-            this.Left = App.Settings.ARCLWindow.Left;
-            this.Top = App.Settings.ARCLWindow.Top;
-            this.Height = App.Settings.ARCLWindow.Height;
-            this.Width = App.Settings.ARCLWindow.Width;
-
-            if(!CheckOnScreen.IsOnScreen(this))
-            {
-                App.Settings.ARCLWindow.Left = Owner.Left;
-                App.Settings.ARCLWindow.Top = Owner.Top + Owner.Height;
-                App.Settings.ARCLWindow.Height = 768;
-                App.Settings.ARCLWindow.Width = 1024;
-
-                this.Left = App.Settings.ARCLWindow.Left;
-                this.Top = App.Settings.ARCLWindow.Top;
-                this.Height = App.Settings.ARCLWindow.Height;
-                this.Width = App.Settings.ARCLWindow.Width;
-            }
-
-            IsLoading = false;
         }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if(IsLoading) return;
-
-            App.Settings.ARCLWindow.Height = Height;
-            App.Settings.ARCLWindow.Width = Width;
-        }
     }
 }
