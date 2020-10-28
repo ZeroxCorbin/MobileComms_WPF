@@ -42,16 +42,16 @@ namespace ApplicationSettingsNS
         [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
         public partial class ApplicationSettings
         {
-            public string ARCLConnectionString { get; set; } = "10.151.33.100:7171:adept";
+            public string ARCLConnectionString { get; set; } = "10.151.33.152:7171:adept";
 
-            public string RESTHost { get; set; } = "10.151.33.100";
-            public string RESTPassword { get; set; } = "P5FrtRVaO4iKFxlMQX3a";
+            public string RESTHost { get; set; } = "10.151.33.152";
+            public string RESTPassword { get; set; } = "/IPuaI2lFHVLmQ2AQfaN";
 
-            public string SQLHost { get; set; } = "10.151.33.100";
-            public string SQLPassword { get; set; } = "P5FrtRVaO4iKFxlMQX3a";
+            public string SQLHost { get; set; } = "10.151.33.152";
+            public string SQLPassword { get; set; } = "/IPuaI2lFHVLmQ2AQfaN";
 
-            public string RabbitMQHost { get; set; } = "10.151.33.100";
-            public string RabbitMQPassword { get; set; } = "P5FrtRVaO4iKFxlMQX3a";
+            public string RabbitMQHost { get; set; } = "10.151.33.152";
+            public string RabbitMQPassword { get; set; } = "/IPuaI2lFHVLmQ2AQfaN";
 
             public WindowSettings MainWindow { get; set; } = new WindowSettings();
             public WindowSettings ARCLWindow { get; set; } = new WindowSettings();

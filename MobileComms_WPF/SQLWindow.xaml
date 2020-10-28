@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MobileComms_WPF"
         mc:Ignorable="d"
-        Title="PostgresSQL" Height="675.837" Width="1022.892" Icon="Support/favicon.ico" Loaded="Window_Loaded" Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" StateChanged="Window_StateChanged" MinWidth="1024" MinHeight="768">
+        Title="PostgresSQL (Structured Query Language)" Height="675.837" Width="1022.892" Icon="Support/favicon.ico" Loaded="Window_Loaded" Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" StateChanged="Window_StateChanged" MinWidth="1024" MinHeight="768">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="128"/>
@@ -44,13 +44,13 @@
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Grid.Column="1" Content="Host Name / IP" HorizontalContentAlignment="Center" />
+                    <Label Grid.Row="0" Grid.Column="1" Content="Host Name / IP" HorizontalContentAlignment="Center" HorizontalAlignment="Left" />
                     <TextBox Grid.Row="1" Grid.Column="1" x:Name="TxtHost" Text="" VerticalContentAlignment="Center" TextChanged="TxtHost_TextChanged" Height="24" Background="#19FFFF00"/>
 
                     <Label Grid.Row="0" Grid.Column="2" Content="User Name" HorizontalContentAlignment="Center" />
                     <Label Grid.Row="1" Grid.Column="2" Content="toolkitadmin" Padding="5,4" HorizontalContentAlignment="Right" HorizontalAlignment="Center" VerticalAlignment="Top" />
 
-                    <Label Grid.Row="0" Grid.Column="3" Content="Toolkit Password" HorizontalContentAlignment="Center" />
+                    <Label Grid.Row="0" Grid.Column="3" Content="Toolkit Password" HorizontalContentAlignment="Center" HorizontalAlignment="Left" />
                     <PasswordBox Grid.Row="1" Grid.Column="3" x:Name="TxtPassword" VerticalContentAlignment="Center" Height="24" Background="#19FFFF00"/>
 
                     <Label Grid.Row="0" Grid.Column="4" Content="Database Name" HorizontalContentAlignment="Center" />
