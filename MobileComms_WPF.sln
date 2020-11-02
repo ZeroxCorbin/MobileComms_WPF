@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocketManager", "..\SocketM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ARCLManager", "..\ARCLManager\ARCLManager\ARCLManager.csproj", "{2373EBDA-FA6B-4396-97F2-1F7C193CD93A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MobileComms_ITK", "..\MobileComms_ITK\MobileComms_ITK\MobileComms_ITK.csproj", "{AC533488-03AA-4C14-ACC2-543030FE1397}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,12 @@ Global
 		{2373EBDA-FA6B-4396-97F2-1F7C193CD93A}.MobileConfiguration|Any CPU.Build.0 = MobileConfiguration|Any CPU
 		{2373EBDA-FA6B-4396-97F2-1F7C193CD93A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2373EBDA-FA6B-4396-97F2-1F7C193CD93A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC533488-03AA-4C14-ACC2-543030FE1397}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC533488-03AA-4C14-ACC2-543030FE1397}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC533488-03AA-4C14-ACC2-543030FE1397}.MobileConfiguration|Any CPU.ActiveCfg = Release|Any CPU
+		{AC533488-03AA-4C14-ACC2-543030FE1397}.MobileConfiguration|Any CPU.Build.0 = Release|Any CPU
+		{AC533488-03AA-4C14-ACC2-543030FE1397}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC533488-03AA-4C14-ACC2-543030FE1397}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

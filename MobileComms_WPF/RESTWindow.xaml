@@ -31,12 +31,12 @@
                 </Label>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.5*"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="124"/>
+                        <ColumnDefinition Width="146*"/>
+                        <ColumnDefinition Width="293*"/>
+                        <ColumnDefinition Width="128"/>
 
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="0.5*"/>
+                        <ColumnDefinition Width="291"/>
+                        <ColumnDefinition Width="146*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -47,13 +47,13 @@
                     <Label Grid.Row="0" Grid.Column="1" Content="Host Name / IP" Padding="60,5,5,5" />
                     <Grid Grid.Row="1" Grid.Column="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="51*"/>
+                            <ColumnDefinition Width="52"/>
                             <ColumnDefinition Width="180*"/>
-                            <ColumnDefinition Width="40*"/>
+                            <ColumnDefinition Width="43"/>
                         </Grid.ColumnDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="https://" Padding="5,4" HorizontalContentAlignment="Right" />
 
-                        <TextBox Grid.Column="1"  x:Name="TxtHost" Background="#19FFFF00" VerticalContentAlignment="Center" Height="24"/>
+                        <TextBox Grid.Column="1"  x:Name="TxtHost" Background="#19FFFF00" VerticalContentAlignment="Center" Height="24" TextChanged="TxtHost_TextChanged"/>
                         <Label Grid.Row="0" Grid.Column="2" Content=":8443" Padding="5,4" />
 
 
@@ -63,7 +63,7 @@
                     <Label Grid.Row="1" Grid.Column="2" Content="toolkitadmin" Padding="5,4" HorizontalContentAlignment="Center" />
 
                     <Label Grid.Row="0" Grid.Column="3" Content="Toolkit Password" />
-                    <PasswordBox Grid.Row="1" Grid.Column="3" x:Name="TxtPassword" Height="24" Background="#19FFFF00" VerticalContentAlignment="Center"/>
+                    <PasswordBox Grid.Row="1" Grid.Column="3" x:Name="TxtPassword" Height="24" Background="#19FFFF00" VerticalContentAlignment="Center" PasswordChanged="TxtPassword_PasswordChanged"/>
 
                 </Grid>
             </Grid>
@@ -211,7 +211,7 @@
                     <CheckBox x:Name="ChkJSONString" Grid.Column="2" VerticalAlignment="Center" Content="JSON String" Click="ChkJSONString_Click" />
                 </Grid>
 
-                <DataGrid x:Name="DgvReturnedJSON" Grid.Row="1"/>
+                <DataGrid x:Name="DgvReturnedJSON" Grid.Row="1" ScrollViewer.CanContentScroll="True" HorizontalScrollBarVisibility="Visible"/>
                 <TextBox x:Name="TxtReturnedJSON" Grid.Row="1" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
             </Grid>
         </Border>

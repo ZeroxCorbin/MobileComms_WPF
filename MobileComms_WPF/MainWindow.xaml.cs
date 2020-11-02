@@ -72,16 +72,13 @@ namespace MobileComms_WPF
             {
                 ARCLWindow.WindowState = App.Settings.ARCLWindow.WindowState;
             }
-            else
-            {
-                ARCLWindow.Focus();
-            }
         }
         private void ARCLWindow_Closed(object sender, EventArgs e)
         {
             ARCLWindow = null;
             WindowClose();
         }
+
         private RESTWindow RESTWindow { get; set; } = null;
         private void BtnRESTWindow_Click(object sender, RoutedEventArgs e)
         {
@@ -98,11 +95,6 @@ namespace MobileComms_WPF
             {
                 RESTWindow.WindowState = App.Settings.RESTWindow.WindowState;
             }
-            else
-            {
-                RESTWindow.Focus();
-            }
-
         }
         private void RESTWindow_Closed(object sender, EventArgs e)
         {
@@ -116,11 +108,15 @@ namespace MobileComms_WPF
             if(RabbitMQWindow == null)
             {
                 RabbitMQWindow = new RabbitMQWindow(this);
-                RabbitMQWindow.Closed += RabbitMQWindow_Closed;
+                RabbitMQWindow.Closed += SQLWindow_Closed;
                 RabbitMQWindow.Activated += AnyWindow_Activated;
                 RabbitMQWindow.Show();
 
-                //WindowShow();
+                RabbitMQWindow.Owner = null;
+            }
+            else if(RabbitMQWindow.WindowState == WindowState.Minimized)
+            {
+                RabbitMQWindow.WindowState = App.Settings.SQLWindow.WindowState;
             }
         }
         private void RabbitMQWindow_Closed(object sender, EventArgs e)
@@ -145,10 +141,6 @@ namespace MobileComms_WPF
             {
                 SQLWindow.WindowState = App.Settings.SQLWindow.WindowState;
             }
-            else
-            {
-                SQLWindow.Focus();
-            }
         }
         private void SQLWindow_Closed(object sender, EventArgs e)
         {
@@ -158,14 +150,17 @@ namespace MobileComms_WPF
 
         private void AnyWindow_Activated(object sender, EventArgs e)
         {
-            MoveToForeground.DoOnProcess("TM_Comms_WPF");
+            if(RESTWindow != null)
+                MoveToForeground.DoOnProcess(RESTWindow.Title);
+            if(RabbitMQWindow != null)
+                MoveToForeground.DoOnProcess(RabbitMQWindow.Title);
+            if(ARCLWindow != null)
+                MoveToForeground.DoOnProcess(ARCLWindow.Title);
+            if(SQLWindow != null)
+                MoveToForeground.DoOnProcess(SQLWindow.Title);
 
-            if(SQLWindow != null && SQLWindow.WindowState == WindowState.Maximized)
-            {
-                SQLWindow.Owner = null;
-                this.Focus();
-            }
-               
+            MoveToForeground.DoOnProcess(this.Title);
+             
         }
 
         private void Window_LocationChanged(object sender, EventArgs e)
@@ -180,6 +175,7 @@ namespace MobileComms_WPF
             ARCLWindow?.Close();
             RESTWindow?.Close();
             SQLWindow?.Close();
+            RabbitMQWindow?.Close();
         }
 
 

@@ -8,8 +8,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Text;
-using System.Data;
-using Classes.IntegrationToolkit;
+using MobileComms_ITK;
 
 namespace MobileComms_WPF
 {
@@ -18,6 +17,7 @@ namespace MobileComms_WPF
     /// </summary>
     public partial class SQLWindow : Window
     {
+        private SQL SQL { get; } = new SQL();
         public SQLWindow(Window owner)
         {
             Owner = owner;
@@ -98,10 +98,18 @@ namespace MobileComms_WPF
 
             App.Settings.SQLWindow.WindowState = this.WindowState;
         } 
-        
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            ((TreeViewItem)TrvQueueList.Items[0]).IsSelected = true;
+        }
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            //CleanSock();
+        }
+
         private void LoadQueueList()
         {
-            foreach(var kv in Classes.IntegrationToolkit.SQL.Views)
+            foreach(var kv in SQL.Views)
             {
                 TreeViewItem tvi = new TreeViewItem { Header = kv.Key };
                 tvi.Tag = kv;
@@ -128,11 +136,6 @@ namespace MobileComms_WPF
             }
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            ((TreeViewItem)TrvQueueList.Items[0]).IsSelected = true;
-        }
-
         private void BtnSend_Click(object sender, RoutedEventArgs e)
         {
             if(CmdMoveType.SelectedItem == null) return;
@@ -153,7 +156,7 @@ namespace MobileComms_WPF
                             else
                             {
                                 if(SQL.IsException)
-                                    TxtResponse.Text = SQL.DbException.Message;
+                                    TxtResponse.Text = SQL.SQLException.Message;
                                 DgvTableRows.ItemsSource = null;
                             }
 
@@ -169,7 +172,7 @@ namespace MobileComms_WPF
                             if(ret < 0)
                             {
                                 if(SQL.IsException)
-                                    TxtResponse.Text = SQL.DbException.Message;
+                                    TxtResponse.Text = SQL.SQLException.Message;
                                 else
                                     TxtResponse.Text = "The SQL Connection is not Active.";
                             }
@@ -188,7 +191,7 @@ namespace MobileComms_WPF
                             if(ret < 0)
                             {
                                 if(SQL.IsException) 
-                                    TxtResponse.Text = SQL.DbException.Message;
+                                    TxtResponse.Text = SQL.SQLException.Message;
                                 else
                                     TxtResponse.Text = "The SQL Connection is not Active.";
                             }
@@ -197,14 +200,6 @@ namespace MobileComms_WPF
                         }));
             }
 
-        }
-
-
-
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            //CleanSock();
         }
 
         private void TxtJsonData_TextChanged(object sender, TextChangedEventArgs e)
@@ -353,9 +348,10 @@ namespace MobileComms_WPF
         }
         private void TxtHost_TextChanged(object sender, TextChangedEventArgs e)
         {
-            App.Settings.SQLHost = TxtHost.Text;
-
             TxtDBConnectionString.Text = SQL.ConnectionString(TxtHost.Text, "Your_ITK_Password");
+
+            if(!IsLoaded) return;
+            App.Settings.SQLHost = TxtHost.Text;
         }
 
         private void CmdMoveType_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -384,7 +380,7 @@ namespace MobileComms_WPF
                 }
 
                 TxtJsonData.Text = "";
-                Type t = Type.GetType($"Classes.IntegrationToolkit.JSON_Types.{((KeyValuePair<string, Dictionary<SQL.QueryTypes, string>>)CmdMoveType.Tag).Value[type]}");
+                Type t = Type.GetType($"MobileComms_ITK.JSON_Types.{((KeyValuePair<string, Dictionary<SQL.QueryTypes, string>>)CmdMoveType.Tag).Value[type]},MobileComms_ITK");
 
                 if(t == null)
                 {
@@ -403,6 +399,12 @@ namespace MobileComms_WPF
                         TxtJsonData.Text += $"{name}=\r\n";
                 }
             }
+        }
+
+        private void TxtPassword_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if(!IsLoaded) return;
+            App.Settings.SQLPassword = TxtPassword.Password;
         }
     }
 }

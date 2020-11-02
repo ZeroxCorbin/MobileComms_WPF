@@ -1,0 +1,4332 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Integration Toolkit",
+    "description" : "Integration Toolkit API",
+    "termsOfService" : "",
+    "version" : "1.1.0"
+  },
+  "security" : [ ],
+  "paths" : {
+    "/DataStoreValueLatest/{name}" : {
+      "get" : {
+        "tags" : [ "DataStoreValueLatest" ],
+        "summary" : "Get the Latest DataStoreValue by Name",
+        "operationId" : "getValue",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "path",
+          "description" : "DataStoreValue Name",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return DataStoreValue",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DataStoreValue_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "DataStoreValue Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/WaitTaskCancel" : {
+      "post" : {
+        "tags" : [ "WaitTaskCancel" ],
+        "summary" : "Create waitTaskCancel",
+        "operationId" : "POST",
+        "requestBody" : {
+          "content" : {
+            "application/json; charset=utf-8" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/WaitTaskCancelQuery__"
+              },
+              "examples" : {
+                "Example 1" : {
+                  "description" : "Example 1",
+                  "value" : {
+                    "robot" : "Robot1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "waitTaskCancel created",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RestResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/WaitTaskState/{robot}" : {
+      "get" : {
+        "tags" : [ "WaitTaskState" ],
+        "summary" : "Get WaitTaskState by Robot Name",
+        "operationId" : "GET",
+        "parameters" : [ {
+          "name" : "robot",
+          "in" : "path",
+          "description" : "Robot Name",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return WaitTaskState",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/WaitTaskStateQuery_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "WaitTaskState Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/DataStoreItem/ByGroupName/{GroupName}" : {
+      "get" : {
+        "tags" : [ "DataStoreItem" ],
+        "summary" : "Get a list of DataStoreItem entities filter by GroupName",
+        "operationId" : "SECURE_FILTER_BY_GROUPNAME",
+        "parameters" : [ {
+          "name" : "GroupName",
+          "in" : "path",
+          "description" : "GroupName",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of DataStoreItem entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DataStoreItem_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/DataStoreItem/ByType/{Type}" : {
+      "get" : {
+        "tags" : [ "DataStoreItem" ],
+        "summary" : "Get a list of DataStoreItem entities filter by Type",
+        "operationId" : "SECURE_FILTER_BY_TYPE",
+        "parameters" : [ {
+          "name" : "Type",
+          "in" : "path",
+          "description" : "Type",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of DataStoreItem entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DataStoreItem_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/DataStoreItem/ByItemName/{ItemName}" : {
+      "get" : {
+        "tags" : [ "DataStoreItem" ],
+        "summary" : "Get a list of DataStoreItem entities filter by ItemName",
+        "operationId" : "SECURE_FILTER_BY_ITEMNAME",
+        "parameters" : [ {
+          "name" : "ItemName",
+          "in" : "path",
+          "description" : "ItemName",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of DataStoreItem entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DataStoreItem_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/DataStoreItem/ByCategory/{Category}" : {
+      "get" : {
+        "tags" : [ "DataStoreItem" ],
+        "summary" : "Get a list of DataStoreItem entities filter by Category",
+        "operationId" : "SECURE_FILTER_BY_CATEGORY",
+        "parameters" : [ {
+          "name" : "Category",
+          "in" : "path",
+          "description" : "Category",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of DataStoreItem entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DataStoreItem_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/DataStoreItem/BySource/{Source}" : {
+      "get" : {
+        "tags" : [ "DataStoreItem" ],
+        "summary" : "Get a list of DataStoreItem entities filter by Source",
+        "operationId" : "SECURE_FILTER_BY_SOURCE",
+        "parameters" : [ {
+          "name" : "Source",
+          "in" : "path",
+          "description" : "Source",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of DataStoreItem entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DataStoreItem_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/DataStoreItem/ByDisplayName/{DisplayName}" : {
+      "get" : {
+        "tags" : [ "DataStoreItem" ],
+        "summary" : "Get a list of DataStoreItem entities filter by DisplayName",
+        "operationId" : "SECURE_FILTER_BY_DISPLAYNAME",
+        "parameters" : [ {
+          "name" : "DisplayName",
+          "in" : "path",
+          "description" : "DisplayName",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of DataStoreItem entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DataStoreItem_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/DataStoreItem/UpdatedSince" : {
+      "get" : {
+        "tags" : [ "DataStoreItem" ],
+        "summary" : "Get a list of DataStoreItem entities updates since the given time",
+        "operationId" : "SECURE_POLL",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of DataStoreItem entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DataStoreItem_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/DataStoreItem/ByKey/{id}" : {
+      "get" : {
+        "tags" : [ "DataStoreItem" ],
+        "summary" : "Get DataStoreItem by ID",
+        "operationId" : "GET_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "DataStoreItem Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return DataStoreItem",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DataStoreItem_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "DataStoreItem Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/DataStoreValue/UpdatedSince" : {
+      "get" : {
+        "tags" : [ "DataStoreValue" ],
+        "summary" : "Get a list of DataStoreValue entities updates since the given time",
+        "operationId" : "SECURE_POLL_1",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of DataStoreValue entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DataStoreValue_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/DataStoreValue/ByKey/{id}" : {
+      "get" : {
+        "tags" : [ "DataStoreValue" ],
+        "summary" : "Get DataStoreValue by ID",
+        "operationId" : "GET_2",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "DataStoreValue Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return DataStoreValue",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DataStoreValue_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "DataStoreValue Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/Dropoff/ByJobId/{JobId}" : {
+      "get" : {
+        "tags" : [ "Dropoff" ],
+        "summary" : "Get a list of Dropoff entities filter by JobId",
+        "operationId" : "SECURE_FILTER_BY_JOBID",
+        "parameters" : [ {
+          "name" : "JobId",
+          "in" : "path",
+          "description" : "JobId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Dropoff entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Dropoff_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Dropoff/ByStatus/{Status}" : {
+      "get" : {
+        "tags" : [ "Dropoff" ],
+        "summary" : "Get a list of Dropoff entities filter by Status",
+        "operationId" : "SECURE_FILTER_BY_STATUS",
+        "parameters" : [ {
+          "name" : "Status",
+          "in" : "path",
+          "description" : "Status",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Dropoff entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Dropoff_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Dropoff/ByRobot/{Robot}" : {
+      "get" : {
+        "tags" : [ "Dropoff" ],
+        "summary" : "Get a list of Dropoff entities filter by Robot",
+        "operationId" : "SECURE_FILTER_BY_ROBOT",
+        "parameters" : [ {
+          "name" : "Robot",
+          "in" : "path",
+          "description" : "Robot",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Dropoff entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Dropoff_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Dropoff/ByAssignedJobId/{AssignedJobId}" : {
+      "get" : {
+        "tags" : [ "Dropoff" ],
+        "summary" : "Get a list of Dropoff entities filter by AssignedJobId",
+        "operationId" : "SECURE_FILTER_BY_ASSIGNEDJOBID",
+        "parameters" : [ {
+          "name" : "AssignedJobId",
+          "in" : "path",
+          "description" : "AssignedJobId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Dropoff entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Dropoff_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Dropoff/{id}" : {
+      "delete" : {
+        "tags" : [ "Dropoff" ],
+        "summary" : "Delete Dropoff by ID",
+        "operationId" : "SECURE_DELETE",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Dropoff Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Dropoff deleted",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Dropoff_"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Dropoff/UpdatedSince" : {
+      "get" : {
+        "tags" : [ "Dropoff" ],
+        "summary" : "Get a list of Dropoff entities updates since the given time",
+        "operationId" : "SECURE_POLL_2",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Dropoff entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Dropoff_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Dropoff/ByKey/{id}" : {
+      "get" : {
+        "tags" : [ "Dropoff" ],
+        "summary" : "Get Dropoff by ID",
+        "operationId" : "GET_3",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Dropoff Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return Dropoff",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Dropoff_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Dropoff Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/Dropoff" : {
+      "post" : {
+        "tags" : [ "Dropoff" ],
+        "summary" : "Create Dropoff",
+        "operationId" : "POST_1",
+        "requestBody" : {
+          "content" : {
+            "application/json; charset=utf-8" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Dropoff__"
+              },
+              "examples" : {
+                "Example 1" : {
+                  "description" : "Example 1",
+                  "value" : {
+                    "robot" : "Robot1",
+                    "goal" : "GoalA"
+                  }
+                },
+                "Example 2" : {
+                  "description" : "Example 2",
+                  "value" : {
+                    "robot" : "Robot1",
+                    "goal" : "GoalA",
+                    "jobId" : "JobA_1"
+                  }
+                },
+                "Example 3" : {
+                  "description" : "Example 3",
+                  "value" : {
+                    "robot" : "Robot1",
+                    "goal" : "GoalA",
+                    "jobId" : "JobA_1",
+                    "priority" : 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Dropoff created",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RestResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/Goal/UpdatedSince" : {
+      "get" : {
+        "tags" : [ "Goal" ],
+        "summary" : "Get a list of Goal entities updates since the given time",
+        "operationId" : "SECURE_POLL_3",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Goal entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Goal_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Goal/ByKey/{id}" : {
+      "get" : {
+        "tags" : [ "Goal" ],
+        "summary" : "Get Goal by ID",
+        "operationId" : "GET_4",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Goal Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return Goal",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Goal_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Goal Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/JobCancel/{id}" : {
+      "delete" : {
+        "tags" : [ "JobCancel" ],
+        "summary" : "Delete JobCancel by ID",
+        "operationId" : "SECURE_DELETE_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "JobCancel Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "JobCancel deleted",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JobCancel_"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobCancel/UpdatedSince" : {
+      "get" : {
+        "tags" : [ "JobCancel" ],
+        "summary" : "Get a list of JobCancel entities updates since the given time",
+        "operationId" : "SECURE_POLL_4",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobCancel entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobCancel_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobCancel/ByKey/{id}" : {
+      "get" : {
+        "tags" : [ "JobCancel" ],
+        "summary" : "Get JobCancel by ID",
+        "operationId" : "GET_5",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "JobCancel Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return JobCancel",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JobCancel_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "JobCancel Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/JobCancel" : {
+      "post" : {
+        "tags" : [ "JobCancel" ],
+        "summary" : "Create JobCancel",
+        "operationId" : "POST_2",
+        "requestBody" : {
+          "content" : {
+            "application/json; charset=utf-8" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/JobCancel__"
+              },
+              "examples" : {
+                "Example 1" : {
+                  "description" : "Example 1",
+                  "value" : {
+                    "pickupGoal" : "GoalA",
+                    "dropoffGoal" : "GoalB"
+                  }
+                },
+                "Example 2" : {
+                  "description" : "Example 2",
+                  "value" : {
+                    "pickupGoal" : "GoalA",
+                    "dropoffGoal" : "GoalB",
+                    "jobId" : "JobA_B"
+                  }
+                },
+                "Example 3" : {
+                  "description" : "Example 3",
+                  "value" : {
+                    "pickupGoal" : "GoalA",
+                    "dropoffGoal" : "GoalB",
+                    "jobId" : "JobA_B",
+                    "pickupPriority" : 10,
+                    "dropoffPriority" : 20
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "JobCancel created",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RestResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/Job/History" : {
+      "get" : {
+        "tags" : [ "Job" ],
+        "summary" : "Get a list of JobHistory entities",
+        "operationId" : "SECURE_HISTORY",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        }, {
+          "name" : "namekey",
+          "in" : "query",
+          "description" : "Namekey of an Entity",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobHistory entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobHistory_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Job/ByJobId/{JobId}" : {
+      "get" : {
+        "tags" : [ "Job" ],
+        "summary" : "Get a list of Job entities filter by JobId",
+        "operationId" : "SECURE_FILTER_BY_JOBID_1",
+        "parameters" : [ {
+          "name" : "JobId",
+          "in" : "path",
+          "description" : "JobId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Job entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Job_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Job/ByLastAssignedRobot/{LastAssignedRobot}" : {
+      "get" : {
+        "tags" : [ "Job" ],
+        "summary" : "Get a list of Job entities filter by LastAssignedRobot",
+        "operationId" : "SECURE_FILTER_BY_LASTASSIGNEDROBOT",
+        "parameters" : [ {
+          "name" : "LastAssignedRobot",
+          "in" : "path",
+          "description" : "LastAssignedRobot",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Job entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Job_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Job/ByStatus/{Status}" : {
+      "get" : {
+        "tags" : [ "Job" ],
+        "summary" : "Get a list of Job entities filter by Status",
+        "operationId" : "SECURE_FILTER_BY_STATUS_1",
+        "parameters" : [ {
+          "name" : "Status",
+          "in" : "path",
+          "description" : "Status",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "Pending", "InProgress", "Completed", "Cancelled", "Cancelling", "Modifying" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Job entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Job_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Job/UpdatedSince" : {
+      "get" : {
+        "tags" : [ "Job" ],
+        "summary" : "Get a list of Job entities updates since the given time",
+        "operationId" : "SECURE_POLL_5",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Job entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Job_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Job/ByKey/{id}" : {
+      "get" : {
+        "tags" : [ "Job" ],
+        "summary" : "Get Job by ID",
+        "operationId" : "GET_6",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Job Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return Job",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Job_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Job Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/JobRequestDetail/ByJobRequest/{JobRequest}" : {
+      "get" : {
+        "tags" : [ "JobRequestDetail" ],
+        "summary" : "Get a list of JobRequestDetail entities filter by JobRequest",
+        "operationId" : "SECURE_FILTER_BY_JOBREQUEST",
+        "parameters" : [ {
+          "name" : "JobRequest",
+          "in" : "path",
+          "description" : "JobRequest",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobRequestDetail entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobRequestDetail_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobRequestDetail/UpdatedSince" : {
+      "get" : {
+        "tags" : [ "JobRequestDetail" ],
+        "summary" : "Get a list of JobRequestDetail entities updates since the given time",
+        "operationId" : "SECURE_POLL_6",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobRequestDetail entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobRequestDetail_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobRequestDetail/ByKey/{id}" : {
+      "get" : {
+        "tags" : [ "JobRequestDetail" ],
+        "summary" : "Get JobRequestDetail by ID",
+        "operationId" : "GET_7",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "JobRequestDetail Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return JobRequestDetail",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JobRequestDetail_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "JobRequestDetail Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/JobRequestDetail" : {
+      "post" : {
+        "tags" : [ "JobRequestDetail" ],
+        "summary" : "Create JobRequestDetail",
+        "operationId" : "POST_3",
+        "requestBody" : {
+          "content" : {
+            "application/json; charset=utf-8" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/JobRequestDetail__"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "JobRequestDetail created",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RestResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/JobRequest/ByJobId/{JobId}" : {
+      "get" : {
+        "tags" : [ "JobRequest" ],
+        "summary" : "Get a list of JobRequest entities filter by JobId",
+        "operationId" : "SECURE_FILTER_BY_JOBID_2",
+        "parameters" : [ {
+          "name" : "JobId",
+          "in" : "path",
+          "description" : "JobId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobRequest entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobRequest_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobRequest/ByStatus/{Status}" : {
+      "get" : {
+        "tags" : [ "JobRequest" ],
+        "summary" : "Get a list of JobRequest entities filter by Status",
+        "operationId" : "SECURE_FILTER_BY_STATUS_2",
+        "parameters" : [ {
+          "name" : "Status",
+          "in" : "path",
+          "description" : "Status",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobRequest entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobRequest_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobRequest/ByAssignedJobId/{AssignedJobId}" : {
+      "get" : {
+        "tags" : [ "JobRequest" ],
+        "summary" : "Get a list of JobRequest entities filter by AssignedJobId",
+        "operationId" : "SECURE_FILTER_BY_ASSIGNEDJOBID_1",
+        "parameters" : [ {
+          "name" : "AssignedJobId",
+          "in" : "path",
+          "description" : "AssignedJobId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobRequest entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobRequest_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobRequest/{id}" : {
+      "delete" : {
+        "tags" : [ "JobRequest" ],
+        "summary" : "Delete JobRequest by ID",
+        "operationId" : "SECURE_DELETE_2",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "JobRequest Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "JobRequest deleted",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JobRequest_"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobRequest/UpdatedSince" : {
+      "get" : {
+        "tags" : [ "JobRequest" ],
+        "summary" : "Get a list of JobRequest entities updates since the given time",
+        "operationId" : "SECURE_POLL_7",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobRequest entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobRequest_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobRequest/ByKey/{id}" : {
+      "get" : {
+        "tags" : [ "JobRequest" ],
+        "summary" : "Get JobRequest by ID",
+        "operationId" : "GET_8",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "JobRequest Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return JobRequest",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JobRequest_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "JobRequest Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/JobRequest" : {
+      "post" : {
+        "tags" : [ "JobRequest" ],
+        "summary" : "Create JobRequest",
+        "operationId" : "POST_4",
+        "requestBody" : {
+          "content" : {
+            "application/json; charset=utf-8" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/JobRequest__"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "JobRequest created",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RestResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/JobSegmentModify/BySegmentId/{SegmentId}" : {
+      "get" : {
+        "tags" : [ "JobSegmentModify" ],
+        "summary" : "Get a list of JobSegmentModify entities filter by SegmentId",
+        "operationId" : "SECURE_FILTER_BY_SEGMENTID",
+        "parameters" : [ {
+          "name" : "SegmentId",
+          "in" : "path",
+          "description" : "SegmentId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobSegmentModify entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobSegmentModify_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobSegmentModify/{id}" : {
+      "delete" : {
+        "tags" : [ "JobSegmentModify" ],
+        "summary" : "Delete JobSegmentModify by ID",
+        "operationId" : "SECURE_DELETE_3",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "JobSegmentModify Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "JobSegmentModify deleted",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JobSegmentModify_"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobSegmentModify/UpdatedSince" : {
+      "get" : {
+        "tags" : [ "JobSegmentModify" ],
+        "summary" : "Get a list of JobSegmentModify entities updates since the given time",
+        "operationId" : "SECURE_POLL_8",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobSegmentModify entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobSegmentModify_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobSegmentModify/ByKey/{id}" : {
+      "get" : {
+        "tags" : [ "JobSegmentModify" ],
+        "summary" : "Get JobSegmentModify by ID",
+        "operationId" : "GET_9",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "JobSegmentModify Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return JobSegmentModify",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JobSegmentModify_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "JobSegmentModify Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/JobSegmentModify" : {
+      "post" : {
+        "tags" : [ "JobSegmentModify" ],
+        "summary" : "Create JobSegmentModify",
+        "operationId" : "POST_5",
+        "requestBody" : {
+          "content" : {
+            "application/json; charset=utf-8" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/JobSegmentModify__"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "JobSegmentModify created",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RestResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/JobSegment/History" : {
+      "get" : {
+        "tags" : [ "JobSegment" ],
+        "summary" : "Get a list of JobSegmentHistory entities",
+        "operationId" : "SECURE_HISTORY_1",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        }, {
+          "name" : "namekey",
+          "in" : "query",
+          "description" : "Namekey of an Entity",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobSegmentHistory entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobSegmentHistory_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobSegment/ByStatus/{Status}" : {
+      "get" : {
+        "tags" : [ "JobSegment" ],
+        "summary" : "Get a list of JobSegment entities filter by Status",
+        "operationId" : "SECURE_FILTER_BY_STATUS_3",
+        "parameters" : [ {
+          "name" : "Status",
+          "in" : "path",
+          "description" : "Status",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "Pending", "InProgress", "Interrupted", "Completed", "Cancelled", "Cancelling", "Failed", "Modifying", "Modified", "InterruptedByModify" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobSegment entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobSegment_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobSegment/ByJob/{Job}" : {
+      "get" : {
+        "tags" : [ "JobSegment" ],
+        "summary" : "Get a list of JobSegment entities filter by Job",
+        "operationId" : "SECURE_FILTER_BY_JOB",
+        "parameters" : [ {
+          "name" : "Job",
+          "in" : "path",
+          "description" : "Job",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobSegment entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobSegment_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobSegment/ByRobot/{Robot}" : {
+      "get" : {
+        "tags" : [ "JobSegment" ],
+        "summary" : "Get a list of JobSegment entities filter by Robot",
+        "operationId" : "SECURE_FILTER_BY_ROBOT_1",
+        "parameters" : [ {
+          "name" : "Robot",
+          "in" : "path",
+          "description" : "Robot",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobSegment entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobSegment_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobSegment/ByGoalName/{GoalName}" : {
+      "get" : {
+        "tags" : [ "JobSegment" ],
+        "summary" : "Get a list of JobSegment entities filter by GoalName",
+        "operationId" : "SECURE_FILTER_BY_GOALNAME",
+        "parameters" : [ {
+          "name" : "GoalName",
+          "in" : "path",
+          "description" : "GoalName",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobSegment entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobSegment_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobSegment/UpdatedSince" : {
+      "get" : {
+        "tags" : [ "JobSegment" ],
+        "summary" : "Get a list of JobSegment entities updates since the given time",
+        "operationId" : "SECURE_POLL_9",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of JobSegment entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/JobSegment_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/JobSegment/ByKey/{id}" : {
+      "get" : {
+        "tags" : [ "JobSegment" ],
+        "summary" : "Get JobSegment by ID",
+        "operationId" : "GET_10",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "JobSegment Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return JobSegment",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JobSegment_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "JobSegment Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/PickupDropoff/ByJobId/{JobId}" : {
+      "get" : {
+        "tags" : [ "PickupDropoff" ],
+        "summary" : "Get a list of PickupDropoff entities filter by JobId",
+        "operationId" : "SECURE_FILTER_BY_JOBID_3",
+        "parameters" : [ {
+          "name" : "JobId",
+          "in" : "path",
+          "description" : "JobId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of PickupDropoff entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/PickupDropoff_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/PickupDropoff/ByStatus/{Status}" : {
+      "get" : {
+        "tags" : [ "PickupDropoff" ],
+        "summary" : "Get a list of PickupDropoff entities filter by Status",
+        "operationId" : "SECURE_FILTER_BY_STATUS_4",
+        "parameters" : [ {
+          "name" : "Status",
+          "in" : "path",
+          "description" : "Status",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of PickupDropoff entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/PickupDropoff_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/PickupDropoff/ByAssignedJobId/{AssignedJobId}" : {
+      "get" : {
+        "tags" : [ "PickupDropoff" ],
+        "summary" : "Get a list of PickupDropoff entities filter by AssignedJobId",
+        "operationId" : "SECURE_FILTER_BY_ASSIGNEDJOBID_2",
+        "parameters" : [ {
+          "name" : "AssignedJobId",
+          "in" : "path",
+          "description" : "AssignedJobId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of PickupDropoff entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/PickupDropoff_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/PickupDropoff/{id}" : {
+      "delete" : {
+        "tags" : [ "PickupDropoff" ],
+        "summary" : "Delete PickupDropoff by ID",
+        "operationId" : "SECURE_DELETE_4",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "PickupDropoff Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "PickupDropoff deleted",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PickupDropoff_"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/PickupDropoff/UpdatedSince" : {
+      "get" : {
+        "tags" : [ "PickupDropoff" ],
+        "summary" : "Get a list of PickupDropoff entities updates since the given time",
+        "operationId" : "SECURE_POLL_10",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of PickupDropoff entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/PickupDropoff_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/PickupDropoff/ByKey/{id}" : {
+      "get" : {
+        "tags" : [ "PickupDropoff" ],
+        "summary" : "Get PickupDropoff by ID",
+        "operationId" : "GET_11",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "PickupDropoff Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return PickupDropoff",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PickupDropoff_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "PickupDropoff Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/PickupDropoff" : {
+      "post" : {
+        "tags" : [ "PickupDropoff" ],
+        "summary" : "Create PickupDropoff",
+        "operationId" : "POST_6",
+        "requestBody" : {
+          "content" : {
+            "application/json; charset=utf-8" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PickupDropoff__"
+              },
+              "examples" : {
+                "Example 1" : {
+                  "description" : "Example 1",
+                  "value" : {
+                    "pickupGoal" : "GoalA",
+                    "dropoffGoal" : "GoalB"
+                  }
+                },
+                "Example 2" : {
+                  "description" : "Example 2",
+                  "value" : {
+                    "pickupGoal" : "GoalA",
+                    "dropoffGoal" : "GoalB",
+                    "jobId" : "JobA_B"
+                  }
+                },
+                "Example 3" : {
+                  "description" : "Example 3",
+                  "value" : {
+                    "pickupGoal" : "GoalA",
+                    "dropoffGoal" : "GoalB",
+                    "jobId" : "JobA_B",
+                    "pickupPriority" : 10,
+                    "dropoffPriority" : 20
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "PickupDropoff created",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RestResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/Pickup/ByJobId/{JobId}" : {
+      "get" : {
+        "tags" : [ "Pickup" ],
+        "summary" : "Get a list of Pickup entities filter by JobId",
+        "operationId" : "SECURE_FILTER_BY_JOBID_4",
+        "parameters" : [ {
+          "name" : "JobId",
+          "in" : "path",
+          "description" : "JobId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Pickup entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Pickup_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Pickup/ByStatus/{Status}" : {
+      "get" : {
+        "tags" : [ "Pickup" ],
+        "summary" : "Get a list of Pickup entities filter by Status",
+        "operationId" : "SECURE_FILTER_BY_STATUS_5",
+        "parameters" : [ {
+          "name" : "Status",
+          "in" : "path",
+          "description" : "Status",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Pickup entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Pickup_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Pickup/ByAssignedJobId/{AssignedJobId}" : {
+      "get" : {
+        "tags" : [ "Pickup" ],
+        "summary" : "Get a list of Pickup entities filter by AssignedJobId",
+        "operationId" : "SECURE_FILTER_BY_ASSIGNEDJOBID_3",
+        "parameters" : [ {
+          "name" : "AssignedJobId",
+          "in" : "path",
+          "description" : "AssignedJobId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Pickup entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Pickup_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Pickup/{id}" : {
+      "delete" : {
+        "tags" : [ "Pickup" ],
+        "summary" : "Delete Pickup by ID",
+        "operationId" : "SECURE_DELETE_5",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Pickup Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Pickup deleted",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Pickup_"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Pickup/UpdatedSince" : {
+      "get" : {
+        "tags" : [ "Pickup" ],
+        "summary" : "Get a list of Pickup entities updates since the given time",
+        "operationId" : "SECURE_POLL_11",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Pickup entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Pickup_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Pickup/ByKey/{id}" : {
+      "get" : {
+        "tags" : [ "Pickup" ],
+        "summary" : "Get Pickup by ID",
+        "operationId" : "GET_12",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Pickup Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return Pickup",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Pickup_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Pickup Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/Pickup" : {
+      "post" : {
+        "tags" : [ "Pickup" ],
+        "summary" : "Create Pickup",
+        "operationId" : "POST_7",
+        "requestBody" : {
+          "content" : {
+            "application/json; charset=utf-8" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Pickup__"
+              },
+              "examples" : {
+                "Example 1" : {
+                  "description" : "Example 1",
+                  "value" : {
+                    "goal" : "GoalA"
+                  }
+                },
+                "Example 2" : {
+                  "description" : "Example 2",
+                  "value" : {
+                    "goal" : "GoalA",
+                    "jobId" : "JobA_1"
+                  }
+                },
+                "Example 3" : {
+                  "description" : "Example 3",
+                  "value" : {
+                    "goal" : "GoalA",
+                    "jobId" : "JobA_1",
+                    "priority" : 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Pickup created",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RestResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/RobotFault/History" : {
+      "get" : {
+        "tags" : [ "RobotFault" ],
+        "summary" : "Get a list of RobotFaultHistory entities",
+        "operationId" : "SECURE_HISTORY_2",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        }, {
+          "name" : "namekey",
+          "in" : "query",
+          "description" : "Namekey of an Entity",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of RobotFaultHistory entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/RobotFaultHistory_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/RobotFault/ByRobot/{Robot}" : {
+      "get" : {
+        "tags" : [ "RobotFault" ],
+        "summary" : "Get a list of RobotFault entities filter by Robot",
+        "operationId" : "SECURE_FILTER_BY_ROBOT_2",
+        "parameters" : [ {
+          "name" : "Robot",
+          "in" : "path",
+          "description" : "Robot",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of RobotFault entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/RobotFault_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/RobotFault/ByType/{Type}" : {
+      "get" : {
+        "tags" : [ "RobotFault" ],
+        "summary" : "Get a list of RobotFault entities filter by Type",
+        "operationId" : "SECURE_FILTER_BY_TYPE_1",
+        "parameters" : [ {
+          "name" : "Type",
+          "in" : "path",
+          "description" : "Type",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of RobotFault entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/RobotFault_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/RobotFault/ByName/{Name}" : {
+      "get" : {
+        "tags" : [ "RobotFault" ],
+        "summary" : "Get a list of RobotFault entities filter by Name",
+        "operationId" : "SECURE_FILTER_BY_NAME",
+        "parameters" : [ {
+          "name" : "Name",
+          "in" : "path",
+          "description" : "Name",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of RobotFault entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/RobotFault_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/RobotFault/ByActive/{Active}" : {
+      "get" : {
+        "tags" : [ "RobotFault" ],
+        "summary" : "Get a list of RobotFault entities filter by Active",
+        "operationId" : "SECURE_FILTER_BY_ACTIVE",
+        "parameters" : [ {
+          "name" : "Active",
+          "in" : "path",
+          "description" : "Active",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of RobotFault entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/RobotFault_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/RobotFault/UpdatedSince" : {
+      "get" : {
+        "tags" : [ "RobotFault" ],
+        "summary" : "Get a list of RobotFault entities updates since the given time",
+        "operationId" : "SECURE_POLL_12",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of RobotFault entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/RobotFault_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/RobotFault/ByKey/{id}" : {
+      "get" : {
+        "tags" : [ "RobotFault" ],
+        "summary" : "Get RobotFault by ID",
+        "operationId" : "GET_13",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "RobotFault Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return RobotFault",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RobotFault_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "RobotFault Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/Robot/History" : {
+      "get" : {
+        "tags" : [ "Robot" ],
+        "summary" : "Get a list of RobotHistory entities",
+        "operationId" : "SECURE_HISTORY_3",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        }, {
+          "name" : "namekey",
+          "in" : "query",
+          "description" : "Namekey of an Entity",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of RobotHistory entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/RobotHistory_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Robot/ByStatus/{Status}" : {
+      "get" : {
+        "tags" : [ "Robot" ],
+        "summary" : "Get a list of Robot entities filter by Status",
+        "operationId" : "SECURE_FILTER_BY_STATUS_6",
+        "parameters" : [ {
+          "name" : "Status",
+          "in" : "path",
+          "description" : "Status",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "Available", "InProgress", "Unavailable", "Unavailable_Busy", "Unavailable_NeedsAssistance", "AvailableForJobs" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Robot entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Robot_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Robot/BySubStatus/{SubStatus}" : {
+      "get" : {
+        "tags" : [ "Robot" ],
+        "summary" : "Get a list of Robot entities filter by SubStatus",
+        "operationId" : "SECURE_FILTER_BY_SUBSTATUS",
+        "parameters" : [ {
+          "name" : "SubStatus",
+          "in" : "path",
+          "description" : "SubStatus",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "Unallocated", "Allocated", "Available", "Fault", "BeforePickup", "BeforeDropoff", "BeforeEvery", "Before", "Driving", "After", "AfterEvery", "AfterPickup", "AfterDropoff", "ModeIsLocked", "Parking", "Parked", "Docking", "Docked", "DockParking", "DockParked", "ForcedDocking", "ForcedDocked", "Interrupted", "InterruptedButNotYetIdle", "OutgoingArclConnectionLost", "EstopPressed", "EstopRelieved", "MotorsDisabled", "Lost", "AvailableForJobs", "Buffering", "Buffered" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Robot entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Robot_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Robot/UpdatedSince" : {
+      "get" : {
+        "tags" : [ "Robot" ],
+        "summary" : "Get a list of Robot entities updates since the given time",
+        "operationId" : "SECURE_POLL_13",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of Robot entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Robot_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/Robot/ByKey/{id}" : {
+      "get" : {
+        "tags" : [ "Robot" ],
+        "summary" : "Get Robot by ID",
+        "operationId" : "GET_14",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Robot Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return Robot",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Robot_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Robot Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/SubscriptionConfig/UpdatedSince" : {
+      "get" : {
+        "tags" : [ "SubscriptionConfig" ],
+        "summary" : "Get a list of SubscriptionConfig entities updates since the given time",
+        "operationId" : "SECURE_POLL_14",
+        "parameters" : [ {
+          "name" : "sinceTime",
+          "in" : "query",
+          "description" : "Timestamp millis",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "string",
+            "default" : "0"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return List of SubscriptionConfig entities",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SubscriptionConfig_"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
+      }
+    },
+    "/SubscriptionConfig/ByKey/{id}" : {
+      "get" : {
+        "tags" : [ "SubscriptionConfig" ],
+        "summary" : "Get SubscriptionConfig by ID",
+        "operationId" : "GET_15",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "SubscriptionConfig Id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Return SubscriptionConfig",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SubscriptionConfig_"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "SubscriptionConfig Not Found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/SubscriptionConfig" : {
+      "put" : {
+        "tags" : [ "SubscriptionConfig" ],
+        "summary" : "Update SubscriptionConfig",
+        "operationId" : "PUT",
+        "requestBody" : {
+          "content" : {
+            "application/json; charset=utf-8" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SubscriptionConfig__"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "SubscriptionConfig updated",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RestResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "DataStoreValue_" : {
+        "required" : [ "namekey", "upd" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "upd" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "value" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Timestamp_" : {
+        "required" : [ "millis" ],
+        "type" : "object",
+        "properties" : {
+          "millis" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "Function1RequestContextFutureRouteResult" : {
+        "type" : "object"
+      },
+      "RestResponse" : {
+        "required" : [ "code" ],
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "entity" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        }
+      },
+      "WaitTaskCancelQuery__" : {
+        "required" : [ "namekey" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "robot" : {
+            "type" : "string"
+          }
+        }
+      },
+      "WaitTaskStateQuery_" : {
+        "required" : [ "code", "namekey" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "code" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "description" : {
+            "type" : "string"
+          }
+        }
+      },
+      "DataStoreItem_" : {
+        "required" : [ "itemId", "namekey", "upd" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "upd" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "itemId" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "source" : {
+            "type" : "string"
+          },
+          "category" : {
+            "type" : "string"
+          },
+          "groupName" : {
+            "type" : "string"
+          },
+          "groupDescr" : {
+            "type" : "string"
+          },
+          "displayName" : {
+            "type" : "string"
+          },
+          "itemName" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Audit_" : {
+        "required" : [ "crt", "ver" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "crt" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "upd" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "ver" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "Dropoff_" : {
+        "required" : [ "audit", "namekey" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "audit" : {
+            "$ref" : "#/components/schemas/Audit_"
+          },
+          "robot" : {
+            "type" : "string"
+          },
+          "goal" : {
+            "type" : "string"
+          },
+          "priority" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "jobId" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "assignedJobId" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Dropoff__" : {
+        "required" : [ "namekey", "priority" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "robot" : {
+            "type" : "string"
+          },
+          "goal" : {
+            "type" : "string"
+          },
+          "priority" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "jobId" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "assignedJobId" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Goal_" : {
+        "required" : [ "namekey", "upd" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "upd" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          }
+        }
+      },
+      "JobCancel_" : {
+        "required" : [ "audit", "namekey" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "audit" : {
+            "$ref" : "#/components/schemas/Audit_"
+          },
+          "cancelType" : {
+            "type" : "string",
+            "enum" : [ "SegmentId, JobId, RobotName, Status, SegmentNamekey, JobNamekey, RemoveSegmentId, RemoveSegmentNamekey" ]
+          },
+          "cancelValue" : {
+            "type" : "string"
+          },
+          "cancelReason" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          }
+        }
+      },
+      "JobCancel__" : {
+        "required" : [ "namekey" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "cancelType" : {
+            "type" : "string",
+            "enum" : [ "SegmentId, JobId, RobotName, Status, SegmentNamekey, JobNamekey, RemoveSegmentId, RemoveSegmentNamekey" ]
+          },
+          "cancelValue" : {
+            "type" : "string"
+          },
+          "cancelReason" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          }
+        }
+      },
+      "JobHistory_" : {
+        "required" : [ "failCount", "namekey", "upd" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "upd" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "jobId" : {
+            "type" : "string"
+          },
+          "jobType" : {
+            "type" : "string",
+            "enum" : [ "P, D, PD, M" ]
+          },
+          "queuedTimestamp" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "completedTimestamp" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "Pending, InProgress, Completed, Cancelled, Cancelling, Modifying" ]
+          },
+          "linkedJob" : {
+            "type" : "string"
+          },
+          "failCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "lastAssignedRobot" : {
+            "type" : "string"
+          },
+          "cancelReason" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Job_" : {
+        "required" : [ "failCount", "namekey", "upd" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "upd" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "jobId" : {
+            "type" : "string"
+          },
+          "jobType" : {
+            "type" : "string",
+            "enum" : [ "P, D, PD, M" ]
+          },
+          "queuedTimestamp" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "completedTimestamp" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "Pending, InProgress, Completed, Cancelled, Cancelling, Modifying" ]
+          },
+          "linkedJob" : {
+            "type" : "string"
+          },
+          "failCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "lastAssignedRobot" : {
+            "type" : "string"
+          },
+          "cancelReason" : {
+            "type" : "string"
+          }
+        }
+      },
+      "JobRequestDetail_" : {
+        "type" : "object",
+        "properties" : {
+          "goal" : {
+            "type" : "string"
+          },
+          "priority" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "segmentType" : {
+            "type" : "string"
+          }
+        }
+      },
+      "JobRequestDetail__" : {
+        "required" : [ "priority" ],
+        "type" : "object",
+        "properties" : {
+          "goal" : {
+            "type" : "string"
+          },
+          "priority" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "segmentType" : {
+            "type" : "string"
+          }
+        }
+      },
+      "JobRequest_" : {
+        "required" : [ "audit", "defaultPriority", "details", "namekey" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "audit" : {
+            "$ref" : "#/components/schemas/Audit_"
+          },
+          "jobId" : {
+            "type" : "string"
+          },
+          "defaultPriority" : {
+            "type" : "boolean"
+          },
+          "details" : {
+            "type" : "array",
+            "properties" : {
+              "empty" : {
+                "type" : "boolean"
+              },
+              "traversableAgain" : {
+                "type" : "boolean"
+              }
+            },
+            "items" : {
+              "$ref" : "#/components/schemas/JobRequestDetail_"
+            }
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "assignedJobId" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ListJobRequestDetail_" : {
+        "type" : "array",
+        "properties" : {
+          "empty" : {
+            "type" : "boolean"
+          },
+          "traversableAgain" : {
+            "type" : "boolean"
+          }
+        },
+        "items" : {
+          "$ref" : "#/components/schemas/JobRequestDetail_"
+        }
+      },
+      "JobRequest__" : {
+        "required" : [ "defaultPriority", "details", "namekey" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "jobId" : {
+            "type" : "string"
+          },
+          "defaultPriority" : {
+            "type" : "boolean"
+          },
+          "details" : {
+            "type" : "array",
+            "properties" : {
+              "empty" : {
+                "type" : "boolean"
+              },
+              "traversableAgain" : {
+                "type" : "boolean"
+              }
+            },
+            "items" : {
+              "$ref" : "#/components/schemas/JobRequestDetail__"
+            }
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "assignedJobId" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ListJobRequestDetail__" : {
+        "type" : "array",
+        "properties" : {
+          "empty" : {
+            "type" : "boolean"
+          },
+          "traversableAgain" : {
+            "type" : "boolean"
+          }
+        },
+        "items" : {
+          "$ref" : "#/components/schemas/JobRequestDetail__"
+        }
+      },
+      "JobSegmentModify_" : {
+        "required" : [ "audit", "namekey" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "audit" : {
+            "$ref" : "#/components/schemas/Audit_"
+          },
+          "segmentId" : {
+            "type" : "string"
+          },
+          "segmentNamekey" : {
+            "type" : "string"
+          },
+          "priority" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "goal" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          }
+        }
+      },
+      "JobSegmentModify__" : {
+        "required" : [ "namekey", "priority" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "segmentId" : {
+            "type" : "string"
+          },
+          "segmentNamekey" : {
+            "type" : "string"
+          },
+          "priority" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "goal" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          }
+        }
+      },
+      "JobSegmentHistory_" : {
+        "required" : [ "namekey", "seq", "upd" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "upd" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "seq" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "segmentId" : {
+            "type" : "string"
+          },
+          "segmentType" : {
+            "type" : "string",
+            "enum" : [ "Pickup, DropOff" ]
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "Pending, InProgress, Interrupted, Completed, Cancelled, Cancelling, Failed, Modifying, Modified, InterruptedByModify" ]
+          },
+          "subStatus" : {
+            "type" : "string",
+            "enum" : [ "Unallocated, Allocated, BeforePickup, BeforeDropOff, BeforeEvery, Before, Driving, After, AfterEvery, AfterPickup, AfterDropOff, Buffering, Buffered, None, ContainsCancelReason, ContainsLinkedReason, AssignedRobotOffline, NoMatchingRobotForLinkedJob, NoMatchingRobotForOtherSegment, NoMatchingRobot" ]
+          },
+          "job" : {
+            "type" : "string"
+          },
+          "robot" : {
+            "type" : "string"
+          },
+          "linkedJobSegment" : {
+            "type" : "string"
+          },
+          "goalName" : {
+            "type" : "string"
+          },
+          "priority" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "completedTimestamp" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "cancelReason" : {
+            "type" : "string"
+          }
+        }
+      },
+      "JobSegment_" : {
+        "required" : [ "namekey", "seq", "upd" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "upd" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "seq" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "segmentId" : {
+            "type" : "string"
+          },
+          "segmentType" : {
+            "type" : "string",
+            "enum" : [ "Pickup, DropOff" ]
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "Pending, InProgress, Interrupted, Completed, Cancelled, Cancelling, Failed, Modifying, Modified, InterruptedByModify" ]
+          },
+          "subStatus" : {
+            "type" : "string",
+            "enum" : [ "Unallocated, Allocated, BeforePickup, BeforeDropOff, BeforeEvery, Before, Driving, After, AfterEvery, AfterPickup, AfterDropOff, Buffering, Buffered, None, ContainsCancelReason, ContainsLinkedReason, AssignedRobotOffline, NoMatchingRobotForLinkedJob, NoMatchingRobotForOtherSegment, NoMatchingRobot" ]
+          },
+          "job" : {
+            "type" : "string"
+          },
+          "robot" : {
+            "type" : "string"
+          },
+          "linkedJobSegment" : {
+            "type" : "string"
+          },
+          "goalName" : {
+            "type" : "string"
+          },
+          "priority" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "completedTimestamp" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "cancelReason" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PickupDropoff_" : {
+        "required" : [ "audit", "namekey" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "audit" : {
+            "$ref" : "#/components/schemas/Audit_"
+          },
+          "pickupGoal" : {
+            "type" : "string"
+          },
+          "pickupPriority" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "dropoffGoal" : {
+            "type" : "string"
+          },
+          "dropoffPriority" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "jobId" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "assignedJobId" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PickupDropoff__" : {
+        "required" : [ "namekey", "pickupPriority" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "pickupGoal" : {
+            "type" : "string"
+          },
+          "pickupPriority" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "dropoffGoal" : {
+            "type" : "string"
+          },
+          "dropoffPriority" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "jobId" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "assignedJobId" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Pickup_" : {
+        "required" : [ "audit", "namekey" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "audit" : {
+            "$ref" : "#/components/schemas/Audit_"
+          },
+          "goal" : {
+            "type" : "string"
+          },
+          "priority" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "jobId" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "assignedJobId" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Pickup__" : {
+        "required" : [ "namekey", "priority" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "goal" : {
+            "type" : "string"
+          },
+          "priority" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "jobId" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "assignedJobId" : {
+            "type" : "string"
+          }
+        }
+      },
+      "RobotFaultHistory_" : {
+        "required" : [ "active", "namekey", "upd" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "upd" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "robot" : {
+            "type" : "string"
+          },
+          "active" : {
+            "type" : "boolean"
+          },
+          "driving" : {
+            "type" : "boolean"
+          },
+          "critical" : {
+            "type" : "boolean"
+          },
+          "clearedOnGo" : {
+            "type" : "boolean"
+          },
+          "clearedOnAck" : {
+            "type" : "boolean"
+          },
+          "application" : {
+            "type" : "boolean"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "shortDescription" : {
+            "type" : "string"
+          },
+          "longDescription" : {
+            "type" : "string"
+          }
+        }
+      },
+      "RobotFault_" : {
+        "required" : [ "active", "namekey", "upd" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "upd" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "robot" : {
+            "type" : "string"
+          },
+          "active" : {
+            "type" : "boolean"
+          },
+          "blockDriving" : {
+            "type" : "boolean"
+          },
+          "driving" : {
+            "type" : "boolean"
+          },
+          "critical" : {
+            "type" : "boolean"
+          },
+          "clearedOnGo" : {
+            "type" : "boolean"
+          },
+          "clearedOnAck" : {
+            "type" : "boolean"
+          },
+          "application" : {
+            "type" : "boolean"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "shortDescription" : {
+            "type" : "string"
+          },
+          "longDescription" : {
+            "type" : "string"
+          }
+        }
+      },
+      "RobotHistory_" : {
+        "required" : [ "namekey", "upd" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "upd" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "Available, InProgress, Unavailable, Unavailable_Busy, Unavailable_NeedsAssistance, AvailableForJobs" ]
+          },
+          "subStatus" : {
+            "type" : "string",
+            "enum" : [ "Unallocated, Allocated, Available, Fault, BeforePickup, BeforeDropoff, BeforeEvery, Before, Driving, After, AfterEvery, AfterPickup, AfterDropoff, ModeIsLocked, Parking, Parked, Docking, Docked, DockParking, DockParked, ForcedDocking, ForcedDocked, Interrupted, InterruptedButNotYetIdle, OutgoingArclConnectionLost, EstopPressed, EstopRelieved, MotorsDisabled, Lost, AvailableForJobs, Buffering, Buffered" ]
+          }
+        }
+      },
+      "Robot_" : {
+        "required" : [ "namekey", "upd" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "upd" : {
+            "$ref" : "#/components/schemas/Timestamp_"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "Available, InProgress, Unavailable, Unavailable_Busy, Unavailable_NeedsAssistance, AvailableForJobs" ]
+          },
+          "subStatus" : {
+            "type" : "string",
+            "enum" : [ "Unallocated, Allocated, Available, Fault, BeforePickup, BeforeDropoff, BeforeEvery, Before, Driving, After, AfterEvery, AfterPickup, AfterDropoff, ModeIsLocked, Parking, Parked, Docking, Docked, DockParking, DockParked, ForcedDocking, ForcedDocked, Interrupted, InterruptedButNotYetIdle, OutgoingArclConnectionLost, EstopPressed, EstopRelieved, MotorsDisabled, Lost, AvailableForJobs, Buffering, Buffered" ]
+          }
+        }
+      },
+      "SubscriptionConfig_" : {
+        "required" : [ "audit", "namekey" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "audit" : {
+            "$ref" : "#/components/schemas/Audit_"
+          },
+          "subscriptionInterval" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SubscriptionConfig__" : {
+        "required" : [ "namekey" ],
+        "type" : "object",
+        "properties" : {
+          "namekey" : {
+            "type" : "string"
+          },
+          "subscriptionInterval" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "basicAuth" : {
+        "type" : "http",
+        "scheme" : "basic"
+      }
+    }
+  }
+}

@@ -72,6 +72,8 @@ namespace MobileComms_WPF
                 this.Height = App.Settings.ARCLWindow.Height;
                 this.Width = App.Settings.ARCLWindow.Width;
             }
+
+            TxtConnectionString.Text = App.Settings.ARCLConnectionString;
         }
 
         private double TopLast;
@@ -508,6 +510,8 @@ namespace MobileComms_WPF
             {
                 BtnCMReadSelectedSection.IsEnabled = false;
                 BtnCMWriteSelectedSection.IsEnabled = false;
+                DgvSectionValues.ItemsSource = null;
+                return;
             }
             else
             {
@@ -732,6 +736,12 @@ namespace MobileComms_WPF
                 MenCMSaveSelectedToFile.IsEnabled = false;
             else
                 MenCMSaveSelectedToFile.IsEnabled = true;
+        }
+
+        private void TxtConnectionString_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(!IsLoaded) return;
+            App.Settings.ARCLConnectionString = TxtConnectionString.Text;
         }
 
 

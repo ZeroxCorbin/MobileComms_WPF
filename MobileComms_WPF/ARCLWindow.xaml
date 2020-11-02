@@ -36,7 +36,7 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" x:Name="TxtConnectionString" Text="192.168.0.20:7171:adept" Width="160" Height="24" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+                    <TextBox Grid.Column="0" x:Name="TxtConnectionString" Width="160" Height="24" VerticalContentAlignment="Center" HorizontalAlignment="Right" TextChanged="TxtConnectionString_TextChanged"/>
 
                     <Button Grid.Column="1" x:Name="BtnConnect" Content="Connect" Click="BtnConnect_Click" Height="28" Width="90" BorderBrush="{x:Null}" HorizontalAlignment="Left"/>
                 </Grid>
@@ -75,7 +75,7 @@
                         </Grid.Background>
 
                         <Label Grid.Column="1" Content="Job Queue Manager" FontSize="18" HorizontalContentAlignment="Center"/>
-                        <Button x:Name="BtnQueueManagerControl" Grid.Column="2" Width="32" Height="32" VerticalAlignment="Bottom" HorizontalAlignment="Left" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="BtnQueueManagerControl_Click">
+                        <Button x:Name="BtnQueueManagerControl" Grid.Column="2" Width="28" Height="28" HorizontalAlignment="Left" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="BtnQueueManagerControl_Click">
                             <Button.Background>
                                 <ImageBrush ImageSource="Support/play.png" Stretch="UniformToFill"/>
                             </Button.Background>
@@ -179,7 +179,7 @@
                         </Grid.Background>
 
                         <Label Grid.Column="1" Content="Configuration Manager" FontSize="18" HorizontalContentAlignment="Center"/>
-                        <Button x:Name="BtnConfigurationManagerControl" Grid.Column="2" Width="32" Height="32" VerticalAlignment="Bottom" HorizontalAlignment="Left" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="BtnConfigurationManagerControl_Click" >
+                        <Button x:Name="BtnConfigurationManagerControl" Grid.Column="2" Width="28" Height="28" HorizontalAlignment="Left" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="BtnConfigurationManagerControl_Click" >
                             <Button.Background>
                                 <ImageBrush ImageSource="Support/play.png" Stretch="UniformToFill"/>
                             </Button.Background>

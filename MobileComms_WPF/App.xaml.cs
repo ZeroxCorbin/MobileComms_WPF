@@ -1,5 +1,6 @@
 ﻿using ApplicationSettingsNS;
 using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -26,17 +27,12 @@ namespace MobileComms_WPF
         const int SWP_NOACTIVATE = 0x0010;
         [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
         public static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
-
-        public static void DoOnProcess(string processName)
+        public static void DoOnProcess(string winTitle)
         {
-            var allProcs = Process.GetProcessesByName(processName);
-            if(allProcs.Length > 0)
-            {
-                Process proc = allProcs[0];
-                int hWnd = FindWindow(null, proc.MainWindowTitle.ToString());
-                // Change behavior by settings the wFlags params. See http://msdn.microsoft.com/en-us/library/ms633545(VS.85).aspx
+            int hWnd = FindWindow(null, winTitle);
+            // Change behavior by settings the wFlags params. See http://msdn.microsoft.com/en-us/library/ms633545(VS.85).aspx
+            if(hWnd != -1)
                 SetWindowPos(new IntPtr(hWnd), 0, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW | SWP_NOACTIVATE);
-            }
         }
     }
 
@@ -81,6 +77,13 @@ namespace MobileComms_WPF
         public static string Path { get; set; } = System.IO.Directory.GetCurrentDirectory();
         public App()
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .WriteTo.File("log-.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
+            Log.Information("Logger Loaded");
+
             if(!Directory.Exists(SettingsFileRootDir + SettingsFileAppDir))
             {
                 try

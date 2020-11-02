@@ -1,29 +1,31 @@
 ﻿using ApplicationSettingsNS;
-using Classes.IntegrationToolkit;
+using MobileComms_ITK.REST;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Serilog;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace MobileComms_WPF
 {
+
     /// <summary>
     /// Interaction logic for REST.xaml
     /// </summary>
     public partial class RESTWindow : Window
     {
-        REST.REST_ACTIONS RestAction { get; set; } = REST.REST_ACTIONS.GET;
+        private REST REST { get; } = new REST();
+        REST.Actions RestAction { get; set; } = REST.Actions.GET;
 
         private Stream Stream { get; set; } = null;
         public void BeginReading()
@@ -161,14 +163,54 @@ namespace MobileComms_WPF
 
         private void LoadResourceList()
         {
-            foreach(var kv in REST.Commands)
+            //Dictionary<string, List<string>> dict = new Dictionary<string, List<string>>();
+
+            //Schema shc = new Schema();
+            //foreach(JProperty prop in shc.Root["paths"])
+            //{
+            //    string name = Regex.Match(prop.Name, @"^\/\w+(?!=\/)").Value.TrimStart('/');
+            //    if(dict.ContainsKey(name))
+            //    {
+            //        dict[name].Add(prop.Name);
+            //    }
+            //    else
+            //    {
+            //        dict.Add(name, new List<string>());
+            //        dict[name].Add(prop.Name);
+            //    }
+            //}
+
+            //using(System.IO.StreamWriter file =
+            //    new System.IO.StreamWriter(@"Commands.txt"))
+            //{
+            //    foreach(var kv in dict)
+            //    {
+            //        file.WriteLine(kv.Key);
+            //        foreach(string s in kv.Value)
+            //        {
+            //            file.WriteLine(s);
+            //        }
+            //    }
+
+            //    foreach(var kv in REST.Commands)
+            //    {
+            //        file.WriteLine(kv.Key);
+            //        foreach(string s in kv.Value)
+            //        {
+            //            file.WriteLine(s);
+            //        }
+            //    }
+            //}
+
+            foreach(var cmd in REST.Commands)
             {
-                TreeViewItem tvi = new TreeViewItem { Header = kv.Key };
+                TreeViewItem tvi = new TreeViewItem { Header = cmd.TypeName };
                 tvi.Selected += Tvi_Selected;
-                foreach(string s in kv.Value)
+                foreach(string s in cmd.Resources)
                 {
                     TreeViewItem tvic = new TreeViewItem() { Header = s };
-                    tvic.Selected += Tvic_Selected; ;
+                    tvic.Selected += Tvic_Selected;
+                    tvic.Tag = cmd;
                     tvi.Items.Add(tvic);
                 }
                 TrvCommandList.Items.Add(tvi);
@@ -178,12 +220,11 @@ namespace MobileComms_WPF
         private void BtnSend_Click(object sender, RoutedEventArgs e)
         {
             TxtResponse.Text = string.Empty;
-            DgvReturnedJSON.ItemsSource = null;
             TxtReturnedJSON.Text = string.Empty;
 
             switch(RestAction)
             {
-                case REST.REST_ACTIONS.GET:
+                case REST.Actions.GET:
 
                     string resp = REST.Get($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password);
 
@@ -194,7 +235,7 @@ namespace MobileComms_WPF
 
                     else
                     {
-                        if(resp.StartsWith("{\"code"))
+                        if(resp.StartsWith("{\"code") || resp.StartsWith("<html>"))
                         {
                             TxtResponse.Text = resp;
                             return;
@@ -215,18 +256,18 @@ namespace MobileComms_WPF
                     }
                     break;
 
-                case REST.REST_ACTIONS.PUT:
+                case REST.Actions.PUT:
                     TxtResponse.Text = REST.Put($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password, TxtJsonData.Text);
                     break;
 
-                case REST.REST_ACTIONS.POST:
+                case REST.Actions.POST:
                     TxtResponse.Text = REST.Post($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password, TxtJsonData.Text);
                     break;
 
-                case REST.REST_ACTIONS.DELETE:
+                case REST.Actions.DELETE:
                     TxtResponse.Text = REST.Delete($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password);
                     break;
-                case REST.REST_ACTIONS.STREAM:
+                case REST.Actions.STREAM:
                     if(Stream == null)
                     {
                         Stream = REST.Stream(REST.ConnectionString(TxtHost.Text, TxtResourceName.Text), TxtPassword.Password);
@@ -250,7 +291,8 @@ namespace MobileComms_WPF
 
         private void DeserializeJSONtoDataGrid(string className, string json)
         {
-            Type t = Type.GetType($"Classes.IntegrationToolkit.JSON_Types.{className}");
+
+            Type t = Type.GetType($"MobileComms_ITK.JSON.Types.{className},MobileComms_ITK");
             if(t == null)
             {
                 TxtJsonSchema.Text = string.Empty;
@@ -258,11 +300,28 @@ namespace MobileComms_WPF
             }
             else
             {
+                var lst = JsonConvert.DeserializeObject<JArray>(json);
 
-                Type genericListType = typeof(IList<>).MakeGenericType(t);
-                var lst = (IList)JsonConvert.DeserializeObject(json, genericListType);
+                bool hasUpd = false;
+                foreach(JObject elem in lst)
+                {
+                    if(elem.ContainsKey("upd"))
+                    {
+                        hasUpd = true;
+                        DateTime dt = DateTimeOffset.FromUnixTimeMilliseconds((long)elem.Property("upd").Value["millis"]).DateTime;
+                        elem.Property("upd").Remove();
+                        elem.Property("namekey").AddAfterSelf(new JProperty("upd", dt));
+                    }
+                    else
+                        break;
+                }
 
-                DgvReturnedJSON.ItemsSource = lst;
+                DgvReturnedJSON.ItemsSource = null;
+
+                if(hasUpd)
+                    DgvReturnedJSON.ItemsSource = lst.OrderByDescending(x => x["upd"]);
+                else
+                    DgvReturnedJSON.ItemsSource = lst;
             }
         }
 
@@ -270,6 +329,7 @@ namespace MobileComms_WPF
         {
 
             TreeViewItem selected = (TreeViewItem)sender;
+            REST.Command cmd = (REST.Command)selected.Tag;
 
             string resource = (string)selected.Header;
 
@@ -279,66 +339,64 @@ namespace MobileComms_WPF
 
             LblResourceValue.Content = Regex.Match(resource, @"{.*}").Value.Replace("{", "").Replace("}", "");
 
-            string name = (string)((TreeViewItem)selected.Parent).Header;
+            //string name = (string)((TreeViewItem)selected.Parent).Header;
+            //Type t = Type.GetType($"MobileComms_ITK.JSON_Types.{name},MobileComms_ITK");
 
-            Type t = Type.GetType($"Classes.IntegrationToolkit.JSON_Types.{name}");
+            //if(t == null)
+            //{
+            //    TxtJsonSchema.Text = string.Empty;
+            //    TxtJsonData.Text = string.Empty;
+            //}
+            //else
+            //{
 
-            if(t == null)
-            {
-                TxtJsonSchema.Text = string.Empty;
-                TxtJsonData.Text = string.Empty;
-            }
-            else
-            {
-                var obj = Activator.CreateInstance(t);
+            //}
+                var obj = Activator.CreateInstance(cmd.JSONType);
+            
                 TxtJsonSchema.Text = JsonConvert.SerializeObject(obj).Replace(",\"", ",\r\n\"").Replace("null", "\"\"");
-            }
-
-
-            if(name.Contains("GET"))
+            switch(cmd.Action)
             {
-                RestAction = REST.REST_ACTIONS.GET;
-                BtnSend.Content = Enum.GetName(typeof(REST.REST_ACTIONS), RestAction);
-                TxtJsonData.Text = string.Empty;
-                TxtJsonData.IsEnabled = false;
+                case REST.Actions.GET:
+                    RestAction = REST.Actions.GET;
+                    BtnSend.Content = Enum.GetName(typeof(REST.Actions), RestAction);
+                    TxtJsonData.Text = string.Empty;
+                    TxtJsonData.IsEnabled = false;
 
-                TxtResourceValue.IsEnabled = true;
-            }
-            else if(name.Contains("PUT"))
-            {
-                RestAction = REST.REST_ACTIONS.PUT;
-                BtnSend.Content = Enum.GetName(typeof(REST.REST_ACTIONS), RestAction);
+                    TxtResourceValue.IsEnabled = true;
+                    break;
+                case REST.Actions.PUT:
+                    RestAction = REST.Actions.PUT;
+                    BtnSend.Content = Enum.GetName(typeof(REST.Actions), RestAction);
 
-                TxtJsonData.Text = TxtJsonSchema.Text;
-                TxtJsonData.IsEnabled = true;
+                    TxtJsonData.Text = TxtJsonSchema.Text;
+                    TxtJsonData.IsEnabled = true;
 
-                TxtResourceValue.IsEnabled = false;
-            }
-            else if(name.Contains("POST"))
-            {
-                RestAction = REST.REST_ACTIONS.POST;
-                BtnSend.Content = Enum.GetName(typeof(REST.REST_ACTIONS), RestAction);
-                TxtJsonData.Text = TxtJsonSchema.Text;
-                TxtJsonData.IsEnabled = true;
+                    TxtResourceValue.IsEnabled = false;
+                    break;
+                case REST.Actions.POST:
+                    RestAction = REST.Actions.POST;
+                    BtnSend.Content = Enum.GetName(typeof(REST.Actions), RestAction);
+                    TxtJsonData.Text = TxtJsonSchema.Text;
+                    TxtJsonData.IsEnabled = true;
 
-                TxtResourceValue.IsEnabled = false;
-            }
-            else if(name.Contains("DELETE"))
-            {
-                RestAction = REST.REST_ACTIONS.DELETE;
-                BtnSend.Content = Enum.GetName(typeof(REST.REST_ACTIONS), RestAction);
-                TxtJsonSchema.Text = string.Empty;
-                TxtJsonData.Text = string.Empty;
-                TxtJsonData.IsEnabled = false;
+                    TxtResourceValue.IsEnabled = false;
+                    break;
+                case REST.Actions.DELETE:
+                    RestAction = REST.Actions.DELETE;
+                    BtnSend.Content = Enum.GetName(typeof(REST.Actions), RestAction);
+                    TxtJsonSchema.Text = string.Empty;
+                    TxtJsonData.Text = string.Empty;
+                    TxtJsonData.IsEnabled = false;
 
-                TxtResourceValue.IsEnabled = true;
+                    TxtResourceValue.IsEnabled = true;
+                    break;
             }
 
             if(TxtResourceName.Text.Contains("/Stream"))
             {
                 BtnSend.Content = "GET: Stream";
 
-                RestAction = REST.REST_ACTIONS.STREAM;
+                RestAction = REST.Actions.STREAM;
 
                 TxtJsonSchema.Text = string.Empty;
                 TxtJsonData.Text = string.Empty;
@@ -356,14 +414,6 @@ namespace MobileComms_WPF
 
             if(!tvi.IsExpanded)
                 tvi.IsExpanded = true;
-        }
-
-
-
-
-        private void BtnConnect_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void BtnOpenSwagger_Click(object sender, RoutedEventArgs e)
@@ -421,6 +471,19 @@ namespace MobileComms_WPF
                 DgvReturnedJSON.Visibility = Visibility.Visible;
                 DgvReturnedJSON.IsEnabled = true;
             }
+        }
+
+        private void TxtPassword_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if(!IsLoaded) return;
+            App.Settings.RESTPassword = TxtPassword.Password;
+        }
+
+        private void TxtHost_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+            if(!IsLoaded) return;
+            App.Settings.RESTHost = TxtHost.Text;
         }
     }
 }
