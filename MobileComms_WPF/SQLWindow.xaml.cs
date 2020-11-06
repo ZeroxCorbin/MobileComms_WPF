@@ -9,17 +9,24 @@ using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Text;
 using MobileComms_ITK;
+using SqlKata;
+using SqlKata.Extensions;
+using SqlKata.Compilers;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace MobileComms_WPF
 {
     /// <summary>
     /// Interaction logic for RabitMQWindow.xaml
     /// </summary>
-    public partial class SQLWindow : Window
+    public partial class SQLWindow : Window, INotifyPropertyChanged
     {
+        private SQL.QueryType SQLQueryType { get; set; } = SQL.QueryType.SELECT;
         private SQL SQL { get; } = new SQL();
         public SQLWindow(Window owner)
         {
+            DataContext = App.Settings;
             Owner = owner;
 
             InitializeComponent();
@@ -28,76 +35,33 @@ namespace MobileComms_WPF
 
             LoadQueueList();
         }
+
+
+
         private void Window_LoadSettings()
         {
-            if(Keyboard.IsKeyDown(Key.LeftShift))
-                App.Settings.SQLWindow = new ApplicationSettings_Serializer.ApplicationSettings.WindowSettings();
-
-            if(double.IsNaN(App.Settings.SQLWindow.Left))
+            if(double.IsNaN(App.Settings.SQLWindow.Left)
+                || !CheckOnScreen.IsOnScreen(this)
+                || Keyboard.IsKeyDown(Key.LeftShift))
             {
-                App.Settings.SQLWindow.Left = Owner.Left;
-                App.Settings.SQLWindow.Top = Owner.Top + Owner.Height;
-                App.Settings.SQLWindow.Height = 768;
-                App.Settings.SQLWindow.Width = 1024;
+                Left = Owner.Left;
+                Top = Owner.Top + Owner.Height;
+                Height = 768;
+                Width = 1024;
             }
 
-            this.Left = App.Settings.SQLWindow.Left;
-            this.Top = App.Settings.SQLWindow.Top;
-            this.Height = App.Settings.SQLWindow.Height;
-            this.Width = App.Settings.SQLWindow.Width;
-
-            if(!CheckOnScreen.IsOnScreen(this))
-            {
-                App.Settings.SQLWindow.Left = Owner.Left;
-                App.Settings.SQLWindow.Top = Owner.Top + Owner.Height;
-                App.Settings.SQLWindow.Height = 768;
-                App.Settings.SQLWindow.Width = 1024;
-
-                this.Left = App.Settings.SQLWindow.Left;
-                this.Top = App.Settings.SQLWindow.Top;
-                this.Height = App.Settings.SQLWindow.Height;
-                this.Width = App.Settings.SQLWindow.Width;
-            }
-
-            TxtHost.Text = App.Settings.SQLHost;
             TxtPassword.Password = App.Settings.SQLPassword;
 
             DisConnected();
         }
 
-        private double TopLast;
-        private double TopLeft;
-        private void Window_LocationChanged(object sender, EventArgs e)
-        {
-            if(!IsLoaded) return;
-
-            TopLast = App.Settings.SQLWindow.Top;
-            TopLeft = App.Settings.SQLWindow.Left;
-
-            App.Settings.SQLWindow.Top = Top;
-            App.Settings.SQLWindow.Left = Left;
-        }
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if(!IsLoaded) return;
-            if(WindowState != WindowState.Normal) return;
-
-            App.Settings.SQLWindow.Height = Height;
-            App.Settings.SQLWindow.Width = Width;
-        }
         private void Window_StateChanged(object sender, EventArgs e)
         {
             if(!IsLoaded) return;
-
-            if(this.WindowState != WindowState.Normal)
-            {
-                App.Settings.SQLWindow.Top = TopLast;
-                App.Settings.SQLWindow.Left = TopLeft;
-            }
             if(this.WindowState == WindowState.Minimized) return;
 
             App.Settings.SQLWindow.WindowState = this.WindowState;
-        } 
+        }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             ((TreeViewItem)TrvQueueList.Items[0]).IsSelected = true;
@@ -109,9 +73,9 @@ namespace MobileComms_WPF
 
         private void LoadQueueList()
         {
-            foreach(var kv in SQL.Views)
+            foreach(SQL.View kv in SQL.Views)
             {
-                TreeViewItem tvi = new TreeViewItem { Header = kv.Key };
+                TreeViewItem tvi = new TreeViewItem { Header = kv.Name };
                 tvi.Tag = kv;
                 tvi.Selected += Tvi_Selected;
                 TrvQueueList.Items.Add(tvi);
@@ -121,32 +85,30 @@ namespace MobileComms_WPF
 
         private void Tvi_Selected(object sender, RoutedEventArgs e)
         {
-            if(CmdMoveType.ItemsSource == null)
-                CmdMoveType.Items.Clear();
+            if(LstQueryTypes.ItemsSource == null)
+                LstQueryTypes.Items.Clear();
 
-            if(sender is TreeViewItem tv)
-            {
-                if(tv.Tag is KeyValuePair<string, Dictionary<SQL.QueryTypes, string>> lst)
-                { 
-                    CmdMoveType.Tag = lst;
-                    CmdMoveType.ItemsSource = lst.Value.Keys;
-                    CmdMoveType.SelectedIndex = -1;
-                    CmdMoveType.SelectedIndex = 0;
+            if(sender is TreeViewItem tvi)
+                if(tvi.Tag is SQL.View cmd)
+                {
+                    LstQueryTypes.Tag = cmd;
+                    LstQueryTypes.ItemsSource = cmd.QueryTypes.Keys;
+                    LstQueryTypes.SelectedIndex = -1;
+                    LstQueryTypes.SelectedIndex = 0;
                 }
-            }
         }
 
         private void BtnSend_Click(object sender, RoutedEventArgs e)
         {
-            if(CmdMoveType.SelectedItem == null) return;
+            if(LstQueryTypes.SelectedItem == null) return;
 
-            if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.SELECT)
+            if(((SQL.QueryType)LstQueryTypes.SelectedItem) == SQL.QueryType.SELECT)
             {
                 //DgvTableRows.ItemsSource = Select($"{TxtQueryStart.Text} {TxtQueryDetails.Text}").Tables[0].DefaultView;
                 Dispatcher.BeginInvoke(DispatcherPriority.Render,
                         (Action)(() =>
                         {
-                            System.Data.DataSet ds = SQL.Select($"{TxtQueryStart.Text} {TxtQueryDetails.Text}");
+                            System.Data.DataSet ds = SQL.Select($"{TxtQueryStart.Text}");
                             if(ds.Tables.Count > 0)
                             {
                                 DgvTableRows.ItemsSource = ds.Tables[0].DefaultView;
@@ -162,13 +124,13 @@ namespace MobileComms_WPF
 
                         }));
             }
-            else if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.INSERT)
+            else if(((SQL.QueryType)LstQueryTypes.SelectedItem) == SQL.QueryType.INSERT)
             {
-                
+
                 Dispatcher.BeginInvoke(DispatcherPriority.Render,
                         (Action)(() =>
                         {
-                            int ret = SQL.Insert($"{TxtQueryStart.Text} {TxtQueryDetails.Text}");
+                            int ret = SQL.Insert($"{TxtQueryStart.Text}");
                             if(ret < 0)
                             {
                                 if(SQL.IsException)
@@ -182,15 +144,15 @@ namespace MobileComms_WPF
 
                         }));
             }
-            else if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.UPDATE)
+            else if(((SQL.QueryType)LstQueryTypes.SelectedItem) == SQL.QueryType.UPDATE)
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Render,
                         (Action)(() =>
                         {
-                            int ret = SQL.Update($"{TxtQueryStart.Text} {TxtQueryDetails.Text}");
+                            int ret = SQL.Update($"{TxtQueryStart.Text}");
                             if(ret < 0)
                             {
-                                if(SQL.IsException) 
+                                if(SQL.IsException)
                                     TxtResponse.Text = SQL.SQLException.Message;
                                 else
                                     TxtResponse.Text = "The SQL Connection is not Active.";
@@ -202,78 +164,83 @@ namespace MobileComms_WPF
 
         }
 
-        private void TxtJsonData_TextChanged(object sender, TextChangedEventArgs e)
+        private void JsonData_TextChanged()
         {
-            string[] spl = TxtJsonData.Text.Split('\n');
-
-            if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.SELECT)
+            if(((SQL.QueryType)LstQueryTypes.SelectedItem) == SQL.QueryType.SELECT)
             {
-                List<string> lst = new List<string>();
+                var compiler = new PostgresCompiler();
+                Query select = new Query((string)((TreeViewItem)TrvQueueList.SelectedItem).Header);
 
-                foreach(string s in spl)
-                    if(Regex.IsMatch(s, @"^.*=(['].+[']|[0-9]+)\r$"))
-                        lst.Add(s.Trim('\r'));
+                bool found = false;
+                foreach(StackPanelLocal stkl in StkJsonData.Children)
+                    if(Regex.IsMatch(stkl.Text, @"^.*=(['].+[']|[0-9]+)$"))
+                    {
+                        found = true;
 
-                if(lst.Count > 0)
-                    TxtQueryDetails.Text = "WHERE";
-                else
+                        if(Regex.IsMatch(stkl.Text, @"='true'$"))
+                            select.WhereTrue(Regex.Match(stkl.Text, @"^.*(?=[=])").Value);
+                        else if(Regex.IsMatch(stkl.Text, @"='false'$"))
+                            select.WhereFalse(Regex.Match(stkl.Text, @"^.*(?=[=])").Value);
+                        else
+                            select.WhereLike(Regex.Match(stkl.Text, @"^.*(?=[=])").Value, Regex.Match(stkl.Text, @"(?<=[=]).*$").Value, true);
+                    }
+
+                if(!found)
                 {
-                    TxtQueryDetails.Text = "";
+                    var res1 = compiler.Compile(select);
+                    TxtQueryStart.Text = res1.Sql;
                     return;
                 }
 
-                foreach(string s in lst)
-                    TxtQueryDetails.Text += $" {s}";
+                SqlResult result = compiler.Compile(select);
+                string sql = result.Sql;
+
+                List<object> bindings = result.Bindings;
+                int i = 0;
+                foreach(object o in bindings)
+                    sql = sql.Replace($"@p{i++}", o.ToString());
+
+                TxtQueryStart.Text = sql;
             }
-            else if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.INSERT)
+            else if(((SQL.QueryType)LstQueryTypes.SelectedItem) == SQL.QueryType.INSERT)
             {
+                var compiler = new PostgresCompiler();
+                Query insert = new Query((string)((TreeViewItem)TrvQueueList.SelectedItem).Header);
                 List<string> lst = new List<string>();
 
-                foreach(string s in spl)
-                    if(Regex.IsMatch(s, @"^.*=(['].+[']|[0-9]+)\r$"))
-                        lst.Add(s.Trim('\r'));
-
-                TxtQueryDetails.Text = "";
+                foreach(StackPanelLocal stkl in StkJsonData.Children)
+                    if(Regex.IsMatch(stkl.Text, @"^.*=(['].+[']|[0-9]+)$"))
+                        lst.Add(stkl.Text);
 
                 if(lst.Count == 0)
+                {
+                    TxtQueryStart.Text = $"INSERT INTO {((TreeViewItem)TrvQueueList.SelectedItem).Header}";
                     return;
+                }
 
+                List<string> names = new List<string>();
+                List<string> values = new List<string>();
+                foreach(string s in lst)
+                {
+                    names.Add(Regex.Match(s, @"^.*(?=[=])").Value);
+                    values.Add(Regex.Match(s, @"(?<=[=]).*$").Value);
+                }
 
+                insert.AsInsert(names.ToArray(), values.ToArray());
+
+                SqlResult result = compiler.Compile(insert);
+                string sql = result.Sql;
+
+                List<object> bindings = result.Bindings;
                 int i = 0;
-                foreach(string s in lst)
-                {
-                    if(i == 0)
-                        TxtQueryDetails.Text += $"({Regex.Match(s, @"^\w*(?=)")}";
-                    else
-                        TxtQueryDetails.Text += $", {Regex.Match(s, @"^\w*(?=)")}";
+                foreach(object o in bindings)
+                    sql = sql.Replace($"@p{i++}", o.ToString());
 
-                    if(++i == lst.Count)
-                    {
-                        TxtQueryDetails.Text += $")";
-                        continue;
-                    }
-                }
-
-                TxtQueryDetails.Text += $" VALUES ";
-
-                i = 0;
-                foreach(string s in lst)
-                {
-                    if(i == 0)
-                        TxtQueryDetails.Text += $"({Regex.Match(s, @"(?<==).*$")}";
-                    else
-                        TxtQueryDetails.Text += $", {Regex.Match(s, @"(?<==).*$")}";
-
-                    if(++i == lst.Count)
-                    {
-                        TxtQueryDetails.Text += $")";
-                        continue;
-                    }
-                }
+                TxtQueryStart.Text = sql;
             }
-            else if(((SQL.QueryTypes)CmdMoveType.SelectedItem) == SQL.QueryTypes.UPDATE)
+            else if(((SQL.QueryType)LstQueryTypes.SelectedItem) == SQL.QueryType.UPDATE)
             {
-                
+
             }
         }
 
@@ -283,18 +250,13 @@ namespace MobileComms_WPF
 
             DgvTableRows.ItemsSource = SQL.GetScheme($"{((TreeViewItem)TrvQueueList.SelectedItem).Header}").Tables[0].DefaultView;
 
-            //Dispatcher.BeginInvoke(DispatcherPriority.Render,
-            //        (Action<string>)((s) =>
-            //        {
-            //            TxtResponse.Text = s;
-            //        }), ret);
         }
 
         private void BtnConnect_Click(object sender, RoutedEventArgs e)
         {
             if(BtnConnect.Tag == null)
             {
-                if(SQL.Connect(TxtHost.Text, TxtPassword.Password))
+                if(SQL.Connect(App.Settings.SQLHost, TxtPassword.Password))
                 {
                     BtnConnect.Tag = "";
                     BtnConnect.Background = Brushes.LightGreen;
@@ -324,81 +286,137 @@ namespace MobileComms_WPF
 
         private void Connected()
         {
-            BrdViewList.IsEnabled = true;
-
-            if(TxtQueryStart.Text.Length > 0)
-            {
-                //BrdCommandResponse.IsEnabled = true;
-                BrdQuery.IsEnabled = true;
-                BrdTableRows.IsEnabled = true;
-            }
+            BtnSend.IsEnabled = true;
 
             TxtPassword.IsEnabled = false;
             TxtHost.IsEnabled = false;
         }
         private void DisConnected()
         {
-            //BrdCommandResponse.IsEnabled = false;
-            BrdQuery.IsEnabled = false;
-            BrdTableRows.IsEnabled = false;
-            BrdViewList.IsEnabled = false;
+            BtnSend.IsEnabled = false;
 
             TxtPassword.IsEnabled = true;
             TxtHost.IsEnabled = true;
         }
-        private void TxtHost_TextChanged(object sender, TextChangedEventArgs e)
+
+
+        private class StackPanelLocal : StackPanel
         {
-            TxtDBConnectionString.Text = SQL.ConnectionString(TxtHost.Text, "Your_ITK_Password");
+            public delegate void TextChangedEvent(string data);
+            public event TextChangedEvent TextChanged;
 
-            if(!IsLoaded) return;
-            App.Settings.SQLHost = TxtHost.Text;
-        }
+            private TextBlock Start = new TextBlock() { Padding = new Thickness(0), Margin = new Thickness(0, 5, 0, 0), Background = null };
+            private TextBlock End = new TextBlock() { Text = $"'", Padding = new Thickness(0), Margin = new Thickness(0, 5, 0, 0), Background = null };
 
-        private void CmdMoveType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if(!IsLoaded) return;
+            private bool _isString;
+            private TextBox MidText = new TextBox() { MinWidth = 20, Padding = new Thickness(0), Margin = new Thickness(0, 5, 0, 0), VerticalContentAlignment = VerticalAlignment.Center, Background = null, BorderBrush = null };
 
-            BtnSend.Content = CmdMoveType.SelectedItem;
+            private bool _isEnum;
+            private ComboBox Combo = new ComboBox() { BorderBrush = null, MinWidth = 40, Style = Application.Current.TryFindResource(ToolBar.ComboBoxStyleKey) as Style, Margin = new Thickness(0, 3, 0, 0) };
 
-            if(CmdMoveType.SelectedItem is SQL.QueryTypes type)
+            private bool _isBool;
+            private ComboBox Check = new ComboBox() { BorderBrush = null, MinWidth = 40, Style = Application.Current.TryFindResource(ToolBar.ComboBoxStyleKey) as Style, Margin = new Thickness(0, 3, 0, 0) };
+
+            public StackPanelLocal(PropertyInfo property)
             {
-                if(type == SQL.QueryTypes.SELECT)
-                {
-                    TxtQueryStart.Text = $"SELECT * FROM {((TreeViewItem)TrvQueueList.SelectedItem).Header}";
-                    TxtJsonData.IsEnabled = true;
-                }
-                else if(type == SQL.QueryTypes.INSERT)
-                {
-                    TxtQueryStart.Text = $"INSERT INTO {((TreeViewItem)TrvQueueList.SelectedItem).Header}";
-                    TxtJsonData.IsEnabled = true;
-                }
-                else if(type == SQL.QueryTypes.UPDATE)
-                {
-                    TxtQueryStart.Text = $"UPDATE {((TreeViewItem)TrvQueueList.SelectedItem).Header}";
-                    TxtQueryDetails.Text = "SET subscription_interval = '1s' WHERE namekey =''";
-                    TxtJsonData.IsEnabled = false;
-                }
+                Orientation = Orientation.Horizontal;
+                _isString = property.PropertyType == typeof(string);
+                _isEnum = property.PropertyType.IsEnum;
+                _isBool = property.PropertyType == typeof(bool);
 
-                TxtJsonData.Text = "";
-                Type t = Type.GetType($"MobileComms_ITK.JSON_Types.{((KeyValuePair<string, Dictionary<SQL.QueryTypes, string>>)CmdMoveType.Tag).Value[type]},MobileComms_ITK");
+                string name = Regex.Replace(property.Name, @"(?!^)[A-Z]", delegate (Match match)
+                {
+                    return $"_{char.ToLower(match.ToString()[0])}";
+                });
 
-                if(t == null)
+                if(_isString)
                 {
-                    TxtJsonData.Text = string.Empty;
-                    return;
+                    Start.Text = $"{name.ToLower()}='";
+                    MidText.TextChanged += Mid_TextChanged;
+
+                    Children.Add(Start);
+                    Children.Add(MidText);
+                    Children.Add(End);
                 }
-                foreach(var prop in t.GetProperties())
+                else if(_isEnum)
                 {
-                    string name = Regex.Replace(prop.Name, @"[A-Z]", delegate (Match match)
-                    {
-                        return $"_{char.ToLower(match.ToString()[0])}";
-                    });
-                    if(prop.PropertyType == typeof(string))
-                        TxtJsonData.Text += $"{name}=''\r\n";
-                    else
-                        TxtJsonData.Text += $"{name}=\r\n";
+                    Start.Text = $"{name.ToLower()}=";
+                    Combo.ItemsSource = new List<string>(Regex.Split(property.PropertyType.GetEnumNames()[0], "__"));
+                    ((List<string>)Combo.ItemsSource).Insert(0, "");
+
+                    Combo.SelectionChanged += Combo_SelectionChanged;
+
+                    Children.Add(Start);
+                    Children.Add(Combo);
+                }
+                else if(_isBool)
+                {
+                    Start.Text = $"{name.ToLower()}=";
+
+                    Check.Items.Add("");
+                    Check.Items.Add("true");
+                    Check.Items.Add("false");
+                    Check.SelectionChanged += Combo_SelectionChanged;
+
+                    Children.Add(Start);
+                    Children.Add(Check);
+                }
+                else
+                {
+                    MidText.TextChanged += Mid_TextChanged;
+
+                    Start.Text = $"{name.ToLower()}=";
+                    Children.Add(Start);
+                    Children.Add(MidText);
                 }
             }
+
+            private void Combo_SelectionChanged(object sender, SelectionChangedEventArgs e) => TextChanged?.Invoke(Text);
+            private void Date_TextInput(object sender, TextCompositionEventArgs e) => TextChanged?.Invoke(Text);
+            private void Mid_TextChanged(object sender, TextChangedEventArgs e) => TextChanged?.Invoke(Text);
+
+            public string Text => _isString ? $"{Start.Text}{MidText.Text}{End.Text}" : _isEnum ? $"{Start.Text}'{Combo.SelectedValue}'" : _isBool ? $"{Start.Text}'{Check.SelectedValue}'" : $"{Start.Text}{MidText.Text}";
+        }
+        private void LstQueryTypes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(!IsLoaded) return;
+
+            SQL.View view = (SQL.View)LstQueryTypes.Tag;
+
+            BtnSend.Content = LstQueryTypes.SelectedItem;
+
+            if(LstQueryTypes.SelectedItem is SQL.QueryType type)
+            {
+                if(type == SQL.QueryType.SELECT)
+                {
+                    TxtQueryStart.Text = $"SELECT * FROM {((TreeViewItem)TrvQueueList.SelectedItem).Header}";
+                }
+                else if(type == SQL.QueryType.INSERT)
+                {
+                    TxtQueryStart.Text = $"INSERT INTO {((TreeViewItem)TrvQueueList.SelectedItem).Header}";
+                }
+                else if(type == SQL.QueryType.UPDATE)
+                {
+                    TxtQueryStart.Text = $"UPDATE {((TreeViewItem)TrvQueueList.SelectedItem).Header}";
+                }
+
+                StkJsonData.Children.Clear();
+                foreach(PropertyInfo prop in view.QueryTypes[type].GetProperties())
+                {
+                    if(prop.Name.Equals("AdditionalProperties")) continue;
+                    if(prop.Name.Equals("Upd")) continue;
+
+                    StackPanelLocal stkl = new StackPanelLocal(prop);
+
+                    stkl.TextChanged += Stkl_TextChanged;
+                    StkJsonData.Children.Add(stkl);
+                }
+            }
+        }
+
+        private void Stkl_TextChanged(string data)
+        {
+            JsonData_TextChanged();
         }
 
         private void TxtPassword_PasswordChanged(object sender, RoutedEventArgs e)
@@ -406,5 +424,21 @@ namespace MobileComms_WPF
             if(!IsLoaded) return;
             App.Settings.SQLPassword = TxtPassword.Password;
         }
+        public double TxtWidth { get; set; }
+        private void BrdQuery_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double test = (BrdQuery.ActualWidth - 120) / 2;
+            if(test > StkJsonData.ActualWidth)
+                TxtWidth = (BrdQuery.ActualWidth - 120) - StkJsonData.ActualWidth;
+            else
+                TxtWidth = test;
+
+
+            RaisePropertyChanged("TxtWidth");
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
     }
 }

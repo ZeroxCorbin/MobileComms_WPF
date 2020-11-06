@@ -108,7 +108,7 @@ namespace MobileComms_WPF
             if(RabbitMQWindow == null)
             {
                 RabbitMQWindow = new RabbitMQWindow(this);
-                RabbitMQWindow.Closed += SQLWindow_Closed;
+                RabbitMQWindow.Closed += RabbitMQWindow_Closed;
                 RabbitMQWindow.Activated += AnyWindow_Activated;
                 RabbitMQWindow.Show();
 
@@ -116,7 +116,7 @@ namespace MobileComms_WPF
             }
             else if(RabbitMQWindow.WindowState == WindowState.Minimized)
             {
-                RabbitMQWindow.WindowState = App.Settings.SQLWindow.WindowState;
+                RabbitMQWindow.WindowState = App.Settings.RabbitMQWindow.WindowState;
             }
         }
         private void RabbitMQWindow_Closed(object sender, EventArgs e)

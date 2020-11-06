@@ -17,6 +17,7 @@ namespace MobileComms_WPF
         private RabbitMQ RabbitMQ { get; } = new RabbitMQ();
         public RabbitMQWindow(Window owner)
         {
+            DataContext = App.Settings;
             Owner = owner;
 
             InitializeComponent();
@@ -28,36 +29,16 @@ namespace MobileComms_WPF
 
         private void Window_LoadSettings()
         {
-            if(Keyboard.IsKeyDown(Key.LeftShift))
-                App.Settings.RabbitMQWindow = new ApplicationSettings_Serializer.ApplicationSettings.WindowSettings();
-
-            if(double.IsNaN(App.Settings.RabbitMQWindow.Left))
+            if(double.IsNaN(App.Settings.RabbitMQWindow.Left)
+                || !CheckOnScreen.IsOnScreen(this)
+                || Keyboard.IsKeyDown(Key.LeftShift))
             {
-                App.Settings.RabbitMQWindow.Left = Owner.Left;
-                App.Settings.RabbitMQWindow.Top = Owner.Top + Owner.Height;
-                App.Settings.RabbitMQWindow.Height = 768;
-                App.Settings.RabbitMQWindow.Width = 1024;
+                Left = Owner.Left;
+                Top = Owner.Top + Owner.Height;
+                Height = 768;
+                Width = 1024;
             }
 
-            this.Left = App.Settings.RabbitMQWindow.Left;
-            this.Top = App.Settings.RabbitMQWindow.Top;
-            this.Height = App.Settings.RabbitMQWindow.Height;
-            this.Width = App.Settings.RabbitMQWindow.Width;
-
-            if(!CheckOnScreen.IsOnScreen(this))
-            {
-                App.Settings.RabbitMQWindow.Left = Owner.Left;
-                App.Settings.RabbitMQWindow.Top = Owner.Top + Owner.Height;
-                App.Settings.RabbitMQWindow.Height = 768;
-                App.Settings.RabbitMQWindow.Width = 1024;
-
-                this.Left = App.Settings.RabbitMQWindow.Left;
-                this.Top = App.Settings.RabbitMQWindow.Top;
-                this.Height = App.Settings.RabbitMQWindow.Height;
-                this.Width = App.Settings.RabbitMQWindow.Width;
-            }
-
-            TxtHost.Text = App.Settings.RabbitMQHost;
             TxtPassword.Password = App.Settings.RabbitMQPassword;
         }
 
@@ -145,7 +126,7 @@ namespace MobileComms_WPF
         private void BtnSend_Click(object sender, RoutedEventArgs e)
         {
 
-            TxtResponse.Text = RabbitMQ.Get(TxtInboundQueueName.Text);
+           RabbitMQ.Put(TxtInboundQueueName.Text, TxtJsonSchema.Text);
         }
 
         private void TxtPassword_PasswordChanged(object sender, RoutedEventArgs e)
@@ -157,10 +138,6 @@ namespace MobileComms_WPF
         private void TxtHost_TextChanged(object sender, TextChangedEventArgs e)
         {
             TxtDBConnectionString.Text = RabbitMQ.ConnectionString(TxtHost.Text, "Your_ITK_Password");
-
-
-            if(!IsLoaded) return;
-            App.Settings.RabbitMQHost = TxtHost.Text;
         }
 
         private void BtnConnect_Click(object sender, RoutedEventArgs e)

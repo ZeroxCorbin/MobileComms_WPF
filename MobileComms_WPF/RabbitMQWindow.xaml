@@ -5,7 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MobileComms_WPF"
         mc:Ignorable="d"
-        Title="RabbitMQ" Height="831.675" Width="1491.817" Icon="Support/favicon.ico" Loaded="Window_Loaded" Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" StateChanged="Window_StateChanged" MinWidth="1024" MinHeight="768">
+        Title="RabbitMQ"
+        Icon="Support/favicon.ico"
+        Loaded="Window_Loaded"
+        Closing="Window_Closing"
+        StateChanged="Window_StateChanged"
+        MinWidth="1024"
+        MinHeight="768"
+        Width="{Binding RabbitMQWindow.Width, Mode=TwoWay}"
+        Height="{Binding RabbitMQWindow.Height, Mode=TwoWay}"
+        Left="{Binding RabbitMQWindow.Left, Mode=TwoWay}"
+        Top="{Binding RabbitMQWindow.Top, Mode=TwoWay}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="128"/>
@@ -43,7 +53,10 @@
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
+                    <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" x:Name="TxtDBConnectionString" IsReadOnly="True" Background="#19000000" Height="24" VerticalContentAlignment="Center"/>
+  
                     <Label Grid.Row="0" Grid.Column="1" Content="Host Name / IP" Padding="60,5,5,5" />
+                    
                     <Grid Grid.Row="1" Grid.Column="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="63"/>
@@ -51,7 +64,7 @@
                         </Grid.ColumnDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="amqps://" Padding="5,4" HorizontalContentAlignment="Right" />
 
-                        <TextBox Grid.Column="1"  x:Name="TxtHost" Background="#19FFFF00" VerticalContentAlignment="Center" TextChanged="TxtHost_TextChanged" Margin="0,1"/>
+                        <TextBox Grid.Column="1" Text="{Binding RabbitMQHost}"  x:Name="TxtHost" Background="#19FFFF00" VerticalContentAlignment="Center" TextChanged="TxtHost_TextChanged" Margin="0,1"/>
 
                     </Grid>
 
@@ -62,8 +75,6 @@
                     <PasswordBox Grid.Row="1" Grid.Column="3" x:Name="TxtPassword" Height="24" Background="#19FFFF00" VerticalContentAlignment="Center" PasswordChanged="TxtPassword_PasswordChanged"/>
 
 
-                    <Label Grid.Column="0" Grid.Row="2" Content="Connection String" Padding="5,3" HorizontalContentAlignment="Right" />
-                    <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" x:Name="TxtDBConnectionString" IsReadOnly="True" Background="#19000000" Height="24" VerticalContentAlignment="Center"/>
                     <Button Grid.Column="4" Grid.Row="2" Content="Connect" x:Name="BtnConnect" Width="94" HorizontalContentAlignment="Center" Click="BtnConnect_Click" Background="LightSalmon" BorderBrush="{x:Null}" HorizontalAlignment="Left"/>
 
 
@@ -76,9 +87,9 @@
         <Grid Grid.Column="0" Grid.Row="1">
             <Grid.ColumnDefinitions>
 
-                <ColumnDefinition Width="340"/>
-                <ColumnDefinition Width="340"/>
-                <ColumnDefinition Width="340"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
@@ -125,7 +136,7 @@
                         </Grid.RowDefinitions>
                         <TextBox Grid.Row="0" Name="TxtInboundQueueName" Height="22"  Background="#19FFFF00" VerticalContentAlignment="Center"/>
                         <Button Grid.Row="2" Name="BtnInboundSend" Click="BtnSend_Click"  Width="94" Height="28" Content="Send" HorizontalAlignment="Center"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" Name="TxtJsonSchema"  Background="#19FFFF00"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Name="TxtJsonSchema"  Background="#19FFFF00" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
                     </Grid>
                 </Grid>
             </Border>

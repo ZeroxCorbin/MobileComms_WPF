@@ -5,13 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MobileComms_WPF"
         mc:Ignorable="d"
-        Title="REST (REpresentational State Transfer)" LocationChanged="Window_LocationChanged" StateChanged="Window_StateChanged" Closing="Window_Closing" SizeChanged="Window_SizeChanged" Icon="Support/favicon.ico" MinWidth="1024" MinHeight="768" Loaded="Window_Loaded" Width="1024" Height="768">
+        Title="REST (REpresentational State Transfer)" 
+        Loaded="Window_Loaded"
+        StateChanged="Window_StateChanged"
+        Closing="Window_Closing"
+        Icon="Support/favicon.ico"
+        MinWidth="1024"
+        MinHeight="768" 
+        Width="{Binding RESTWindow.Width, Mode=TwoWay}"
+        Height="{Binding RESTWindow.Height, Mode=TwoWay}"
+        Left="{Binding RESTWindow.Left, Mode=TwoWay}"
+        Top="{Binding RESTWindow.Top, Mode=TwoWay}">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
-            <RowDefinition Height="1.5*" MinHeight="210"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="{Binding RESTSplitter, Mode=TwoWay}" MinHeight="210" MaxHeight="500"/>
             <RowDefinition Height="5"/>
-            <RowDefinition Height="2.5*" MinHeight="210"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
         <Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
@@ -29,41 +39,52 @@
                         </LinearGradientBrush>
                     </Label.Background>
                 </Label>
+                
+                
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="146*"/>
-                        <ColumnDefinition Width="293*"/>
-                        <ColumnDefinition Width="128"/>
-
-                        <ColumnDefinition Width="291"/>
-                        <ColumnDefinition Width="146*"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
 
-                    </Grid.RowDefinitions>
-                    <Button Grid.Column="0" Grid.Row="1" x:Name="BtnOpenSwagger" Width="90" BorderBrush="{x:Null}" HorizontalAlignment="Right" Content="Swagger" Click="BtnOpenSwagger_Click" />
-                    <Label Grid.Row="0" Grid.Column="1" Content="Host Name / IP" Padding="60,5,5,5" />
-                    <Grid Grid.Row="1" Grid.Column="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="52"/>
-                            <ColumnDefinition Width="180*"/>
-                            <ColumnDefinition Width="43"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Content="https://" Padding="5,4" HorizontalContentAlignment="Right" />
+                    <Button Grid.Column="0"
+                            x:Name="BtnOpenSwagger"
+                            Width="90"
+                            BorderBrush="{x:Null}"
+                            HorizontalAlignment="Right"
+                            Content="Swagger"
+                            Click="BtnOpenSwagger_Click" />
+                    
+                    <Label Grid.Column="1" 
+                           Content="https://"
+                           HorizontalContentAlignment="Right" />
+                    
+                    <TextBox Grid.Column="2" Grid.Row="1"
+                             x:Name="TxtHost" Text="{Binding RESTHost}"
+                             Background="#0AFFFF00"
+                             VerticalContentAlignment="Center"
+                             TextChanged="TxtHost_TextChanged"
+                             MinWidth="80" BorderBrush="{x:Null}"/>
+                    
+                    <Label Grid.Column="3"
+                           Content=":8443"/>
 
-                        <TextBox Grid.Column="1"  x:Name="TxtHost" Background="#19FFFF00" VerticalContentAlignment="Center" Height="24" TextChanged="TxtHost_TextChanged"/>
-                        <Label Grid.Row="0" Grid.Column="2" Content=":8443" Padding="5,4" />
-
-
-                    </Grid>
-
-                    <Label Grid.Row="0" Grid.Column="2" Content="User Name"  HorizontalContentAlignment="Center" />
-                    <Label Grid.Row="1" Grid.Column="2" Content="toolkitadmin" Padding="5,4" HorizontalContentAlignment="Center" />
-
-                    <Label Grid.Row="0" Grid.Column="3" Content="Toolkit Password" />
-                    <PasswordBox Grid.Row="1" Grid.Column="3" x:Name="TxtPassword" Height="24" Background="#19FFFF00" VerticalContentAlignment="Center" PasswordChanged="TxtPassword_PasswordChanged"/>
+                    <Label Grid.Column="4"
+                           Content="toolkitadmin"/>
+                    
+                    <PasswordBox Grid.Column="5"
+                                 x:Name="TxtPassword"
+                                 Background="#0AFFFF00"
+                                 VerticalContentAlignment="Center"
+                                 PasswordChanged="TxtPassword_PasswordChanged"
+                                 MinWidth="80"
+                                 BorderBrush="{x:Null}"/>
 
                 </Grid>
             </Grid>
@@ -72,9 +93,8 @@
         <Grid Grid.Column="0" Grid.Row="1">
             <Grid.ColumnDefinitions>
 
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="0.5*"/>
             </Grid.ColumnDefinitions>
 
 
@@ -93,7 +113,12 @@
                             </LinearGradientBrush>
                         </Label.Background>
                     </Label>
-                    <TreeView Grid.Row="1" Grid.Column="0" Name="TrvCommandList">
+                    <TreeView Grid.Row="1" Grid.Column="0" 
+                              Name="TrvCommandList"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              Padding="0,0,10,0"
+                              Background="{x:Null}"
+                              BorderBrush="{x:Null}">
                         <TreeView.Resources>
                             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
                       Color="LightGreen" />
@@ -125,47 +150,78 @@
                     </Label>
                     <Grid Grid.Row="1">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="24"/>
-                            <RowDefinition Height="24"/>
-                            <RowDefinition Height="24"/>
-                            <RowDefinition Height="24"/>
-                            <RowDefinition Height="24"/>
-                            <RowDefinition Height="24"/>
-                            <RowDefinition/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Resource URI" Padding="5,3" HorizontalContentAlignment="Center" />
-                        <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Name="TxtResourceName" Background="#19000000" VerticalContentAlignment="Center"/>
+                            <TextBox Grid.Column="0"
+                                   Name="TxtResourceName"
+                                   Background="{x:Null}"
+                                   VerticalContentAlignment="Center"
+                                   BorderBrush="{x:Null}"
+                                   MinWidth="80"
+                                   MinHeight="24"/>
 
-                        <Label Grid.Row="2" Grid.Column="0" x:Name="LblResourceValue" Padding="5,3" HorizontalContentAlignment="Right" />
-                        <TextBox Grid.Row="2" Grid.Column="1" Name="TxtResourceValue" Background="#19FFFF00" VerticalContentAlignment="Center" TextChanged="TxtResourceValue_TextChanged"/>
+                            <TextBox Grid.Column="1"
+                                  Name="TxtResourceValue"
+                                  Background="#0AFFFF00"
+                                  VerticalContentAlignment="Center"
+                                  TextChanged="TxtResourceValue_TextChanged"
+                                  MinWidth="80"
+                                  BorderBrush="{x:Null}"/>
+                            
+                            <Button Grid.Column="2"
+                                Name="BtnSend" 
+                                Click="BtnSend_Click"
+                                Width="94"
+                                Content="Send"
+                                BorderBrush="{x:Null}"/>
 
-                        <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Content="JSON Body" Padding="5,3" HorizontalContentAlignment="Center" />
-                        <TextBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="3" Background="#19FFFF00" Name="TxtJsonData"/>
+                        </Grid>
 
-                        <Button Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" Name="BtnSend" Click="BtnSend_Click" Height="28" Width="94" Content="Send" BorderBrush="{x:Null}" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                        <TextBox Grid.Row="1" Grid.Column="0"
+                                 Name="TxtJSONSchema"
+                                 VerticalScrollBarVisibility="Auto"
+                                 MinWidth="80" 
+                                 Background="{x:Null}"
+                                 BorderBrush="{x:Null}"
+                                 Padding="0,0,20,0"/>
 
-                        <Label Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Content="Send Error" Padding="5,3" HorizontalContentAlignment="Center" />
-                        <TextBox Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="3" x:Name="TxtResponse" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Background="#19000000" TextWrapping="Wrap" />
+
+                         <TextBox Grid.Row="2" Grid.Column="1" 
+                                  x:Name="TxtErrorResponse"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  VerticalScrollBarVisibility="Auto"
+                                  Background="{x:Null}" 
+                                  TextWrapping="Wrap" BorderBrush="{x:Null}" />
 
                     </Grid>
 
                 </Grid>
             </Border>
-            <Border Grid.Column="2" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+            <!--<Border Grid.Column="2" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
                 <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="7*"/>
+                        <ColumnDefinition Width="57*"/>
+                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="34"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0" Content="JSON Schema" FontSize="18" HorizontalContentAlignment="Center">
+                    <Label Grid.Row="0" Content="JSON Schema" FontSize="18" HorizontalContentAlignment="Center" Grid.ColumnSpan="2">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#FF4c88d6" Offset="0"/>
@@ -173,10 +229,10 @@
                             </LinearGradientBrush>
                         </Label.Background>
                     </Label>
-                    <TextBox Grid.Row="1" Grid.Column="1" Name="TxtJsonSchema" IsReadOnly="True"/>
+                    <TextBox Grid.Row="1" Name="TxtJsonSchema" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2"/>
 
                 </Grid>
-            </Border>
+            </Border>-->
         </Grid>
 
         <GridSplitter Grid.Row="2" Height="5"  HorizontalAlignment="Stretch" >

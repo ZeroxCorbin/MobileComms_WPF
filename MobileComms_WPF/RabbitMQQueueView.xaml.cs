@@ -55,7 +55,7 @@ namespace MobileComms_WPF
         {
 
             var lst = JsonConvert.DeserializeObject<JArray>(json);
-                bool hasUpd = false;
+            bool hasUpd = false;
             foreach(JObject elem in lst)
             {
 
@@ -78,7 +78,7 @@ namespace MobileComms_WPF
                         {
                             if(hasUpd)
                                 DgMain.ItemsSource = lst.OrderByDescending(x => x["upd"]);
-                        else
+                            else
                                 DgMain.ItemsSource = lst;
                         }
                         else

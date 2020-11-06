@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -50,7 +51,9 @@ namespace MobileComms_WPF
             Dispatcher.Invoke(DispatcherPriority.Render,
                 (Action)(() =>
                 {
-                    TxtResponse.Text = Encoding.ASCII.GetString((byte[])ar.AsyncState, 0, numberOfBytesRead);
+                    TxtErrorResponse.Text = Encoding.ASCII.GetString((byte[])ar.AsyncState, 0, numberOfBytesRead);
+                    TxtErrorResponse.Visibility = Visibility.Visible;
+                    //LblErrorResponse.Visibility = Visibility.Visible;
                 }));
 
             BeginReading();
@@ -71,6 +74,7 @@ namespace MobileComms_WPF
         //private bool IsLoading { get; set; } = true;
         public RESTWindow(Window owner)
         {
+            this.DataContext = App.Settings;
             Owner = owner;
             InitializeComponent();
 
@@ -81,69 +85,23 @@ namespace MobileComms_WPF
 
         private void Window_LoadSettings()
         {
-            if(Keyboard.IsKeyDown(Key.LeftShift))
-                App.Settings.RESTWindow = new ApplicationSettings_Serializer.ApplicationSettings.WindowSettings();
-
-            if(double.IsNaN(App.Settings.RESTWindow.Left))
+            if(double.IsNaN(App.Settings.RESTWindow.Left)
+                || !CheckOnScreen.IsOnScreen(this)
+                || Keyboard.IsKeyDown(Key.LeftShift))
             {
-                App.Settings.RESTWindow.Left = Owner.Left;
-                App.Settings.RESTWindow.Top = Owner.Top + Owner.Height;
-                App.Settings.RESTWindow.Height = 768;
-                App.Settings.RESTWindow.Width = 1024;
+                Left = Owner.Left;
+                Top = Owner.Top + Owner.Height;
+                Height = 768;
+                Width = 1024;
             }
 
-            this.Left = App.Settings.RESTWindow.Left;
-            this.Top = App.Settings.RESTWindow.Top;
-            this.Height = App.Settings.RESTWindow.Height;
-            this.Width = App.Settings.RESTWindow.Width;
-
-            if(!CheckOnScreen.IsOnScreen(this))
-            {
-                App.Settings.RESTWindow.Left = Owner.Left;
-                App.Settings.RESTWindow.Top = Owner.Top + Owner.Height;
-                App.Settings.RESTWindow.Height = 768;
-                App.Settings.RESTWindow.Width = 1024;
-
-                this.Left = App.Settings.RESTWindow.Left;
-                this.Top = App.Settings.RESTWindow.Top;
-                this.Height = App.Settings.RESTWindow.Height;
-                this.Width = App.Settings.RESTWindow.Width;
-            }
-
-            TxtHost.Text = App.Settings.RESTHost;
             TxtPassword.Password = App.Settings.RESTPassword;
         }
 
-        //Window Changes
-        private double TopLast;
-        private double TopLeft;
-        private void Window_LocationChanged(object sender, EventArgs e)
-        {
-            if(!IsLoaded) return;
-
-            TopLast = App.Settings.RESTWindow.Top;
-            TopLeft = App.Settings.RESTWindow.Left;
-
-            App.Settings.RESTWindow.Top = Top;
-            App.Settings.RESTWindow.Left = Left;
-        }
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if(!IsLoaded) return;
-            if(WindowState != WindowState.Normal) return;
-
-            App.Settings.RESTWindow.Height = Height;
-            App.Settings.RESTWindow.Width = Width;
-        }
         private void Window_StateChanged(object sender, EventArgs e)
         {
             if(!IsLoaded) return;
 
-            if(this.WindowState != WindowState.Normal)
-            {
-                App.Settings.RESTWindow.Top = TopLast;
-                App.Settings.RESTWindow.Left = TopLeft;
-            }
             if(this.WindowState == WindowState.Minimized) return;
 
             App.Settings.RESTWindow.WindowState = this.WindowState;
@@ -163,6 +121,40 @@ namespace MobileComms_WPF
 
         private void LoadResourceList()
         {
+            foreach(var cmd in REST.Commands)
+            {
+                bool found = false;
+                TreeViewItem tvi = null;
+
+                foreach(TreeViewItem item in TrvCommandList.Items)
+                    if(item.Header.ToString().Equals(cmd.TypeName))
+                    {
+                        found = true;
+                        tvi = item;
+                        break;
+                    }
+
+                if(!found)
+                {
+                    tvi = new TreeViewItem { Header = cmd.TypeName };
+                    tvi.Selected += Tvi_Selected;
+                }
+
+                foreach(string s in cmd.Resources)
+                {
+                    TreeViewItem tvic = new TreeViewItem() { Header = s };
+                    tvic.Selected += Tvic_Selected;
+                    tvic.Tag = cmd;
+                    tvi.Items.Add(tvic);
+                }
+
+                if(!found)
+                {
+                    TrvCommandList.Items.Add(tvi);
+                }
+
+            }
+
             //Dictionary<string, List<string>> dict = new Dictionary<string, List<string>>();
 
             //Schema shc = new Schema();
@@ -201,43 +193,36 @@ namespace MobileComms_WPF
             //        }
             //    }
             //}
-
-            foreach(var cmd in REST.Commands)
-            {
-                TreeViewItem tvi = new TreeViewItem { Header = cmd.TypeName };
-                tvi.Selected += Tvi_Selected;
-                foreach(string s in cmd.Resources)
-                {
-                    TreeViewItem tvic = new TreeViewItem() { Header = s };
-                    tvic.Selected += Tvic_Selected;
-                    tvic.Tag = cmd;
-                    tvi.Items.Add(tvic);
-                }
-                TrvCommandList.Items.Add(tvi);
-            }
         }
 
-        private void BtnSend_Click(object sender, RoutedEventArgs e)
+        private async void BtnSend_Click(object sender, RoutedEventArgs e)
         {
-            TxtResponse.Text = string.Empty;
+            TxtErrorResponse.Text = string.Empty;
+            TxtErrorResponse.Visibility = Visibility.Collapsed;
+            //LblErrorResponse.Visibility = Visibility.Collapsed;
+
             TxtReturnedJSON.Text = string.Empty;
 
             switch(RestAction)
             {
                 case REST.Actions.GET:
 
-                    string resp = REST.Get($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password);
+                    string resp = await REST.Get($"https://{App.Settings.RESTHost}:8443{TxtResourceName.Text}", TxtPassword.Password);
 
                     if(REST.IsException)
                     {
-                        TxtResponse.Text = REST.RESTException.Message;
+                        TxtErrorResponse.Text = REST.RESTException.Message;
+                        TxtErrorResponse.Visibility = Visibility.Visible;
+                        //LblErrorResponse.Visibility = Visibility.Visible;
                     }
 
                     else
                     {
                         if(resp.StartsWith("{\"code") || resp.StartsWith("<html>"))
                         {
-                            TxtResponse.Text = resp;
+                            TxtErrorResponse.Text = resp;
+                            TxtErrorResponse.Visibility = Visibility.Visible;
+                            //LblErrorResponse.Visibility = Visibility.Visible;
                             return;
                         }
                         //var lst = JsonConvert.DeserializeObject<IList>(resp);
@@ -257,20 +242,26 @@ namespace MobileComms_WPF
                     break;
 
                 case REST.Actions.PUT:
-                    TxtResponse.Text = REST.Put($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password, TxtJsonData.Text);
+                    TxtErrorResponse.Text = await REST.Put($"https://{App.Settings.RESTHost}:8443{TxtResourceName.Text}", TxtPassword.Password, TxtJSONSchema.Text);
+                    TxtErrorResponse.Visibility = Visibility.Visible;
+                    //LblErrorResponse.Visibility = Visibility.Visible;
                     break;
 
                 case REST.Actions.POST:
-                    TxtResponse.Text = REST.Post($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password, TxtJsonData.Text);
+                    TxtErrorResponse.Text = await REST.Post($"https://{App.Settings.RESTHost}:8443{TxtResourceName.Text}", TxtPassword.Password, TxtJSONSchema.Text);
+                    TxtErrorResponse.Visibility = Visibility.Visible;
+                    //LblErrorResponse.Visibility = Visibility.Visible;
                     break;
 
                 case REST.Actions.DELETE:
-                    TxtResponse.Text = REST.Delete($"https://{TxtHost.Text}:8443{TxtResourceName.Text}", TxtPassword.Password);
+                    TxtErrorResponse.Text = await REST.Delete($"https://{App.Settings.RESTHost}:8443{TxtResourceName.Text}", TxtPassword.Password);
+                    TxtErrorResponse.Visibility = Visibility.Visible;
+                    //LblErrorResponse.Visibility = Visibility.Visible;
                     break;
                 case REST.Actions.STREAM:
                     if(Stream == null)
                     {
-                        Stream = REST.Stream(REST.ConnectionString(TxtHost.Text, TxtResourceName.Text), TxtPassword.Password);
+                        Stream = await REST.Stream(REST.ConnectionString(App.Settings.RESTHost, TxtResourceName.Text), TxtPassword.Password);
                         if(Stream.CanRead)
                         {
                             BeginReading();
@@ -295,12 +286,15 @@ namespace MobileComms_WPF
             Type t = Type.GetType($"MobileComms_ITK.JSON.Types.{className},MobileComms_ITK");
             if(t == null)
             {
-                TxtJsonSchema.Text = string.Empty;
-                TxtJsonData.Text = string.Empty;
+                TxtJSONSchema.Text = string.Empty;
             }
             else
             {
-                var lst = JsonConvert.DeserializeObject<JArray>(json);
+                JArray lst;
+                if(json.StartsWith("["))
+                   lst = JsonConvert.DeserializeObject<JArray>(json);
+                else
+                   lst = JsonConvert.DeserializeObject<JArray>($"[{json}]");
 
                 bool hasUpd = false;
                 foreach(JObject elem in lst)
@@ -330,81 +324,70 @@ namespace MobileComms_WPF
 
             TreeViewItem selected = (TreeViewItem)sender;
             REST.Command cmd = (REST.Command)selected.Tag;
+            var obj = Activator.CreateInstance(cmd.JSONType);
+
+            RestAction = cmd.Action;
 
             string resource = (string)selected.Header;
 
             TxtResourceName.Text = resource;
             TxtResourceName.Tag = resource;
+
+
+            //LblResourceValue.Content = Regex.Match(resource, @"{.*}").Value.Replace("{", "").Replace("}", "");
+            TxtJSONSchema.Text = JsonConvert.SerializeObject(obj, cmd.JSONType, Formatting.Indented, new JsonSerializerSettings() { ObjectCreationHandling = ObjectCreationHandling.Reuse }).Replace("null", "\"\"");
+
+            BtnSend.Content = Enum.GetName(typeof(REST.Actions), RestAction);
+
             TxtResourceValue.Text = "";
 
-            LblResourceValue.Content = Regex.Match(resource, @"{.*}").Value.Replace("{", "").Replace("}", "");
+            TxtErrorResponse.Text = string.Empty;
+            TxtErrorResponse.Visibility = Visibility.Collapsed;
+           //LblErrorResponse.Visibility = Visibility.Collapsed;
 
-            //string name = (string)((TreeViewItem)selected.Parent).Header;
-            //Type t = Type.GetType($"MobileComms_ITK.JSON_Types.{name},MobileComms_ITK");
+            TxtResourceValue.Visibility = Visibility.Collapsed;
+            //LblResourceValue.Visibility = Visibility.Collapsed;
 
-            //if(t == null)
-            //{
-            //    TxtJsonSchema.Text = string.Empty;
-            //    TxtJsonData.Text = string.Empty;
-            //}
-            //else
-            //{
-
-            //}
-                var obj = Activator.CreateInstance(cmd.JSONType);
-            
-                TxtJsonSchema.Text = JsonConvert.SerializeObject(obj).Replace(",\"", ",\r\n\"").Replace("null", "\"\"");
-            switch(cmd.Action)
+            TxtJSONSchema.Visibility = Visibility.Visible;
+            //LblJSONSchema.Visibility = Visibility.Visible;
+            switch(RestAction)
             {
                 case REST.Actions.GET:
-                    RestAction = REST.Actions.GET;
-                    BtnSend.Content = Enum.GetName(typeof(REST.Actions), RestAction);
-                    TxtJsonData.Text = string.Empty;
-                    TxtJsonData.IsEnabled = false;
+                    TxtJSONSchema.IsReadOnly = true;
+                    TxtJSONSchema.Background = null;
+                    //LblJSONSchema.Content = "JSON Schema";
 
-                    TxtResourceValue.IsEnabled = true;
+                    TxtResourceValue.Visibility = Visibility.Visible;
+                    //LblResourceValue.Visibility = Visibility.Visible;
+
                     break;
                 case REST.Actions.PUT:
-                    RestAction = REST.Actions.PUT;
-                    BtnSend.Content = Enum.GetName(typeof(REST.Actions), RestAction);
+                    TxtJSONSchema.IsReadOnly = false;
+                    TxtJSONSchema.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0AFFFF00"));
+                    //LblJSONSchema.Content = "JSON Body to Send";
 
-                    TxtJsonData.Text = TxtJsonSchema.Text;
-                    TxtJsonData.IsEnabled = true;
-
-                    TxtResourceValue.IsEnabled = false;
                     break;
                 case REST.Actions.POST:
-                    RestAction = REST.Actions.POST;
-                    BtnSend.Content = Enum.GetName(typeof(REST.Actions), RestAction);
-                    TxtJsonData.Text = TxtJsonSchema.Text;
-                    TxtJsonData.IsEnabled = true;
+                    TxtJSONSchema.IsReadOnly = false;
+                    TxtJSONSchema.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0AFFFF00"));
+                    //LblJSONSchema.Content = "JSON Body to Send";
 
-                    TxtResourceValue.IsEnabled = false;
                     break;
                 case REST.Actions.DELETE:
-                    RestAction = REST.Actions.DELETE;
-                    BtnSend.Content = Enum.GetName(typeof(REST.Actions), RestAction);
-                    TxtJsonSchema.Text = string.Empty;
-                    TxtJsonData.Text = string.Empty;
-                    TxtJsonData.IsEnabled = false;
+                    TxtJSONSchema.Visibility = Visibility.Collapsed;
+                    //LblJSONSchema.Visibility = Visibility.Collapsed;
 
-                    TxtResourceValue.IsEnabled = true;
+                    TxtResourceValue.Visibility = Visibility.Visible;
+                    //LblResourceValue.Visibility = Visibility.Visible;
+
+                    break;
+                case REST.Actions.STREAM:
+                    TxtJSONSchema.IsReadOnly = true;
+                    TxtJSONSchema.Background = null;
+                    //LblJSONSchema.Content = "JSON Schema";
+
                     break;
             }
-
-            if(TxtResourceName.Text.Contains("/Stream"))
-            {
-                BtnSend.Content = "GET: Stream";
-
-                RestAction = REST.Actions.STREAM;
-
-                TxtJsonSchema.Text = string.Empty;
-                TxtJsonData.Text = string.Empty;
-
-                TxtJsonData.IsEnabled = false;
-                TxtResourceValue.IsEnabled = true;
-            }
-
         }
         private void Tvi_Selected(object sender, RoutedEventArgs e)
         {
@@ -412,8 +395,8 @@ namespace MobileComms_WPF
             if(tvi.IsSelected)
                 tvi.IsSelected = false;
 
-            if(!tvi.IsExpanded)
-                tvi.IsExpanded = true;
+            //if(!tvi.IsExpanded)
+            //    tvi.IsExpanded = true;
         }
 
         private void BtnOpenSwagger_Click(object sender, RoutedEventArgs e)
@@ -421,15 +404,15 @@ namespace MobileComms_WPF
             //using(WebBrowser WebBrowser1 = new WebBrowser())
             //{
             //    String auth =
-            //        System.Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(TxtHost.Text + ":" + TxtPassword.Password));
+            //        System.Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(App.Settings.RESTHost + ":" + TxtPassword.Password));
             //    string headers = "Authorization: Basic " + auth + "\r\n";
-            //    WebBrowser1.Navigate($"https://{TxtHost.Text}/swagger/", "_blank", null, headers);
+            //    WebBrowser1.Navigate($"https://{App.Settings.RESTHost}/swagger/", "_blank", null, headers);
 
             //}
-            ////string authHdr = "Authorization: Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes(TxtHost.Text + ":" + TxtPassword.Password)) + "\r\n";
+            ////string authHdr = "Authorization: Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes(App.Settings.RESTHost + ":" + TxtPassword.Password)) + "\r\n";
 
             ////webBrowserCtl.Navigate("http://example.com", null, null, authHdr);
-            System.Diagnostics.Process.Start($"https://{TxtHost.Text}/swagger/");
+            System.Diagnostics.Process.Start($"https://{App.Settings.RESTHost}/swagger/");
         }
 
         private void TxtResourceValue_TextChanged(object sender, TextChangedEventArgs e)
@@ -482,8 +465,8 @@ namespace MobileComms_WPF
         private void TxtHost_TextChanged(object sender, TextChangedEventArgs e)
         {
 
-            if(!IsLoaded) return;
-            App.Settings.RESTHost = TxtHost.Text;
+            //if(!IsLoaded) return;
+            //App.Settings.RESTHost = App.Settings.RESTHost;
         }
     }
 }
