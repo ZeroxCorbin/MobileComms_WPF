@@ -1,18 +1,22 @@
 ﻿using ApplicationSettingsNS;
+using MobileComms_ITK.JSON.Types;
 using MobileComms_ITK.REST;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -290,32 +294,77 @@ namespace MobileComms_WPF
             }
             else
             {
-                JArray lst;
-                if(json.StartsWith("["))
-                   lst = JsonConvert.DeserializeObject<JArray>(json);
-                else
-                   lst = JsonConvert.DeserializeObject<JArray>($"[{json}]");
-
-                bool hasUpd = false;
-                foreach(JObject elem in lst)
+                DataTable datatable = new DataTable();
+                foreach(PropertyInfo prop in t.GetProperties())
                 {
-                    if(elem.ContainsKey("upd"))
+                    if(prop.Name.Equals("AdditionalProperties")) continue;
+                    if(prop.Name.Equals("Details")) continue;
+
+                    DataColumn column;
+                    if(prop.PropertyType == typeof(Timestamp))
                     {
-                        hasUpd = true;
-                        DateTime dt = DateTimeOffset.FromUnixTimeMilliseconds((long)elem.Property("upd").Value["millis"]).DateTime;
-                        elem.Property("upd").Remove();
-                        elem.Property("namekey").AddAfterSelf(new JProperty("upd", dt));
+                        column = new DataColumn
+                        {
+                            DataType = typeof(DateTime),
+                            ColumnName = prop.Name,
+                            ReadOnly = true
+                        };
+                    }
+                    else if(prop.PropertyType.IsEnum)
+                    {
+                        column = new DataColumn
+                        {
+                            DataType = typeof(string),
+                            ColumnName = prop.Name,
+                            ReadOnly = true
+                        };
                     }
                     else
-                        break;
+                    {
+                        column = new DataColumn
+                        {
+                            DataType = prop.PropertyType,
+                            ColumnName = prop.Name,
+                            ReadOnly = true
+                        };
+                    }
+
+                    datatable.Columns.Add(column);
+                }
+
+                JArray lst;
+                if(json.StartsWith("["))
+                    lst = JsonConvert.DeserializeObject<JArray>(json);
+                else
+                    lst = JsonConvert.DeserializeObject<JArray>($"[{json}]");
+
+                foreach(JObject elem in lst)
+                {
+                    DataRow dr = datatable.NewRow();
+                    foreach(PropertyInfo prop in t.GetProperties())
+                    {
+                        if(prop.Name.Equals("AdditionalProperties")) continue;
+                        if(prop.Name.Equals("Details")) continue;
+
+                        if(prop.PropertyType == typeof(Timestamp))
+                        {
+                            dr[prop.Name] = DateTimeOffset.FromUnixTimeMilliseconds((long)elem.Property($"{char.ToLower(prop.Name[0])}{prop.Name.Substring(1)}").Value["millis"]).DateTime;
+                        }
+                        else
+                        {
+                            JProperty prop1;
+                            if((prop1 = elem.Property($"{char.ToLower(prop.Name[0])}{prop.Name.Substring(1)}")) != null)
+                                dr[prop.Name] = prop1.Value;
+                        }
+
+                    }
+                    datatable.Rows.Add(dr);
                 }
 
                 DgvReturnedJSON.ItemsSource = null;
-
-                if(hasUpd)
-                    DgvReturnedJSON.ItemsSource = lst.OrderByDescending(x => x["upd"]);
-                else
-                    DgvReturnedJSON.ItemsSource = lst;
+                DgvReturnedJSON.ItemsSource = datatable.DefaultView;
+                if(datatable.Columns.Contains("upd"))
+                    DgvReturnedJSON.Items.SortDescriptions.Add(new SortDescription("upd", ListSortDirection.Descending));
             }
         }
 
@@ -343,7 +392,7 @@ namespace MobileComms_WPF
 
             TxtErrorResponse.Text = string.Empty;
             TxtErrorResponse.Visibility = Visibility.Collapsed;
-           //LblErrorResponse.Visibility = Visibility.Collapsed;
+            //LblErrorResponse.Visibility = Visibility.Collapsed;
 
             TxtResourceValue.Visibility = Visibility.Collapsed;
             //LblResourceValue.Visibility = Visibility.Collapsed;

@@ -5,21 +5,36 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MobileComms_WPF"
              mc:Ignorable="d" 
-             Width="600" Height="300">
+             MaxWidth="600" MaxHeight="300">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="28"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" x:Name="LblQueueName"/>
-            <Label Grid.Column="1" Content="Loading" x:Name="LblState"/>
-        </Grid>
-        
-        <DataGrid Grid.Row="1" x:Name="DgMain" />
+        <Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="0,0,0,3"  Margin="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="34"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+
+                    </Grid.ColumnDefinitions>
+                    <Grid.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF4c88d6" Offset="0"/>
+                            <GradientStop Color="White" Offset="0.3"/>
+                        </LinearGradientBrush>
+                    </Grid.Background>
+
+                    <Label Grid.Column="0" x:Name="LblQueueName" FontSize="16" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalAlignment="Bottom" VerticalContentAlignment="Center"/>
+                    <Label Grid.Column="1" Content="Loading" x:Name="LblState" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Bottom" VerticalContentAlignment="Center"/>
+                </Grid>
+
+                
+                <DataGrid Grid.Row="1" x:Name="DgMain" />
+            </Grid>
+        </Border>
+
     </Grid>
 </UserControl>

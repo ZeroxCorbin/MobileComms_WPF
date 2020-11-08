@@ -14,6 +14,7 @@ using SqlKata.Extensions;
 using SqlKata.Compilers;
 using System.ComponentModel;
 using System.Reflection;
+using System.Linq;
 
 namespace MobileComms_WPF
 {
@@ -109,9 +110,12 @@ namespace MobileComms_WPF
                         (Action)(() =>
                         {
                             System.Data.DataSet ds = SQL.Select($"{TxtQueryStart.Text}");
+
                             if(ds.Tables.Count > 0)
                             {
                                 DgvTableRows.ItemsSource = ds.Tables[0].DefaultView;
+                                if(ds.Tables[0].Columns.Contains("upd"))
+                                    DgvTableRows.Items.SortDescriptions.Add(new SortDescription("upd", ListSortDirection.Descending));
                                 TxtResponse.Text = "";
                             }
 
@@ -244,13 +248,6 @@ namespace MobileComms_WPF
             }
         }
 
-        private void BtnGetScheme_Click(object sender, RoutedEventArgs e)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            DgvTableRows.ItemsSource = SQL.GetScheme($"{((TreeViewItem)TrvQueueList.SelectedItem).Header}").Tables[0].DefaultView;
-
-        }
 
         private void BtnConnect_Click(object sender, RoutedEventArgs e)
         {
@@ -287,6 +284,7 @@ namespace MobileComms_WPF
         private void Connected()
         {
             BtnSend.IsEnabled = true;
+            BtnShowSchema.IsEnabled = true;
 
             TxtPassword.IsEnabled = false;
             TxtHost.IsEnabled = false;
@@ -294,6 +292,7 @@ namespace MobileComms_WPF
         private void DisConnected()
         {
             BtnSend.IsEnabled = false;
+            BtnShowSchema.IsEnabled = false;
 
             TxtPassword.IsEnabled = true;
             TxtHost.IsEnabled = true;
@@ -383,7 +382,7 @@ namespace MobileComms_WPF
 
             SQL.View view = (SQL.View)LstQueryTypes.Tag;
 
-            BtnSend.Content = LstQueryTypes.SelectedItem;
+            //BtnSend.Content = LstQueryTypes.SelectedItem;
 
             if(LstQueryTypes.SelectedItem is SQL.QueryType type)
             {
@@ -425,6 +424,8 @@ namespace MobileComms_WPF
             App.Settings.SQLPassword = TxtPassword.Password;
         }
         public double TxtWidth { get; set; }
+        public double TxtHeight { get; set; }
+
         private void BrdQuery_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             double test = (BrdQuery.ActualWidth - 120) / 2;
@@ -439,6 +440,12 @@ namespace MobileComms_WPF
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        private void BtnShowSchema_Click(object sender, RoutedEventArgs e)
+        {
+            TxtSchema.Text = SQL.GetScheme($"{((TreeViewItem)TrvQueueList.SelectedItem).Header}");
+        }
+
 
     }
 }

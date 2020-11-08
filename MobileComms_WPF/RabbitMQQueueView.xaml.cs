@@ -1,9 +1,15 @@
-﻿using Newtonsoft.Json;
+﻿using MobileComms_ITK;
+using MobileComms_ITK.JSON.Types;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Controls;
+using System.Windows.Markup;
 using System.Windows.Threading;
 
 namespace MobileComms_WPF
@@ -15,12 +21,19 @@ namespace MobileComms_WPF
     {
         private MobileComms_ITK.RabbitMQ RabbitMQ { get; }
         private string QueueName { get; set; }
-        public RabbitMQQueueView(MobileComms_ITK.RabbitMQ rabbitMQ, string queueName)
+        private string ChannelName { get; } = Guid.NewGuid().ToString();
+        private string ClassName { get; set; }
+
+        public RabbitMQQueueView(MobileComms_ITK.RabbitMQ rabbitMQ, string queueName, string className)
         {
             InitializeComponent();
 
             RabbitMQ = rabbitMQ;
+
+            RabbitMQ.CreateNewChannel(ChannelName);
+
             QueueName = queueName;
+            ClassName = className;
 
             LblQueueName.Content = queueName;
 
@@ -31,12 +44,18 @@ namespace MobileComms_WPF
         {
             while(true)
             {
-                string res = RabbitMQ.Get(QueueName);
+                MobileComms_ITK.RabbitMQ.Messages lst = RabbitMQ.Get(QueueName, ChannelName);
+
                 if(RabbitMQ.IsException)
                     break;
-                if(!string.IsNullOrEmpty(res))
+                if(lst.Count > 0)
                 {
-                    DeserializeJSONtoDataGrid(res);
+                    Dispatcher.BeginInvoke(DispatcherPriority.Render,
+                            (Action)(() =>
+                            {
+                                DeserializeJSONtoDataGrid(ClassName, lst);
+                            }));
+
                 }
                 else
                 {
@@ -49,70 +68,179 @@ namespace MobileComms_WPF
 
                 Thread.Sleep(1000);
             }
-        }
-
-        private void DeserializeJSONtoDataGrid(string json)
-        {
-
-            var lst = JsonConvert.DeserializeObject<JArray>(json);
-            bool hasUpd = false;
-            foreach(JObject elem in lst)
-            {
-
-                if(elem.ContainsKey("upd"))
-                {
-                    hasUpd = true;
-                    DateTime dt = DateTimeOffset.FromUnixTimeMilliseconds((long)elem.Property("upd").Value["millis"]).DateTime;
-                    elem.Property("upd").Remove();
-                    elem.Property("namekey").AddAfterSelf(new JProperty("upd", dt));
-                }
-                else
-                {
-                    break;
-                }
-            }
             Dispatcher.BeginInvoke(DispatcherPriority.Render,
                     (Action)(() =>
                     {
-                        if(DgMain.ItemsSource == null)
+                        LblState.Content = "Exited";
+                    }));
+        }
+        private void DeserializeJSONtoDataGrid(string className, RabbitMQ.Messages messages)
+        {
+
+            Type t = Type.GetType($"MobileComms_ITK.JSON.Types.{className},MobileComms_ITK");
+            if(t == null)
+            {
+                DgMain.ItemsSource = null;
+            }
+            else
+            {
+                DataTable datatable = new DataTable();
+                foreach(PropertyInfo prop in t.GetProperties())
+                {
+                    if(prop.Name.Equals("AdditionalProperties")) continue;
+                    if(prop.Name.Equals("Details")) continue;
+
+                    DataColumn column;
+                    if(prop.PropertyType == typeof(Timestamp))
+                    {
+                        column = new DataColumn
                         {
-                            if(hasUpd)
-                                DgMain.ItemsSource = lst.OrderByDescending(x => x["upd"]);
-                            else
-                                DgMain.ItemsSource = lst;
+                            DataType = typeof(DateTime),
+                            ColumnName = prop.Name,
+                            ReadOnly = true
+                        };
+                    }
+                    else if(prop.PropertyType.IsEnum)
+                    {
+                        column = new DataColumn
+                        {
+                            DataType = typeof(string),
+                            ColumnName = prop.Name,
+                            ReadOnly = true
+                        };
+                    }
+                    else
+                    {
+                        column = new DataColumn
+                        {
+                            DataType = prop.PropertyType,
+                            ColumnName = prop.Name,
+                            ReadOnly = true
+                        };
+                    }
+
+                    datatable.Columns.Add(column);
+                }
+
+                DataColumn col = new DataColumn
+                {
+                    DataType = typeof(ulong),
+                    ColumnName = "DeliveryTag",
+                    ReadOnly = true
+                };
+                datatable.Columns.Add(col);
+
+                col = new DataColumn
+                {
+                    DataType = typeof(bool),
+                    ColumnName = "Redelivered",
+                    ReadOnly = true
+                };
+                datatable.Columns.Add(col);
+
+                foreach(RabbitMQ.Message message in messages)
+                {
+                    JObject elem = JsonConvert.DeserializeObject<JObject>(message.Body);
+
+                    DataRow dr = datatable.NewRow();
+                    foreach(PropertyInfo prop in t.GetProperties())
+                    {
+                        if(prop.Name.Equals("AdditionalProperties")) continue;
+                        if(prop.Name.Equals("Details")) continue;
+
+                        if(prop.PropertyType == typeof(Timestamp))
+                        {
+                            JProperty prop1;
+                            if((prop1 = elem.Property($"{char.ToLower(prop.Name[0])}{prop.Name.Substring(1)}")) != null)
+                                dr[prop.Name] = DateTimeOffset.FromUnixTimeMilliseconds((long)prop1.Value["millis"]).DateTime;
                         }
                         else
-                            foreach(var item in lst)
-                                ((JArray)DgMain.ItemsSource).Insert(0, item);
-                        DgMain.Items.Refresh();
-                    }));
+                        {
+                            JProperty prop1;
+                            if((prop1 = elem.Property($"{char.ToLower(prop.Name[0])}{prop.Name.Substring(1)}")) != null)
+                                dr[prop.Name] = prop1.Value;
+                        }
+                    }
 
-            //Type t = Type.GetType($"Classes.MobileComms_ITK.JSON_Types.{className}");
-            //if(t == null)
-            //{
-            //    //TxtJsonSchema.Text = string.Empty;
-            //    //TxtJsonData.Text = string.Empty;
-            //}
-            //else
-            //{
-            //    //Type genericListType = typeof(IList<>).MakeGenericType(t);
+                    dr["DeliveryTag"] = message.DeliveryTag;
+                    dr["Redelivered"] = message.Redelivered;
+                    datatable.Rows.Add(dr);
+                }
 
-            //    //PropertyInfo prop;
-            //    //if((prop = t.GetProperty("upd")) != null)
-            //    //{
-            //    //    if(prop.PropertyType == typeof(Timestamp))
-            //    //    {
-            //    //        Timestamp ts = (Timestamp)Activator.CreateInstance(typeof(Timestamp));
-
-            //    //        prop.SetValue(t, ts, null);
-            //    //    }
-
-            //    //}
-
-
-
-
-            //}
+                if(DgMain.ItemsSource == null)
+                {
+                    DgMain.ItemsSource = datatable.DefaultView;
+                    if(datatable.Columns.Contains("DeliveryTag"))
+                        DgMain.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("DeliveryTag", System.ComponentModel.ListSortDirection.Descending));
+                    DgMain.Tag = datatable;
+                }
+                else
+                    ((DataTable)DgMain.Tag).Merge(datatable);
+            }
         }
+
+        //private void DeserializeJSONtoDataGrid(string json)
+        //{
+
+        //    var lst = JsonConvert.DeserializeObject<JArray>(json);
+        //    bool hasUpd = false;
+        //    foreach(JObject elem in lst)
+        //    {
+
+        //        if(elem.ContainsKey("upd"))
+        //        {
+        //            hasUpd = true;
+        //            DateTime dt = DateTimeOffset.FromUnixTimeMilliseconds((long)elem.Property("upd").Value["millis"]).DateTime;
+        //            elem.Property("upd").Remove();
+        //            elem.Property("namekey").AddAfterSelf(new JProperty("upd", dt));
+        //        }
+        //        else
+        //        {
+        //            break;
+        //        }
+        //    }
+        //    Dispatcher.BeginInvoke(DispatcherPriority.Render,
+        //            (Action)(() =>
+        //            {
+        //                if(DgMain.ItemsSource == null)
+        //                {
+        //                    if(hasUpd)
+        //                        DgMain.ItemsSource = lst.OrderByDescending(x => x["upd"]);
+        //                    else
+        //                        DgMain.ItemsSource = lst;
+        //                }
+        //                else
+        //                    foreach(var item in lst)
+        //                        ((JArray)DgMain.ItemsSource).Insert(0, item);
+        //                DgMain.Items.Refresh();
+        //            }));
+
+        //    //Type t = Type.GetType($"Classes.MobileComms_ITK.JSON_Types.{className}");
+        //    //if(t == null)
+        //    //{
+        //    //    //TxtJsonSchema.Text = string.Empty;
+        //    //    //TxtJsonData.Text = string.Empty;
+        //    //}
+        //    //else
+        //    //{
+        //    //    //Type genericListType = typeof(IList<>).MakeGenericType(t);
+
+        //    //    //PropertyInfo prop;
+        //    //    //if((prop = t.GetProperty("upd")) != null)
+        //    //    //{
+        //    //    //    if(prop.PropertyType == typeof(Timestamp))
+        //    //    //    {
+        //    //    //        Timestamp ts = (Timestamp)Activator.CreateInstance(typeof(Timestamp));
+
+        //    //    //        prop.SetValue(t, ts, null);
+        //    //    //    }
+
+        //    //    //}
+
+
+
+
+        //    //}
+        //}
     }
 }

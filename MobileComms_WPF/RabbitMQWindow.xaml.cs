@@ -91,6 +91,7 @@ namespace MobileComms_WPF
             {
                 ListViewItem lvi = new ListViewItem { Content = kv.Key.Replace("inbound.", "") };
                 lvi.Selected += Lvi_InboundSelected;
+                lvi.Tag = kv.Value;
                 LstInboundQueueList.Items.Add(lvi);
             }
 
@@ -98,6 +99,8 @@ namespace MobileComms_WPF
             {
                 ListViewItem lvi = new ListViewItem { Content = kv.Key.Replace("outbound.", "") };
                 lvi.Selected += Lvi_OutboundSelected;
+                lvi.Tag = kv.Value;
+
                 LstOutboundQueueList.Items.Add(lvi);
             }
         }
@@ -106,7 +109,7 @@ namespace MobileComms_WPF
         {
             TxtInboundQueueName.Text = $"inbound.{(string)((ListViewItem)sender).Content}";
 
-            Type t = Type.GetType($"MobileComms_ITK.JSON_Types.{RabbitMQ.InboundQueues[TxtInboundQueueName.Text]},MobileComms_ITK");
+            Type t = Type.GetType($"MobileComms_ITK.JSON.Types.{RabbitMQ.InboundQueues[TxtInboundQueueName.Text]},MobileComms_ITK");
             if(t == null)
             {
                 TxtJsonSchema.Text = string.Empty;
@@ -114,12 +117,23 @@ namespace MobileComms_WPF
             else
             {
                 var obj = Activator.CreateInstance(t);
-                TxtJsonSchema.Text = JsonConvert.SerializeObject(obj).Replace(",\"", ",\r\n\"").Replace("null", "\"\"");
+                TxtJsonSchema.Text = JsonConvert.SerializeObject(obj, t, Formatting.Indented, new JsonSerializerSettings() { ObjectCreationHandling = ObjectCreationHandling.Reuse }).Replace("null", "\"\"");
             }
         }
         private void Lvi_OutboundSelected(object sender, RoutedEventArgs e)
         {
+            TxtOutboundQueueName.Text = $"outbound.{(string)((ListViewItem)sender).Content}";
 
+            Type t = Type.GetType($"MobileComms_ITK.JSON.Types.{RabbitMQ.OutboundQueues[TxtOutboundQueueName.Text]},MobileComms_ITK");
+            if(t == null)
+            {
+                TxtOutboundJsonSchema.Text = string.Empty;
+            }
+            else
+            {
+                var obj = Activator.CreateInstance(t);
+                TxtOutboundJsonSchema.Text = JsonConvert.SerializeObject(obj, t, Formatting.Indented, new JsonSerializerSettings() { ObjectCreationHandling = ObjectCreationHandling.Reuse }).Replace("null", "\"\"");
+            }
         }
 
 
@@ -134,12 +148,6 @@ namespace MobileComms_WPF
             if(!IsLoaded) return;
             App.Settings.RabbitMQPassword = TxtPassword.Password;
         }
-
-        private void TxtHost_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            TxtDBConnectionString.Text = RabbitMQ.ConnectionString(TxtHost.Text, "Your_ITK_Password");
-        }
-
         private void BtnConnect_Click(object sender, RoutedEventArgs e)
         {
             if(RabbitMQ.Connect(TxtHost.Text, TxtPassword.Password))
@@ -158,7 +166,7 @@ namespace MobileComms_WPF
 
         private void BtnMonitorQueue_Click(object sender, RoutedEventArgs e)
         {
-            WplMain.Children.Add(new RabbitMQQueueView(RabbitMQ, $"outbound.{((ListViewItem)LstOutboundQueueList.SelectedItem).Content}"));
+            WplMain.Children.Add(new RabbitMQQueueView(RabbitMQ, $"outbound.{((ListViewItem)LstOutboundQueueList.SelectedItem).Content}", $"{((ListViewItem)LstOutboundQueueList.SelectedItem).Tag}"));
         }
     }
 }

@@ -7,7 +7,6 @@
         mc:Ignorable="d"
         Title="REST (REpresentational State Transfer)" 
         Loaded="Window_Loaded"
-        StateChanged="Window_StateChanged"
         Closing="Window_Closing"
         Icon="Support/favicon.ico"
         MinWidth="1024"
@@ -15,7 +14,8 @@
         Width="{Binding RESTWindow.Width, Mode=TwoWay}"
         Height="{Binding RESTWindow.Height, Mode=TwoWay}"
         Left="{Binding RESTWindow.Left, Mode=TwoWay}"
-        Top="{Binding RESTWindow.Top, Mode=TwoWay}">
+        Top="{Binding RESTWindow.Top, Mode=TwoWay}"
+        WindowState="{Binding SQLWindow.WindowState, Mode=TwoWay}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -24,8 +24,8 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
-            <Grid>
+        <Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="0,0,0,3" Margin="5">
+            <Grid Margin="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="34"/>
                     <RowDefinition/>
@@ -39,9 +39,9 @@
                         </LinearGradientBrush>
                     </Label.Background>
                 </Label>
-                
-                
-                <Grid Grid.Row="1">
+
+
+                <Grid Grid.Row="1" Margin="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
@@ -60,24 +60,24 @@
                             HorizontalAlignment="Right"
                             Content="Swagger"
                             Click="BtnOpenSwagger_Click" />
-                    
+
                     <Label Grid.Column="1" 
                            Content="https://"
                            HorizontalContentAlignment="Right" />
-                    
+
                     <TextBox Grid.Column="2" Grid.Row="1"
                              x:Name="TxtHost" Text="{Binding RESTHost}"
                              Background="#0AFFFF00"
                              VerticalContentAlignment="Center"
                              TextChanged="TxtHost_TextChanged"
                              MinWidth="80" BorderBrush="{x:Null}"/>
-                    
+
                     <Label Grid.Column="3"
                            Content=":8443"/>
 
                     <Label Grid.Column="4"
                            Content="toolkitadmin"/>
-                    
+
                     <PasswordBox Grid.Column="5"
                                  x:Name="TxtPassword"
                                  Background="#0AFFFF00"
@@ -90,21 +90,22 @@
             </Grid>
         </Border>
 
-        <Grid Grid.Column="0" Grid.Row="1">
+        <Grid Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left">
             <Grid.ColumnDefinitions>
 
                 <ColumnDefinition Width="auto"/>
+                
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
 
 
-            <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+            <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3"  Padding="0,0,3,3" Margin="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="34"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-
+                    
                     <Label Grid.Row="0" Content="Resource List" FontSize="18" HorizontalContentAlignment="Center">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -113,10 +114,13 @@
                             </LinearGradientBrush>
                         </Label.Background>
                     </Label>
-                    <TreeView Grid.Row="1" Grid.Column="0" 
+                    
+                    <Grid Grid.Row="1" Grid.Column="0" Margin="10">
+
+                    <TreeView  
                               Name="TrvCommandList"
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
-                              Padding="0,0,10,0"
+                              Padding="0,0,20,0" 
                               Background="{x:Null}"
                               BorderBrush="{x:Null}">
                         <TreeView.Resources>
@@ -129,18 +133,20 @@
                             <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
                       Color="Black" />
                         </TreeView.Resources>
-                    </TreeView>
+                    </TreeView>                      
+                    </Grid>
+
                 </Grid>
             </Border>
 
-            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3"  Padding="0,0,0,3" Margin="0,5,5,5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="34"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0" Content="Resource to Send" FontSize="18" HorizontalContentAlignment="Center">
+                    <Label Grid.Row="0" Content="Resource to Send" FontSize="18" HorizontalContentAlignment="Center" UseLayoutRounding="False">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#FF4c88d6" Offset="0"/>
@@ -148,11 +154,10 @@
                             </LinearGradientBrush>
                         </Label.Background>
                     </Label>
-                    <Grid Grid.Row="1">
+                    <Grid Grid.Row="1" Margin="10">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
@@ -180,32 +185,37 @@
                                   TextChanged="TxtResourceValue_TextChanged"
                                   MinWidth="80"
                                   BorderBrush="{x:Null}"/>
-                            
-                            <Button Grid.Column="2"
+
+                        </Grid>
+
+
+                        <Button Grid.Row="0" Grid.Column="2"
                                 Name="BtnSend" 
                                 Click="BtnSend_Click"
                                 Width="94"
                                 Content="Send"
-                                BorderBrush="{x:Null}"/>
+                                BorderBrush="{x:Null}" 
+                                HorizontalAlignment="Left"/>
 
-                        </Grid>
-
-                        <TextBox Grid.Row="1" Grid.Column="0"
-                                 Name="TxtJSONSchema"
-                                 VerticalScrollBarVisibility="Auto"
-                                 MinWidth="80" 
-                                 Background="{x:Null}"
-                                 BorderBrush="{x:Null}"
-                                 Padding="0,0,20,0"/>
+                        <TextBox  Grid.Row="1" Grid.Column="0"
+                                     Name="TxtJSONSchema"
+                                     VerticalScrollBarVisibility="Auto"
+                                     MinWidth="80" 
+                                     Background="{x:Null}"
+                                     BorderBrush="{x:Null}"
+                                     Padding="0,0,20,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
 
 
-                         <TextBox Grid.Row="2" Grid.Column="1" 
-                                  x:Name="TxtErrorResponse"
-                                  HorizontalScrollBarVisibility="Disabled"
-                                  VerticalScrollBarVisibility="Auto"
-                                  Background="{x:Null}" 
-                                  TextWrapping="Wrap" BorderBrush="{x:Null}" />
-
+                        <TextBox Grid.Row="1" Grid.Column="1" 
+                                      x:Name="TxtErrorResponse"
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      VerticalScrollBarVisibility="Auto"
+                                      Background="{x:Null}" 
+                                      TextWrapping="Wrap"
+                                      BorderBrush="{x:Null}"
+                                      VerticalAlignment="Top"
+                                      HorizontalAlignment="Left"
+                                      MaxWidth="300"/>
                     </Grid>
 
                 </Grid>
@@ -244,7 +254,7 @@
             </GridSplitter.Background>
         </GridSplitter>
 
-        <Border Grid.Column="0" Grid.Row="3" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="3" Margin="5">
+        <Border Grid.Column="0" Grid.Row="3" BorderBrush="Black" BorderThickness="1" CornerRadius="3"  Padding="0,0,0,3" Margin="5">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="34"/>

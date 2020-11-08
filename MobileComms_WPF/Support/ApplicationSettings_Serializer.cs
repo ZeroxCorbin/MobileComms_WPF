@@ -114,27 +114,27 @@ namespace ApplicationSettingsNS
                 public double Left
                 {
                     get { return _left; }
-                    set { _left = value; RaisePropertyChanged("Left"); }
+                    set { if(windowState == WindowState.Normal) _left = value; RaisePropertyChanged("Left"); }
                 }
                 public double Top
                 {
                     get { return _top; }
-                    set { _top = value; RaisePropertyChanged("Top"); }
+                    set { if(windowState == WindowState.Normal) _top = value; RaisePropertyChanged("Top"); }
                 }
                 public double Width
                 {
                     get { return _width; }
-                    set { _width = value; RaisePropertyChanged("Width"); }
+                    set { if(windowState == WindowState.Normal) _width = value; RaisePropertyChanged("Width"); }
                 }
                 public double Height
                 {
                     get { return _height; }
-                    set { _height = value; RaisePropertyChanged("Height"); }
+                    set { if(windowState == WindowState.Normal) _height = value; RaisePropertyChanged("Height"); }
                 }
                 public WindowState WindowState
                 {
                     get { return windowState; }
-                    set { windowState = value; RaisePropertyChanged("WindowState"); }
+                    set { if(value != WindowState.Minimized) windowState = value; RaisePropertyChanged("WindowState"); }
                 }
 
                 public event PropertyChangedEventHandler PropertyChanged;
