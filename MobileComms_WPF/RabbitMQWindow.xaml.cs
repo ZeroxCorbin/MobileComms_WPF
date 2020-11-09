@@ -2,6 +2,7 @@
 using MobileComms_ITK;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -87,19 +88,19 @@ namespace MobileComms_WPF
 
         private void LoadQueueList()
         {
-            foreach(var kv in RabbitMQ.InboundQueues)
+            foreach(var cmd in RabbitMQ.InboundQueues)
             {
-                ListViewItem lvi = new ListViewItem { Content = kv.Key.Replace("inbound.", "") };
+                ListViewItem lvi = new ListViewItem { Content = cmd.Key.Replace("inbound.", "") };
                 lvi.Selected += Lvi_InboundSelected;
-                lvi.Tag = kv.Value;
+                lvi.Tag = cmd;
                 LstInboundQueueList.Items.Add(lvi);
             }
 
-            foreach(var kv in RabbitMQ.OutboundQueues)
+            foreach(var cmd in RabbitMQ.OutboundQueues)
             {
-                ListViewItem lvi = new ListViewItem { Content = kv.Key.Replace("outbound.", "") };
+                ListViewItem lvi = new ListViewItem { Content = cmd.Key.Replace("outbound.", "") };
                 lvi.Selected += Lvi_OutboundSelected;
-                lvi.Tag = kv.Value;
+                lvi.Tag = cmd;
 
                 LstOutboundQueueList.Items.Add(lvi);
             }
@@ -107,40 +108,30 @@ namespace MobileComms_WPF
 
         private void Lvi_InboundSelected(object sender, RoutedEventArgs e)
         {
-            TxtInboundQueueName.Text = $"inbound.{(string)((ListViewItem)sender).Content}";
+            KeyValuePair<string, Type> dict = (KeyValuePair<string, Type>)((TreeViewItem)sender).Tag;
 
-            Type t = Type.GetType($"MobileComms_ITK.JSON.Types.{RabbitMQ.InboundQueues[TxtInboundQueueName.Text]},MobileComms_ITK");
-            if(t == null)
-            {
-                TxtJsonSchema.Text = string.Empty;
-            }
-            else
-            {
-                var obj = Activator.CreateInstance(t);
-                TxtJsonSchema.Text = JsonConvert.SerializeObject(obj, t, Formatting.Indented, new JsonSerializerSettings() { ObjectCreationHandling = ObjectCreationHandling.Reuse }).Replace("null", "\"\"");
-            }
+            TxtInboundQueueName.Text = dict.Key;
+
+            var obj = Activator.CreateInstance(dict.Value);
+            TxtJsonSchema.Text = JsonConvert.SerializeObject(obj, dict.Value, Formatting.Indented, new JsonSerializerSettings() { ObjectCreationHandling = ObjectCreationHandling.Reuse }).Replace("null", "\"\"");
+
         }
         private void Lvi_OutboundSelected(object sender, RoutedEventArgs e)
         {
-            TxtOutboundQueueName.Text = $"outbound.{(string)((ListViewItem)sender).Content}";
+            KeyValuePair<string, Type> dict = (KeyValuePair<string, Type>)((TreeViewItem)sender).Tag;
 
-            Type t = Type.GetType($"MobileComms_ITK.JSON.Types.{RabbitMQ.OutboundQueues[TxtOutboundQueueName.Text]},MobileComms_ITK");
-            if(t == null)
-            {
-                TxtOutboundJsonSchema.Text = string.Empty;
-            }
-            else
-            {
-                var obj = Activator.CreateInstance(t);
-                TxtOutboundJsonSchema.Text = JsonConvert.SerializeObject(obj, t, Formatting.Indented, new JsonSerializerSettings() { ObjectCreationHandling = ObjectCreationHandling.Reuse }).Replace("null", "\"\"");
-            }
+            TxtOutboundQueueName.Text = dict.Key;
+
+            var obj = Activator.CreateInstance(dict.Value);
+            TxtOutboundJsonSchema.Text = JsonConvert.SerializeObject(obj, dict.Value, Formatting.Indented, new JsonSerializerSettings() { ObjectCreationHandling = ObjectCreationHandling.Reuse }).Replace("null", "\"\"");
+
         }
 
 
         private void BtnSend_Click(object sender, RoutedEventArgs e)
         {
 
-           RabbitMQ.Put(TxtInboundQueueName.Text, TxtJsonSchema.Text);
+            RabbitMQ.Put(TxtInboundQueueName.Text, TxtJsonSchema.Text);
         }
 
         private void TxtPassword_PasswordChanged(object sender, RoutedEventArgs e)
@@ -166,7 +157,7 @@ namespace MobileComms_WPF
 
         private void BtnMonitorQueue_Click(object sender, RoutedEventArgs e)
         {
-            WplMain.Children.Add(new RabbitMQQueueView(RabbitMQ, $"outbound.{((ListViewItem)LstOutboundQueueList.SelectedItem).Content}", $"{((ListViewItem)LstOutboundQueueList.SelectedItem).Tag}"));
+            WplMain.Children.Add(new RabbitMQQueueView(RabbitMQ, (KeyValuePair<string, Type>)((TreeViewItem)sender).Tag));
         }
     }
 }

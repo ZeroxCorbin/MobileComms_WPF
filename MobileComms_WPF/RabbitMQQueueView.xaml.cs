@@ -19,12 +19,12 @@ namespace MobileComms_WPF
     /// </summary>
     public partial class RabbitMQQueueView : UserControl
     {
-        private MobileComms_ITK.RabbitMQ RabbitMQ { get; }
+        private RabbitMQ RabbitMQ { get; }
         private string QueueName { get; set; }
         private string ChannelName { get; } = Guid.NewGuid().ToString();
-        private string ClassName { get; set; }
+        private Type ClassType { get; set; }
 
-        public RabbitMQQueueView(MobileComms_ITK.RabbitMQ rabbitMQ, string queueName, string className)
+        public RabbitMQQueueView(RabbitMQ rabbitMQ, KeyValuePair<string, Type> cmd)
         {
             InitializeComponent();
 
@@ -32,10 +32,10 @@ namespace MobileComms_WPF
 
             RabbitMQ.CreateNewChannel(ChannelName);
 
-            QueueName = queueName;
-            ClassName = className;
+            QueueName = cmd.Key;
+            ClassType = cmd.Value;
 
-            LblQueueName.Content = queueName;
+            LblQueueName.Content = QueueName;
 
             ThreadPool.QueueUserWorkItem(UpdateThread);
         }
@@ -44,7 +44,7 @@ namespace MobileComms_WPF
         {
             while(true)
             {
-                MobileComms_ITK.RabbitMQ.Messages lst = RabbitMQ.Get(QueueName, ChannelName);
+                RabbitMQ.Messages lst = RabbitMQ.Get(QueueName, ChannelName);
 
                 if(RabbitMQ.IsException)
                     break;
@@ -53,7 +53,7 @@ namespace MobileComms_WPF
                     Dispatcher.BeginInvoke(DispatcherPriority.Render,
                             (Action)(() =>
                             {
-                                DeserializeJSONtoDataGrid(ClassName, lst);
+                                DeserializeJSONtoDataGrid(lst);
                             }));
 
                 }
@@ -74,109 +74,102 @@ namespace MobileComms_WPF
                         LblState.Content = "Exited";
                     }));
         }
-        private void DeserializeJSONtoDataGrid(string className, RabbitMQ.Messages messages)
+        private void DeserializeJSONtoDataGrid(RabbitMQ.Messages messages)
         {
 
-            Type t = Type.GetType($"MobileComms_ITK.JSON.Types.{className},MobileComms_ITK");
-            if(t == null)
+            DataTable datatable = new DataTable();
+            foreach(PropertyInfo prop in ClassType.GetProperties())
             {
-                DgMain.ItemsSource = null;
+                if(prop.Name.Equals("AdditionalProperties")) continue;
+                if(prop.Name.Equals("Details")) continue;
+
+                DataColumn column;
+                if(prop.PropertyType == typeof(Timestamp))
+                {
+                    column = new DataColumn
+                    {
+                        DataType = typeof(DateTime),
+                        ColumnName = prop.Name,
+                        ReadOnly = true
+                    };
+                }
+                else if(prop.PropertyType.IsEnum)
+                {
+                    column = new DataColumn
+                    {
+                        DataType = typeof(string),
+                        ColumnName = prop.Name,
+                        ReadOnly = true
+                    };
+                }
+                else
+                {
+                    column = new DataColumn
+                    {
+                        DataType = prop.PropertyType,
+                        ColumnName = prop.Name,
+                        ReadOnly = true
+                    };
+                }
+
+                datatable.Columns.Add(column);
             }
-            else
+
+            DataColumn col = new DataColumn
             {
-                DataTable datatable = new DataTable();
-                foreach(PropertyInfo prop in t.GetProperties())
+                DataType = typeof(ulong),
+                ColumnName = "DeliveryTag",
+                ReadOnly = true
+            };
+            datatable.Columns.Add(col);
+
+            col = new DataColumn
+            {
+                DataType = typeof(bool),
+                ColumnName = "Redelivered",
+                ReadOnly = true
+            };
+            datatable.Columns.Add(col);
+
+            foreach(RabbitMQ.Message message in messages)
+            {
+                JObject elem = JsonConvert.DeserializeObject<JObject>(message.Body);
+
+                DataRow dr = datatable.NewRow();
+                foreach(PropertyInfo prop in ClassType.GetProperties())
                 {
                     if(prop.Name.Equals("AdditionalProperties")) continue;
                     if(prop.Name.Equals("Details")) continue;
 
-                    DataColumn column;
                     if(prop.PropertyType == typeof(Timestamp))
                     {
-                        column = new DataColumn
-                        {
-                            DataType = typeof(DateTime),
-                            ColumnName = prop.Name,
-                            ReadOnly = true
-                        };
-                    }
-                    else if(prop.PropertyType.IsEnum)
-                    {
-                        column = new DataColumn
-                        {
-                            DataType = typeof(string),
-                            ColumnName = prop.Name,
-                            ReadOnly = true
-                        };
+                        JProperty prop1;
+                        if((prop1 = elem.Property($"{char.ToLower(prop.Name[0])}{prop.Name.Substring(1)}")) != null)
+                            dr[prop.Name] = DateTimeOffset.FromUnixTimeMilliseconds((long)prop1.Value["millis"]).DateTime;
                     }
                     else
                     {
-                        column = new DataColumn
-                        {
-                            DataType = prop.PropertyType,
-                            ColumnName = prop.Name,
-                            ReadOnly = true
-                        };
+                        JProperty prop1;
+                        if((prop1 = elem.Property($"{char.ToLower(prop.Name[0])}{prop.Name.Substring(1)}")) != null)
+                            dr[prop.Name] = prop1.Value;
                     }
-
-                    datatable.Columns.Add(column);
                 }
 
-                DataColumn col = new DataColumn
-                {
-                    DataType = typeof(ulong),
-                    ColumnName = "DeliveryTag",
-                    ReadOnly = true
-                };
-                datatable.Columns.Add(col);
-
-                col = new DataColumn
-                {
-                    DataType = typeof(bool),
-                    ColumnName = "Redelivered",
-                    ReadOnly = true
-                };
-                datatable.Columns.Add(col);
-
-                foreach(RabbitMQ.Message message in messages)
-                {
-                    JObject elem = JsonConvert.DeserializeObject<JObject>(message.Body);
-
-                    DataRow dr = datatable.NewRow();
-                    foreach(PropertyInfo prop in t.GetProperties())
-                    {
-                        if(prop.Name.Equals("AdditionalProperties")) continue;
-                        if(prop.Name.Equals("Details")) continue;
-
-                        if(prop.PropertyType == typeof(Timestamp))
-                        {
-                            JProperty prop1;
-                            if((prop1 = elem.Property($"{char.ToLower(prop.Name[0])}{prop.Name.Substring(1)}")) != null)
-                                dr[prop.Name] = DateTimeOffset.FromUnixTimeMilliseconds((long)prop1.Value["millis"]).DateTime;
-                        }
-                        else
-                        {
-                            JProperty prop1;
-                            if((prop1 = elem.Property($"{char.ToLower(prop.Name[0])}{prop.Name.Substring(1)}")) != null)
-                                dr[prop.Name] = prop1.Value;
-                        }
-                    }
-
-                    dr["DeliveryTag"] = message.DeliveryTag;
-                    dr["Redelivered"] = message.Redelivered;
-                    datatable.Rows.Add(dr);
-                }
-
-                if(DgMain.ItemsSource == null)
-                {
-                    DgMain.ItemsSource = datatable.DefaultView;
-                    if(datatable.Columns.Contains("DeliveryTag"))
-                        DgMain.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("DeliveryTag", System.ComponentModel.ListSortDirection.Descending));
-                    DgMain.Tag = datatable;
-                }
-                else
-                    ((DataTable)DgMain.Tag).Merge(datatable);
+                dr["DeliveryTag"] = message.DeliveryTag;
+                dr["Redelivered"] = message.Redelivered;
+                datatable.Rows.Add(dr);
             }
+
+            if(DgMain.ItemsSource == null)
+            {
+                DgMain.ItemsSource = datatable.DefaultView;
+                if(datatable.Columns.Contains("DeliveryTag"))
+                    DgMain.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("DeliveryTag", System.ComponentModel.ListSortDirection.Descending));
+                DgMain.Tag = datatable;
+            }
+            else
+                ((DataTable)DgMain.Tag).Merge(datatable);
+
         }
 
         //private void DeserializeJSONtoDataGrid(string json)

@@ -76,11 +76,14 @@ namespace MobileComms_WPF
         }
 
         //private bool IsLoading { get; set; } = true;
+        private StackPanelLocalParent StkJsonData = new StackPanelLocalParent() { Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0AFFFF00")) , Margin = new Thickness(5), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment= VerticalAlignment.Top};
         public RESTWindow(Window owner)
         {
             this.DataContext = App.Settings;
             Owner = owner;
             InitializeComponent();
+
+            ScvJSONData.Content = StkJsonData;
 
             Window_LoadSettings();
 
@@ -203,7 +206,6 @@ namespace MobileComms_WPF
         {
             TxtErrorResponse.Text = string.Empty;
             TxtErrorResponse.Visibility = Visibility.Collapsed;
-            //LblErrorResponse.Visibility = Visibility.Collapsed;
 
             TxtReturnedJSON.Text = string.Empty;
 
@@ -217,7 +219,6 @@ namespace MobileComms_WPF
                     {
                         TxtErrorResponse.Text = REST.RESTException.Message;
                         TxtErrorResponse.Visibility = Visibility.Visible;
-                        //LblErrorResponse.Visibility = Visibility.Visible;
                     }
 
                     else
@@ -226,41 +227,26 @@ namespace MobileComms_WPF
                         {
                             TxtErrorResponse.Text = resp;
                             TxtErrorResponse.Visibility = Visibility.Visible;
-                            //LblErrorResponse.Visibility = Visibility.Visible;
                             return;
                         }
-                        //var lst = JsonConvert.DeserializeObject<IList>(resp);
-                        //DgvReturnedJSON.ItemsSource = lst;
                         TxtReturnedJSON.Text = resp;
-
-                        string name;
-                        TreeViewItem selected = (TreeViewItem)TrvCommandList.SelectedItem;
-                        if(selected.Parent != null)
-                            name = (string)((TreeViewItem)selected.Parent).Header;
-                        else
-                            name = (string)selected.Header;
-
-                        DeserializeJSONtoDataGrid(name, resp);
-
+                        DeserializeJSONtoDataGrid((REST.Command)((TreeViewItem)TrvCommandList.SelectedItem).Tag, resp);
                     }
                     break;
 
                 case REST.Actions.PUT:
-                    TxtErrorResponse.Text = await REST.Put($"https://{App.Settings.RESTHost}:8443{TxtResourceName.Text}", TxtPassword.Password, TxtJSONSchema.Text);
+                    TxtErrorResponse.Text = await REST.Put($"https://{App.Settings.RESTHost}:8443{TxtResourceName.Text}", TxtPassword.Password, ((StackPanelLocalParent)StkJsonData).Text);
                     TxtErrorResponse.Visibility = Visibility.Visible;
-                    //LblErrorResponse.Visibility = Visibility.Visible;
                     break;
 
                 case REST.Actions.POST:
-                    TxtErrorResponse.Text = await REST.Post($"https://{App.Settings.RESTHost}:8443{TxtResourceName.Text}", TxtPassword.Password, TxtJSONSchema.Text);
+                    TxtErrorResponse.Text = await REST.Post($"https://{App.Settings.RESTHost}:8443{TxtResourceName.Text}", TxtPassword.Password, ((StackPanelLocalParent)StkJsonData).Text);
                     TxtErrorResponse.Visibility = Visibility.Visible;
-                    //LblErrorResponse.Visibility = Visibility.Visible;
                     break;
 
                 case REST.Actions.DELETE:
                     TxtErrorResponse.Text = await REST.Delete($"https://{App.Settings.RESTHost}:8443{TxtResourceName.Text}", TxtPassword.Password);
                     TxtErrorResponse.Visibility = Visibility.Visible;
-                    //LblErrorResponse.Visibility = Visibility.Visible;
                     break;
                 case REST.Actions.STREAM:
                     if(Stream == null)
@@ -284,18 +270,11 @@ namespace MobileComms_WPF
 
         }
 
-        private void DeserializeJSONtoDataGrid(string className, string json)
+        private void DeserializeJSONtoDataGrid(REST.Command cmd, string json)
         {
 
-            Type t = Type.GetType($"MobileComms_ITK.JSON.Types.{className},MobileComms_ITK");
-            if(t == null)
-            {
-                TxtJSONSchema.Text = string.Empty;
-            }
-            else
-            {
                 DataTable datatable = new DataTable();
-                foreach(PropertyInfo prop in t.GetProperties())
+                foreach(PropertyInfo prop in cmd.JSONType.GetProperties())
                 {
                     if(prop.Name.Equals("AdditionalProperties")) continue;
                     if(prop.Name.Equals("Details")) continue;
@@ -341,7 +320,7 @@ namespace MobileComms_WPF
                 foreach(JObject elem in lst)
                 {
                     DataRow dr = datatable.NewRow();
-                    foreach(PropertyInfo prop in t.GetProperties())
+                    foreach(PropertyInfo prop in cmd.JSONType.GetProperties())
                     {
                         if(prop.Name.Equals("AdditionalProperties")) continue;
                         if(prop.Name.Equals("Details")) continue;
@@ -365,7 +344,104 @@ namespace MobileComms_WPF
                 DgvReturnedJSON.ItemsSource = datatable.DefaultView;
                 if(datatable.Columns.Contains("upd"))
                     DgvReturnedJSON.Items.SortDescriptions.Add(new SortDescription("upd", ListSortDirection.Descending));
+            
+        }
+        private class StackPanelLocalParent : StackPanel
+        {
+
+            public string Text { get
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.Append("[");
+                    foreach(StackPanelLocal item in Children)
+                    {
+                        sb.Append($"{item.Text},");
+                    }
+                    sb.Append("]");
+                    return sb.ToString();
+                } }
+
+        }
+        private class StackPanelLocal : StackPanel
+        {
+            public delegate void TextChangedEvent(string data);
+            public event TextChangedEvent TextChanged;
+
+            private TextBlock Start = new TextBlock() {  };
+            private TextBlock End = new TextBlock() { Text = $"\","};
+
+            private bool _isString;
+            private TextBox MidText = new TextBox() { MinWidth = 20, VerticalContentAlignment = VerticalAlignment.Center, Background = null, BorderBrush = null };
+
+            private bool _isEnum;
+            private ComboBox Combo = new ComboBox() { BorderBrush = null, MinWidth = 40, Style = Application.Current.TryFindResource(ToolBar.ComboBoxStyleKey) as Style };
+
+            private bool _isBool;
+            private ComboBox Check = new ComboBox() { BorderBrush = null, MinWidth = 40, Style = Application.Current.TryFindResource(ToolBar.ComboBoxStyleKey) as Style };
+
+            public StackPanelLocal(PropertyInfo property)
+            {
+                Orientation = Orientation.Horizontal;
+                _isString = property.PropertyType == typeof(string);
+                _isEnum = property.PropertyType.IsEnum;
+                _isBool = property.PropertyType == typeof(bool);
+
+                string name = Regex.Replace(property.Name, @"^[A-Z]", delegate (Match match)
+                {
+                    return $"{char.ToLower(match.ToString()[0])}";
+                });
+
+                if(_isString)
+                {
+                    Start.Text = $"  \"{name}\":\"";
+                    MidText.TextChanged += Mid_TextChanged;
+
+                    Children.Add(Start);
+                    Children.Add(MidText);
+                    Children.Add(End);
+                }
+                else if(_isEnum)
+                {
+                    Start.Text = $"  \"{name}\":\"";
+                    Combo.ItemsSource = new List<string>(Regex.Split(property.PropertyType.GetEnumNames()[0], "__"));
+                    ((List<string>)Combo.ItemsSource).Insert(0, "");
+
+                    Combo.SelectionChanged += Combo_SelectionChanged;
+
+                    Children.Add(Start);
+                    Children.Add(Combo);
+                    Children.Add(End);
+                }
+                else if(_isBool)
+                {
+                    Start.Text = $"  \"{name}\":\"";
+
+                    Check.Items.Add("");
+                    Check.Items.Add("true");
+                    Check.Items.Add("false");
+                    Check.SelectionChanged += Combo_SelectionChanged;
+
+                    Children.Add(Start);
+                    Children.Add(Check);
+                    Children.Add(End);
+                }
+                else
+                {
+                    MidText.TextChanged += Mid_TextChanged;
+
+                    Start.Text = $"  \"{name}\":";
+                    Children.Add(Start);
+                    Children.Add(MidText);
+                    Children.Add(new TextBlock() { Text = $","});
+                }
             }
+
+            private void Combo_SelectionChanged(object sender, SelectionChangedEventArgs e) => TextChanged?.Invoke(Text);
+            private void Date_TextInput(object sender, TextCompositionEventArgs e) => TextChanged?.Invoke(Text);
+            private void Mid_TextChanged(object sender, TextChangedEventArgs e) => TextChanged?.Invoke(Text);
+
+            public string Text => _isString ? $"{Start.Text}{MidText.Text}{End.Text}" : _isEnum ? $"{Start.Text}{Combo.SelectedValue}{End.Text}" : _isBool ? $"{Start.Text}{Check.SelectedValue}{End.Text}" : $"{Start.Text}{MidText.Text}";
         }
 
         private void Tvic_Selected(object sender, RoutedEventArgs e)
@@ -382,62 +458,60 @@ namespace MobileComms_WPF
             TxtResourceName.Text = resource;
             TxtResourceName.Tag = resource;
 
-
-            //LblResourceValue.Content = Regex.Match(resource, @"{.*}").Value.Replace("{", "").Replace("}", "");
-            TxtJSONSchema.Text = JsonConvert.SerializeObject(obj, cmd.JSONType, Formatting.Indented, new JsonSerializerSettings() { ObjectCreationHandling = ObjectCreationHandling.Reuse }).Replace("null", "\"\"");
-
             BtnSend.Content = Enum.GetName(typeof(REST.Actions), RestAction);
-
-            TxtResourceValue.Text = "";
 
             TxtErrorResponse.Text = string.Empty;
             TxtErrorResponse.Visibility = Visibility.Collapsed;
-            //LblErrorResponse.Visibility = Visibility.Collapsed;
 
-            TxtResourceValue.Visibility = Visibility.Collapsed;
-            //LblResourceValue.Visibility = Visibility.Collapsed;
+            TxtResourceValue.Text = string.Empty;
 
-            TxtJSONSchema.Visibility = Visibility.Visible;
-            //LblJSONSchema.Visibility = Visibility.Visible;
-            switch(RestAction)
+            if(RestAction == REST.Actions.POST || RestAction == REST.Actions.PUT)
             {
-                case REST.Actions.GET:
-                    TxtJSONSchema.IsReadOnly = true;
-                    TxtJSONSchema.Background = null;
-                    //LblJSONSchema.Content = "JSON Schema";
+                TxtResourceValue.Visibility = Visibility.Collapsed;
+                TxtResourceValue.Text = string.Empty;
 
+                TxtJSONSchema.Visibility = Visibility.Collapsed;
+                TxtJSONSchema.Text = string.Empty;
+
+                StkJsonData.Visibility = Visibility.Visible;
+                StkJsonData.Children.Clear();
+
+                StkJsonData.Children.Add(new TextBlock() { Text = "{", Margin = new Thickness(0) });
+
+                foreach(PropertyInfo prop in cmd.JSONType.GetProperties())
+                {
+                    if(prop.Name.Equals("details"))
+                        continue;
+
+                    StackPanelLocal stkl = new StackPanelLocal(prop);
+
+                    stkl.TextChanged += Stkl_TextChanged; ;
+                    StkJsonData.Children.Add(stkl);
+                }
+
+                StkJsonData.Children.Add(new TextBlock() { Text = "}" });
+            }
+            else
+            {
+                if(RestAction== REST.Actions.GET)
+                {
                     TxtResourceValue.Visibility = Visibility.Visible;
-                    //LblResourceValue.Visibility = Visibility.Visible;
+                    TxtResourceValue.Text = string.Empty;
+                }
 
-                    break;
-                case REST.Actions.PUT:
-                    TxtJSONSchema.IsReadOnly = false;
-                    TxtJSONSchema.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0AFFFF00"));
-                    //LblJSONSchema.Content = "JSON Body to Send";
+                StkJsonData.Visibility = Visibility.Collapsed;
+                StkJsonData.Children.Clear();
 
-                    break;
-                case REST.Actions.POST:
-                    TxtJSONSchema.IsReadOnly = false;
-                    TxtJSONSchema.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0AFFFF00"));
-                    //LblJSONSchema.Content = "JSON Body to Send";
-
-                    break;
-                case REST.Actions.DELETE:
-                    TxtJSONSchema.Visibility = Visibility.Collapsed;
-                    //LblJSONSchema.Visibility = Visibility.Collapsed;
-
-                    TxtResourceValue.Visibility = Visibility.Visible;
-                    //LblResourceValue.Visibility = Visibility.Visible;
-
-                    break;
-                case REST.Actions.STREAM:
-                    TxtJSONSchema.IsReadOnly = true;
-                    TxtJSONSchema.Background = null;
-                    //LblJSONSchema.Content = "JSON Schema";
-
-                    break;
+                TxtJSONSchema.Visibility = Visibility.Visible;
+                TxtJSONSchema.Text = JsonConvert.SerializeObject(obj, cmd.JSONType, Formatting.Indented, new JsonSerializerSettings() { ObjectCreationHandling = ObjectCreationHandling.Reuse }).Replace("null", "\"\"");
             }
         }
+
+        private void Stkl_TextChanged(string data)
+        {
+            
+        }
+
         private void Tvi_Selected(object sender, RoutedEventArgs e)
         {
             TreeViewItem tvi = (TreeViewItem)sender;

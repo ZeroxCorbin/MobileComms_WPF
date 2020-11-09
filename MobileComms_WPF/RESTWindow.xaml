@@ -203,9 +203,19 @@
                                      MinWidth="80" 
                                      Background="{x:Null}"
                                      BorderBrush="{x:Null}"
-                                     Padding="0,0,20,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                     Padding="0,0,20,0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5"/>
 
+                        <ScrollViewer x:Name="ScvJSONData" Grid.Row="1" Grid.Column="0" VerticalScrollBarVisibility="Auto" >
+                            <!--<StackPanel  Margin="5,0,5,5"
+                                     Name="StkJsonData" 
+                                     MaxWidth="{Binding TxtWidth, ElementName=window}"
+                                      Background="#0AFFFF00"
+                                      MinWidth="100"
+                                      MinHeight="100"
+                                      VerticalAlignment="Top"
+                                      HorizontalAlignment="Left" ScrollViewer.VerticalScrollBarVisibility="Auto" CanVerticallyScroll="True"/>-->
 
+                        </ScrollViewer>
                         <TextBox Grid.Row="1" Grid.Column="1" 
                                       x:Name="TxtErrorResponse"
                                       HorizontalScrollBarVisibility="Disabled"
