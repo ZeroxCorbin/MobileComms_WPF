@@ -17,6 +17,24 @@
         Top="{Binding RESTWindow.Top, Mode=TwoWay}"
         WindowState="{Binding SQLWindow.WindowState, Mode=TwoWay}">
     <Grid>
+        <Grid.Resources>
+            <Style x:Key="ButtonStyle" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid Background="{TemplateBinding Background}">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal"/>
+                                        <VisualState x:Name="MouseOver"/>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="{Binding RESTSplitter, Mode=TwoWay}" MinHeight="210" MaxHeight="500"/>
@@ -53,13 +71,16 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0"
-                            x:Name="BtnOpenSwagger"
-                            Width="90"
-                            BorderBrush="{x:Null}"
-                            HorizontalAlignment="Right"
-                            Content="Swagger"
-                            Click="BtnOpenSwagger_Click" />
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button x:Name="BtnOpenSwagger" 
+                                    Height="20"
+                                    Width="70"
+                                    BorderBrush="{x:Null}" 
+                                    ToolTip="Open Swagger in Browser."
+                                Click="BtnOpenSwagger_Click" 
+                                Cursor="Hand"
+                                Style="{Binding Mode=OneWay, Source={StaticResource ButtonStyle}}" />
+                    </StackPanel>
 
                     <Label Grid.Column="1" 
                            Content="https://"
@@ -67,9 +88,8 @@
 
                     <TextBox Grid.Column="2" Grid.Row="1"
                              x:Name="TxtHost" Text="{Binding RESTHost}"
-                             Background="#0AFFFF00"
+                             Background="#1AFFFF00"
                              VerticalContentAlignment="Center"
-                             TextChanged="TxtHost_TextChanged"
                              MinWidth="80" BorderBrush="{x:Null}"/>
 
                     <Label Grid.Column="3"
@@ -80,7 +100,7 @@
 
                     <PasswordBox Grid.Column="5"
                                  x:Name="TxtPassword"
-                                 Background="#0AFFFF00"
+                                 Background="#1AFFFF00"
                                  VerticalContentAlignment="Center"
                                  PasswordChanged="TxtPassword_PasswordChanged"
                                  MinWidth="80"
@@ -94,7 +114,7 @@
             <Grid.ColumnDefinitions>
 
                 <ColumnDefinition Width="auto"/>
-                
+
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
 
@@ -105,7 +125,7 @@
                         <RowDefinition Height="34"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    
+
                     <Label Grid.Row="0" Content="Resource List" FontSize="18" HorizontalContentAlignment="Center">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -114,26 +134,26 @@
                             </LinearGradientBrush>
                         </Label.Background>
                     </Label>
-                    
+
                     <Grid Grid.Row="1" Grid.Column="0" Margin="10">
 
-                    <TreeView  
+                        <TreeView  
                               Name="TrvCommandList"
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
                               Padding="0,0,20,0" 
                               Background="{x:Null}"
                               BorderBrush="{x:Null}">
-                        <TreeView.Resources>
-                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                            <TreeView.Resources>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
                       Color="LightGreen" />
-                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
                       Color="Black" />
-                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
                       Color="LightGreen" />
-                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
                       Color="Black" />
-                        </TreeView.Resources>
-                    </TreeView>                      
+                            </TreeView.Resources>
+                        </TreeView>
                     </Grid>
 
                 </Grid>
@@ -161,61 +181,79 @@
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Grid>
+                        <Grid x:Name="grid">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <TextBox Grid.Column="0"
-                                   Name="TxtResourceName"
-                                   Background="{x:Null}"
-                                   VerticalContentAlignment="Center"
-                                   BorderBrush="{x:Null}"
-                                   MinWidth="80"
-                                   MinHeight="24"/>
 
-                            <TextBox Grid.Column="1"
-                                  Name="TxtResourceValue"
-                                  Background="#0AFFFF00"
-                                  VerticalContentAlignment="Center"
-                                  TextChanged="TxtResourceValue_TextChanged"
-                                  MinWidth="80"
-                                  BorderBrush="{x:Null}"/>
+                            <StackPanel x:Name="StkResource" Grid.Column="0" Orientation="Horizontal">
+                                <Button x:Name="BtnBrowseResource" 
+                                    Height="20"
+                                    Width="20"
+                                    BorderBrush="{x:Null}" 
+                                    ToolTip="Open resource URI in browser." 
+                                        Click="BtnBrowseResource_Click"
+                                                                        Cursor="Hand"
+                                Style="{Binding Mode=OneWay, Source={StaticResource ButtonStyle}}" />
+                                <Button x:Name="BtnCopyResource" 
+                                    Height="20"
+                                    Width="20"
+                                    BorderBrush="{x:Null}" 
+                                    Click="BtnCopyResource_Click"
+                                    ToolTip="Copy resource URI."
+                                                                        Cursor="Hand"
+                                Style="{Binding Mode=OneWay, Source={StaticResource ButtonStyle}}" Margin="3,0,0,0" />
 
+                            </StackPanel>
                         </Grid>
 
 
                         <Button Grid.Row="0" Grid.Column="2"
                                 Name="BtnSend" 
                                 Click="BtnSend_Click"
-                                Width="94"
+                                Padding="3"
                                 Content="Send"
                                 BorderBrush="{x:Null}" 
-                                HorizontalAlignment="Left"/>
+                                HorizontalAlignment="Left" IsDefault="True"/>
 
-                        <TextBox  Grid.Row="1" Grid.Column="0"
+
+                        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" >
+                            <StackPanel>
+                                <Button x:Name="BtnCopyJSON" 
+                                    Height="20"
+                                    Width="20"
+                                    BorderBrush="{x:Null}" 
+                                    ToolTip="Copy JSON string." Margin="0,8,0,0"
+                                                                        Cursor="Hand"
+                                Style="{Binding Mode=OneWay, Source={StaticResource ButtonStyle}}" Click="BtnCopyJSON_Click" />
+                                <Button x:Name="BtnPasteJSON" 
+                                    Height="20"
+                                    Width="20"
+                                    BorderBrush="{x:Null}" 
+                                    ToolTip="Paste JSON string."
+                                                                        Cursor="Hand"
+                                Style="{Binding Mode=OneWay, Source={StaticResource ButtonStyle}}" Margin="0,3,0,0" />
+                            </StackPanel>
+                            <ScrollViewer x:Name="ScvJSONSchema" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" HorizontalScrollBarVisibility="Auto" VerticalAlignment="Top" MaxWidth="320">
+                                <TextBlock
                                      Name="TxtJSONSchema"
-                                     VerticalScrollBarVisibility="Auto"
                                      MinWidth="80" 
+                                
                                      Background="{x:Null}"
-                                     BorderBrush="{x:Null}"
-                                     Padding="0,0,20,0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5"/>
+                                     Padding="0,0,20,0"
+                                    VerticalAlignment="Top"
+                                    HorizontalAlignment="Left" Margin="5"/>
 
-                        <ScrollViewer x:Name="ScvJSONData" Grid.Row="1" Grid.Column="0" VerticalScrollBarVisibility="Auto" >
-                            <!--<StackPanel  Margin="5,0,5,5"
-                                     Name="StkJsonData" 
-                                     MaxWidth="{Binding TxtWidth, ElementName=window}"
-                                      Background="#0AFFFF00"
-                                      MinWidth="100"
-                                      MinHeight="100"
-                                      VerticalAlignment="Top"
-                                      HorizontalAlignment="Left" ScrollViewer.VerticalScrollBarVisibility="Auto" CanVerticallyScroll="True"/>-->
+                            </ScrollViewer>
 
-                        </ScrollViewer>
+                            <ScrollViewer x:Name="ScvJSONData" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" VerticalAlignment="Top" MaxWidth="320"/>
+                        </StackPanel>
+
                         <TextBox Grid.Row="1" Grid.Column="1" 
                                       x:Name="TxtErrorResponse"
                                       HorizontalScrollBarVisibility="Disabled"

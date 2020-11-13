@@ -60,7 +60,7 @@
                     <Label Grid.Column="5" Content="@:" HorizontalContentAlignment="Center" />
 
 
-                    <TextBox Grid.Column="6" Text="{Binding RabbitMQHost}" MinWidth="80" x:Name="TxtHost" Background="#19FFFF00" VerticalContentAlignment="Center" BorderBrush="{x:Null}"/>
+                    <TextBox Grid.Column="6" Text="{Binding RabbitMQHost}" MinWidth="80" x:Name="TxtHost" Background="#0AFFFF00" VerticalContentAlignment="Center" BorderBrush="{x:Null}"/>
 
 
 
@@ -89,7 +89,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0" Content="Inbound Queues" FontSize="18" HorizontalContentAlignment="Center">
+                    <Label Grid.Row="0" Content="Inbound Exchange Queues" FontSize="18" HorizontalContentAlignment="Center">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#FF4c88d6" Offset="0"/>
@@ -108,7 +108,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0" Content="Queue Comms" FontSize="18" HorizontalContentAlignment="Center">
+                    <Label Grid.Row="0" Content="Send Message" FontSize="18" HorizontalContentAlignment="Center">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#FF4c88d6" Offset="0"/>
@@ -164,7 +164,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0" Content="Outbound Queues" FontSize="18" HorizontalContentAlignment="Center">
+                    <Label Grid.Row="0" Content="Outbound Exchange Queues" FontSize="18" HorizontalContentAlignment="Center">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#FF4c88d6" Offset="0"/>
@@ -185,7 +185,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0" Content="Queue Comms" FontSize="18" HorizontalContentAlignment="Center">
+                    <Label Grid.Row="0" Content="Receive Message" FontSize="18" HorizontalContentAlignment="Center">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#FF4c88d6" Offset="0"/>

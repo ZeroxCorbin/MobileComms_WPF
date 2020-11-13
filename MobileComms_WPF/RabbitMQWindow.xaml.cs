@@ -68,11 +68,6 @@ namespace MobileComms_WPF
         {
             if(!IsLoaded) return;
 
-            if(this.WindowState != WindowState.Normal)
-            {
-                App.Settings.RabbitMQWindow.Top = TopLast;
-                App.Settings.RabbitMQWindow.Left = TopLeft;
-            }
             if(this.WindowState == WindowState.Minimized) return;
 
             App.Settings.RabbitMQWindow.WindowState = this.WindowState;
@@ -108,7 +103,7 @@ namespace MobileComms_WPF
 
         private void Lvi_InboundSelected(object sender, RoutedEventArgs e)
         {
-            KeyValuePair<string, Type> dict = (KeyValuePair<string, Type>)((TreeViewItem)sender).Tag;
+            KeyValuePair<string, Type> dict = (KeyValuePair<string, Type>)((ListViewItem)sender).Tag;
 
             TxtInboundQueueName.Text = dict.Key;
 
@@ -118,7 +113,7 @@ namespace MobileComms_WPF
         }
         private void Lvi_OutboundSelected(object sender, RoutedEventArgs e)
         {
-            KeyValuePair<string, Type> dict = (KeyValuePair<string, Type>)((TreeViewItem)sender).Tag;
+            KeyValuePair<string, Type> dict = (KeyValuePair<string, Type>)((ListViewItem)sender).Tag;
 
             TxtOutboundQueueName.Text = dict.Key;
 
@@ -157,7 +152,7 @@ namespace MobileComms_WPF
 
         private void BtnMonitorQueue_Click(object sender, RoutedEventArgs e)
         {
-            WplMain.Children.Add(new RabbitMQQueueView(RabbitMQ, (KeyValuePair<string, Type>)((TreeViewItem)sender).Tag));
+            WplMain.Children.Add(new RabbitMQQueueView(RabbitMQ, (KeyValuePair<string, Type>)((ListViewItem)LstOutboundQueueList.SelectedItem).Tag));
         }
     }
 }

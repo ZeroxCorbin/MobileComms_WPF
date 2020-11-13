@@ -19,6 +19,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace MobileComms_WPF
@@ -76,12 +77,38 @@ namespace MobileComms_WPF
         }
 
         //private bool IsLoading { get; set; } = true;
-        private StackPanelLocalParent StkJsonData = new StackPanelLocalParent() { Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0AFFFF00")) , Margin = new Thickness(5), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment= VerticalAlignment.Top};
+        private JSONEditor_StackPanelParent StkJsonData = new JSONEditor_StackPanelParent() { Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0AFFFF00")), Margin = new Thickness(5), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
         public RESTWindow(Window owner)
         {
             this.DataContext = App.Settings;
             Owner = owner;
             InitializeComponent();
+
+            Assembly myAssembly = Assembly.GetExecutingAssembly();
+            Stream myStream = myAssembly.GetManifestResourceStream("MobileComms_WPF.Support.copy.png");
+            PngBitmapDecoder decoder = new PngBitmapDecoder(myStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+            ImageBrush imgbrush = new ImageBrush(decoder.Frames[0]);
+
+            BtnCopyResource.Background = imgbrush;
+            BtnCopyJSON.Background = imgbrush;
+
+            myStream = myAssembly.GetManifestResourceStream("MobileComms_WPF.Support.browser.png");
+            decoder = new PngBitmapDecoder(myStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+            imgbrush = new ImageBrush(decoder.Frames[0]);
+
+            BtnBrowseResource.Background = imgbrush;
+
+            myStream = myAssembly.GetManifestResourceStream("MobileComms_WPF.Support.swagger.png");
+            decoder = new PngBitmapDecoder(myStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+            imgbrush = new ImageBrush(decoder.Frames[0]);
+
+            BtnOpenSwagger.Background = imgbrush;
+
+            myStream = myAssembly.GetManifestResourceStream("MobileComms_WPF.Support.paste.png");
+            decoder = new PngBitmapDecoder(myStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+            imgbrush = new ImageBrush(decoder.Frames[0]);
+
+            BtnPasteJSON.Background = imgbrush;
 
             ScvJSONData.Content = StkJsonData;
 
@@ -119,7 +146,6 @@ namespace MobileComms_WPF
 
             ((TreeViewItem)TrvCommandList.Items[0]).IsExpanded = true;
             ((TreeViewItem)((TreeViewItem)TrvCommandList.Items[0]).Items[1]).IsSelected = true;
-            TxtResourceValue.Text = "0";
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -161,45 +187,6 @@ namespace MobileComms_WPF
                 }
 
             }
-
-            //Dictionary<string, List<string>> dict = new Dictionary<string, List<string>>();
-
-            //Schema shc = new Schema();
-            //foreach(JProperty prop in shc.Root["paths"])
-            //{
-            //    string name = Regex.Match(prop.Name, @"^\/\w+(?!=\/)").Value.TrimStart('/');
-            //    if(dict.ContainsKey(name))
-            //    {
-            //        dict[name].Add(prop.Name);
-            //    }
-            //    else
-            //    {
-            //        dict.Add(name, new List<string>());
-            //        dict[name].Add(prop.Name);
-            //    }
-            //}
-
-            //using(System.IO.StreamWriter file =
-            //    new System.IO.StreamWriter(@"Commands.txt"))
-            //{
-            //    foreach(var kv in dict)
-            //    {
-            //        file.WriteLine(kv.Key);
-            //        foreach(string s in kv.Value)
-            //        {
-            //            file.WriteLine(s);
-            //        }
-            //    }
-
-            //    foreach(var kv in REST.Commands)
-            //    {
-            //        file.WriteLine(kv.Key);
-            //        foreach(string s in kv.Value)
-            //        {
-            //            file.WriteLine(s);
-            //        }
-            //    }
-            //}
         }
 
         private async void BtnSend_Click(object sender, RoutedEventArgs e)
@@ -213,7 +200,7 @@ namespace MobileComms_WPF
             {
                 case REST.Actions.GET:
 
-                    string resp = await REST.Get($"https://{App.Settings.RESTHost}:8443{TxtResourceName.Text}", TxtPassword.Password);
+                    string resp = await REST.Get(REST.ConnectionString(App.Settings.RESTHost, ResourcePanel.Text), TxtPassword.Password);
 
                     if(REST.IsException)
                     {
@@ -235,23 +222,23 @@ namespace MobileComms_WPF
                     break;
 
                 case REST.Actions.PUT:
-                    TxtErrorResponse.Text = await REST.Put($"https://{App.Settings.RESTHost}:8443{TxtResourceName.Text}", TxtPassword.Password, ((StackPanelLocalParent)StkJsonData).Text);
+                    TxtErrorResponse.Text = await REST.Put(REST.ConnectionString(App.Settings.RESTHost, ResourcePanel.Text), TxtPassword.Password, StkJsonData.Text);
                     TxtErrorResponse.Visibility = Visibility.Visible;
                     break;
 
                 case REST.Actions.POST:
-                    TxtErrorResponse.Text = await REST.Post($"https://{App.Settings.RESTHost}:8443{TxtResourceName.Text}", TxtPassword.Password, ((StackPanelLocalParent)StkJsonData).Text);
+                    TxtErrorResponse.Text = await REST.Post(REST.ConnectionString(App.Settings.RESTHost, ResourcePanel.Text), TxtPassword.Password, StkJsonData.Text);
                     TxtErrorResponse.Visibility = Visibility.Visible;
                     break;
 
                 case REST.Actions.DELETE:
-                    TxtErrorResponse.Text = await REST.Delete($"https://{App.Settings.RESTHost}:8443{TxtResourceName.Text}", TxtPassword.Password);
+                    TxtErrorResponse.Text = await REST.Delete(REST.ConnectionString(App.Settings.RESTHost, ResourcePanel.Text), TxtPassword.Password);
                     TxtErrorResponse.Visibility = Visibility.Visible;
                     break;
                 case REST.Actions.STREAM:
                     if(Stream == null)
                     {
-                        Stream = await REST.Stream(REST.ConnectionString(App.Settings.RESTHost, TxtResourceName.Text), TxtPassword.Password);
+                        Stream = await REST.Stream(REST.ConnectionString(App.Settings.RESTHost, ResourcePanel.Text), TxtPassword.Password);
                         if(Stream.CanRead)
                         {
                             BeginReading();
@@ -273,103 +260,280 @@ namespace MobileComms_WPF
         private void DeserializeJSONtoDataGrid(REST.Command cmd, string json)
         {
 
-                DataTable datatable = new DataTable();
+            DataTable datatable = new DataTable();
+            foreach(PropertyInfo prop in cmd.JSONType.GetProperties())
+            {
+                if(prop.Name.Equals("AdditionalProperties")) continue;
+                if(prop.Name.Equals("Details")) continue;
+
+                DataColumn column;
+                if(prop.PropertyType == typeof(Timestamp))
+                {
+                    column = new DataColumn
+                    {
+                        DataType = typeof(DateTime),
+                        ColumnName = prop.Name,
+                        ReadOnly = true
+                    };
+                }
+                else if(prop.PropertyType.IsEnum)
+                {
+                    column = new DataColumn
+                    {
+                        DataType = typeof(string),
+                        ColumnName = prop.Name,
+                        ReadOnly = true
+                    };
+                }
+                else
+                {
+                    column = new DataColumn
+                    {
+                        DataType = prop.PropertyType,
+                        ColumnName = prop.Name,
+                        ReadOnly = true
+                    };
+                }
+
+                datatable.Columns.Add(column);
+            }
+
+            JArray lst;
+            if(json.StartsWith("["))
+                lst = JsonConvert.DeserializeObject<JArray>(json);
+            else
+                lst = JsonConvert.DeserializeObject<JArray>($"[{json}]");
+
+            foreach(JObject elem in lst)
+            {
+                DataRow dr = datatable.NewRow();
                 foreach(PropertyInfo prop in cmd.JSONType.GetProperties())
                 {
                     if(prop.Name.Equals("AdditionalProperties")) continue;
                     if(prop.Name.Equals("Details")) continue;
 
-                    DataColumn column;
                     if(prop.PropertyType == typeof(Timestamp))
                     {
-                        column = new DataColumn
-                        {
-                            DataType = typeof(DateTime),
-                            ColumnName = prop.Name,
-                            ReadOnly = true
-                        };
-                    }
-                    else if(prop.PropertyType.IsEnum)
-                    {
-                        column = new DataColumn
-                        {
-                            DataType = typeof(string),
-                            ColumnName = prop.Name,
-                            ReadOnly = true
-                        };
+                        dr[prop.Name] = DateTimeOffset.FromUnixTimeMilliseconds((long)elem.Property($"{char.ToLower(prop.Name[0])}{prop.Name.Substring(1)}").Value["millis"]).DateTime;
                     }
                     else
                     {
-                        column = new DataColumn
-                        {
-                            DataType = prop.PropertyType,
-                            ColumnName = prop.Name,
-                            ReadOnly = true
-                        };
+                        JProperty prop1;
+                        if((prop1 = elem.Property($"{char.ToLower(prop.Name[0])}{prop.Name.Substring(1)}")) != null)
+                            dr[prop.Name] = prop1.Value;
                     }
 
-                    datatable.Columns.Add(column);
                 }
+                datatable.Rows.Add(dr);
+            }
 
-                JArray lst;
-                if(json.StartsWith("["))
-                    lst = JsonConvert.DeserializeObject<JArray>(json);
-                else
-                    lst = JsonConvert.DeserializeObject<JArray>($"[{json}]");
+            DgvReturnedJSON.ItemsSource = null;
+            DgvReturnedJSON.ItemsSource = datatable.DefaultView;
+            if(datatable.Columns.Contains("upd"))
+                DgvReturnedJSON.Items.SortDescriptions.Add(new SortDescription("upd", ListSortDirection.Descending));
 
-                foreach(JObject elem in lst)
-                {
-                    DataRow dr = datatable.NewRow();
-                    foreach(PropertyInfo prop in cmd.JSONType.GetProperties())
-                    {
-                        if(prop.Name.Equals("AdditionalProperties")) continue;
-                        if(prop.Name.Equals("Details")) continue;
-
-                        if(prop.PropertyType == typeof(Timestamp))
-                        {
-                            dr[prop.Name] = DateTimeOffset.FromUnixTimeMilliseconds((long)elem.Property($"{char.ToLower(prop.Name[0])}{prop.Name.Substring(1)}").Value["millis"]).DateTime;
-                        }
-                        else
-                        {
-                            JProperty prop1;
-                            if((prop1 = elem.Property($"{char.ToLower(prop.Name[0])}{prop.Name.Substring(1)}")) != null)
-                                dr[prop.Name] = prop1.Value;
-                        }
-
-                    }
-                    datatable.Rows.Add(dr);
-                }
-
-                DgvReturnedJSON.ItemsSource = null;
-                DgvReturnedJSON.ItemsSource = datatable.DefaultView;
-                if(datatable.Columns.Contains("upd"))
-                    DgvReturnedJSON.Items.SortDescriptions.Add(new SortDescription("upd", ListSortDirection.Descending));
-            
         }
-        private class StackPanelLocalParent : StackPanel
+
+        private class Resource_StackPanel : StackPanel
+        {
+            public delegate void StatusStatusChangedDel(bool state);
+            public event StatusStatusChangedDel StatusChanged;
+
+            private bool _Status = false;
+            public bool Status
+            {
+                get
+                {
+                    return _Status;
+                }
+                set
+                {
+                    _Status = value;
+                    StatusChanged?.Invoke(value);
+                }
+            }
+            private TextBlock Start = new TextBlock() { Margin = new Thickness(5, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center };
+            private TextBox Value1 = new TextBox() { Margin = new Thickness(1, 0, 5, 0), MinWidth = 40, VerticalContentAlignment = VerticalAlignment.Center, Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0AFFFF00")), BorderBrush = null };
+
+            private bool HasValues2;
+
+            private TextBlock Mid = new TextBlock() { Margin = new Thickness(0, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center };
+            private TextBox Value2 = new TextBox() { Margin = new Thickness(3, 0, 5, 0), MinWidth = 40, VerticalContentAlignment = VerticalAlignment.Center, Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0AFFFF00")), BorderBrush = null };
+
+            public Resource_StackPanel(string resource, StatusStatusChangedDel statusChanged)
+            {
+                StatusChanged += statusChanged;
+
+                Orientation = Orientation.Horizontal;
+
+                string[] spl = resource.Split('{');
+
+                Start.Text = spl[0];
+                Children.Add(Start);
+
+                if(spl.Length == 3)
+                {
+                    HasValues2 = true;
+
+                    string[] spl1;
+                    if(spl[1].Contains("&"))
+                    {
+                        spl1 = spl[1].Split('&');
+                        Mid.Text = "&" + spl1[1];
+                    }
+                    else
+                    {
+                        spl1 = spl[1].Split(':');
+                        Mid.Text = ":";
+                    }
+
+
+
+                    Value1.Tag = spl1[0].TrimEnd('}');
+                    Children.Add(Value1);
+                    Value1.TextChanged += Value1_TextChanged;
+                    Value1.GotFocus += Value1_GotFocus;
+                    Value1.LostFocus += Value1_LostFocus;
+                    Value1.Text = (string)Value1.Tag;
+
+                        Children.Add(Mid);
+
+                    Value2.Tag = spl[2].TrimEnd('}');
+                    Children.Add(Value2);
+                    Value2.TextChanged += Value2_TextChanged;
+                    Value2.LostFocus += Value2_LostFocus;
+                    Value2.GotFocus += Value2_GotFocus;
+                    Value2.Text = (string)Value2.Tag;
+                }
+                else if(spl.Length == 2)
+                {
+
+
+                    string [] spl1 = spl[1].Split(':');
+
+                    if(spl1.Length == 2)
+                    {
+                        HasValues2 = true;
+
+                        Value1.Tag = spl[1].Replace("}:*", "");
+                        Children.Add(Value1);
+                        Value1.TextChanged += Value1_TextChanged;
+                        Value1.GotFocus += Value1_GotFocus;
+                        Value1.LostFocus += Value1_LostFocus;
+                        Value1.Text = (string)Value1.Tag;
+
+                        Mid.Text = ":";
+                        Children.Add(Mid);
+
+                        Value2.Text = "*";
+                        Value2.IsEnabled = false;
+                        Value2.Background = null;
+                        Value2.MinWidth = 0;
+
+                        Children.Add(Value2);
+                    }
+                    else
+                    {
+                        HasValues2 = false;
+
+                        Value1.Tag = spl[1].TrimEnd('}');
+                        Children.Add(Value1);
+                        Value1.TextChanged += Value1_TextChanged;
+                        Value1.GotFocus += Value1_GotFocus;
+                        Value1.LostFocus += Value1_LostFocus;
+                        Value1.Text = (string)Value1.Tag;
+                    }
+                }
+                else
+                {
+                    Value1.Text = string.Empty;
+                    Start.Margin = Margin = new Thickness(3, 0, 5, 0);
+                }
+            }
+
+            private void Value1_GotFocus(object sender, RoutedEventArgs e)
+            {
+                if(Value1.Text.Equals((string)Value1.Tag))
+                    Value1.Text = string.Empty;
+            }
+            private void Value1_TextChanged(object sender, TextChangedEventArgs e)
+            {
+                if(Value1.Text.Equals(Value1.Tag))
+                    Status = false;
+                else if(Value1.Text.Length == 0)
+                    Status = false;
+                else if(HasValues2)
+                {
+                    if(Value2.Text.Length == 0)
+                        Status = false;
+                    else
+                         Status = true;
+                }
+                else
+                    Status = true;
+            }
+            private void Value1_LostFocus(object sender, RoutedEventArgs e)
+            {
+                if(Value1.Text.Length == 0)
+                    Value1.Text = (string)Value1.Tag;
+            }
+
+            private void Value2_GotFocus(object sender, RoutedEventArgs e)
+            {
+                if(Value2.Text.Equals((string)Value2.Tag))
+                    Value2.Text = string.Empty;
+            }
+            private void Value2_TextChanged(object sender, TextChangedEventArgs e)
+            {
+                if(Value2.Text.Equals(Value2.Tag))
+                    Status = false;
+                else if(Value2.Text.Length == 0)
+                    Status = false;
+                else if(HasValues2)
+                {
+                    if(Value1.Text.Equals(Value1.Tag))
+                        Status = false;
+                    else if(Value1.Text.Length == 0)
+                        Status = false;
+                    else
+                        Status = true;
+                }
+            }
+            private void Value2_LostFocus(object sender, RoutedEventArgs e)
+            {
+                if(Value2.Text.Length == 0)
+                    Value2.Text = (string)Value2.Tag;
+            }
+            public string Text => !HasValues2 ? $"{Start.Text}{Value1.Text}" : $"{Start.Text}{Value1.Text}{Mid.Text}{Value2.Text}";
+        }
+
+        private class JSONEditor_StackPanelParent : StackPanel
         {
 
-            public string Text { get
+            public string Text
+            {
+                get
                 {
                     StringBuilder sb = new StringBuilder();
-
-                    sb.Append("[");
-                    foreach(StackPanelLocal item in Children)
+                    foreach(var item in Children)
                     {
-                        sb.Append($"{item.Text},");
+                        if(item is TextBlock tb)
+                            sb.Append(tb.Text);
+                        else
+                        sb.Append($"{((JSONEditor_StackPanel)item).Text.TrimStart()}");
                     }
-                    sb.Append("]");
                     return sb.ToString();
-                } }
+                }
+            }
 
         }
-        private class StackPanelLocal : StackPanel
+        private class JSONEditor_StackPanel : StackPanel
         {
             public delegate void TextChangedEvent(string data);
             public event TextChangedEvent TextChanged;
 
-            private TextBlock Start = new TextBlock() {  };
-            private TextBlock End = new TextBlock() { Text = $"\","};
+            private TextBlock Start = new TextBlock();
+            private TextBlock End = new TextBlock();
 
             private bool _isString;
             private TextBox MidText = new TextBox() { MinWidth = 20, VerticalContentAlignment = VerticalAlignment.Center, Background = null, BorderBrush = null };
@@ -380,12 +544,15 @@ namespace MobileComms_WPF
             private bool _isBool;
             private ComboBox Check = new ComboBox() { BorderBrush = null, MinWidth = 40, Style = Application.Current.TryFindResource(ToolBar.ComboBoxStyleKey) as Style };
 
-            public StackPanelLocal(PropertyInfo property)
+            private bool _isClass;
+
+            public JSONEditor_StackPanel(PropertyInfo property, bool last)
             {
                 Orientation = Orientation.Horizontal;
                 _isString = property.PropertyType == typeof(string);
                 _isEnum = property.PropertyType.IsEnum;
                 _isBool = property.PropertyType == typeof(bool);
+                _isClass = property.PropertyType.IsClass & !_isString;
 
                 string name = Regex.Replace(property.Name, @"^[A-Z]", delegate (Match match)
                 {
@@ -399,6 +566,10 @@ namespace MobileComms_WPF
 
                     Children.Add(Start);
                     Children.Add(MidText);
+                    if(!last)
+                        End.Text = "\",";
+                    else
+                        End.Text = "\"";
                     Children.Add(End);
                 }
                 else if(_isEnum)
@@ -411,6 +582,10 @@ namespace MobileComms_WPF
 
                     Children.Add(Start);
                     Children.Add(Combo);
+                    if(!last)
+                        End.Text = "\",";
+                    else
+                        End.Text = "\"";
                     Children.Add(End);
                 }
                 else if(_isBool)
@@ -424,6 +599,10 @@ namespace MobileComms_WPF
 
                     Children.Add(Start);
                     Children.Add(Check);
+                    if(!last)
+                        End.Text = "\",";
+                    else
+                        End.Text = "\"";
                     Children.Add(End);
                 }
                 else
@@ -433,17 +612,28 @@ namespace MobileComms_WPF
                     Start.Text = $"  \"{name}\":";
                     Children.Add(Start);
                     Children.Add(MidText);
-                    Children.Add(new TextBlock() { Text = $","});
+                    if(!last)
+                        End.Text = ",";
+                    else
+                        End.Text = "";
+                    Children.Add(End);
                 }
             }
 
-            private void Combo_SelectionChanged(object sender, SelectionChangedEventArgs e) => TextChanged?.Invoke(Text);
-            private void Date_TextInput(object sender, TextCompositionEventArgs e) => TextChanged?.Invoke(Text);
-            private void Mid_TextChanged(object sender, TextChangedEventArgs e) => TextChanged?.Invoke(Text);
+            public void SetFocus() =>
+                Keyboard.Focus(MidText);
 
-            public string Text => _isString ? $"{Start.Text}{MidText.Text}{End.Text}" : _isEnum ? $"{Start.Text}{Combo.SelectedValue}{End.Text}" : _isBool ? $"{Start.Text}{Check.SelectedValue}{End.Text}" : $"{Start.Text}{MidText.Text}";
+            private void Combo_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
+                TextChanged?.Invoke(Text);
+            private void Date_TextInput(object sender, TextCompositionEventArgs e) =>
+                TextChanged?.Invoke(Text);
+            private void Mid_TextChanged(object sender, TextChangedEventArgs e) =>
+                TextChanged?.Invoke(Text);
+
+            public string Text => _isString ? $"{Start.Text}{MidText.Text}{End.Text}" : _isEnum ? $"{Start.Text}{Combo.SelectedValue}{End.Text}" : _isBool ? $"{Start.Text}{Check.SelectedValue}{End.Text}" : $"{Start.Text}{MidText.Text}{End.Text}";
         }
 
+        Resource_StackPanel ResourcePanel;
         private void Tvic_Selected(object sender, RoutedEventArgs e)
         {
 
@@ -453,63 +643,107 @@ namespace MobileComms_WPF
 
             RestAction = cmd.Action;
 
-            string resource = (string)selected.Header;
+            if(ResourcePanel != null)
+                StkResource.Children.Remove(ResourcePanel);
 
-            TxtResourceName.Text = resource;
-            TxtResourceName.Tag = resource;
+            ResourcePanel = new Resource_StackPanel((string)selected.Header, ResourcePanel_StatusChanged);
+
+            StkResource.Children.Add(ResourcePanel);
 
             BtnSend.Content = Enum.GetName(typeof(REST.Actions), RestAction);
 
             TxtErrorResponse.Text = string.Empty;
             TxtErrorResponse.Visibility = Visibility.Collapsed;
 
-            TxtResourceValue.Text = string.Empty;
-
             if(RestAction == REST.Actions.POST || RestAction == REST.Actions.PUT)
             {
-                TxtResourceValue.Visibility = Visibility.Collapsed;
-                TxtResourceValue.Text = string.Empty;
+                BtnSend.IsEnabled = true;
 
-                TxtJSONSchema.Visibility = Visibility.Collapsed;
+                ScvJSONSchema.Visibility = Visibility.Collapsed;
                 TxtJSONSchema.Text = string.Empty;
 
-                StkJsonData.Visibility = Visibility.Visible;
+                BtnPasteJSON.Visibility = Visibility.Visible;
+
+                ScvJSONData.Visibility = Visibility.Visible;
                 StkJsonData.Children.Clear();
 
                 StkJsonData.Children.Add(new TextBlock() { Text = "{", Margin = new Thickness(0) });
 
+                int i = 1;
+                int len = cmd.JSONType.GetProperties().Length;
                 foreach(PropertyInfo prop in cmd.JSONType.GetProperties())
                 {
                     if(prop.Name.Equals("details"))
+                    {
+                        StkJsonData.Children.Add(new TextBlock() { Text = "  \"details\": [", Margin = new Thickness(0) });
+                        StkJsonData.Children.Add(new TextBlock() { Text = "  {", Margin = new Thickness(0) });
+                        i = 1;
+                        len = typeof(JobRequestDetail_POST).GetProperties().Length;
+                        foreach(PropertyInfo prop1 in typeof(JobRequestDetail_POST).GetProperties())
+                        {
+                            JSONEditor_StackPanel stk1 = new JSONEditor_StackPanel(prop1, !(++i <= len));
+                            StkJsonData.Children.Add(stk1);
+                        }
+                        StkJsonData.Children.Add(new TextBlock() { Text = "  },", Margin = new Thickness(0) });
+                        StkJsonData.Children.Add(new TextBlock() { Text = "  {", Margin = new Thickness(0) });
+                        i = 1;
+                        foreach(PropertyInfo prop1 in typeof(JobRequestDetail_POST).GetProperties())
+                        {
+                            JSONEditor_StackPanel stk1 = new JSONEditor_StackPanel(prop1, !(++i <= len));
+                            StkJsonData.Children.Add(stk1);
+                        }
+                        StkJsonData.Children.Add(new TextBlock() { Text = "  }]", Margin = new Thickness(0) });
                         continue;
+                    }
 
-                    StackPanelLocal stkl = new StackPanelLocal(prop);
-
-                    stkl.TextChanged += Stkl_TextChanged; ;
-                    StkJsonData.Children.Add(stkl);
+                    JSONEditor_StackPanel stk = new JSONEditor_StackPanel(prop, !(++i <= len));
+                    StkJsonData.Children.Add(stk);
                 }
 
                 StkJsonData.Children.Add(new TextBlock() { Text = "}" });
+
+                Dispatcher.BeginInvoke(DispatcherPriority.Render,
+                    (Action)(() =>
+                    {
+                        ((JSONEditor_StackPanel)StkJsonData.Children[1]).SetFocus();
+                    }));
+
             }
             else
             {
-                if(RestAction== REST.Actions.GET)
-                {
-                    TxtResourceValue.Visibility = Visibility.Visible;
-                    TxtResourceValue.Text = string.Empty;
-                }
-
-                StkJsonData.Visibility = Visibility.Collapsed;
+                ScvJSONData.Visibility = Visibility.Collapsed;
                 StkJsonData.Children.Clear();
 
-                TxtJSONSchema.Visibility = Visibility.Visible;
+                BtnPasteJSON.Visibility = Visibility.Collapsed;
+
+                ScvJSONSchema.Visibility = Visibility.Visible;
                 TxtJSONSchema.Text = JsonConvert.SerializeObject(obj, cmd.JSONType, Formatting.Indented, new JsonSerializerSettings() { ObjectCreationHandling = ObjectCreationHandling.Reuse }).Replace("null", "\"\"");
+
+                if(RestAction == REST.Actions.STREAM)
+                    BtnSend.IsEnabled = true;
+                //if(RestAction == REST.Actions.GET)
+                //{
+                //    Dispatcher.BeginInvoke(DispatcherPriority.Render,
+                //        (Action)(() =>
+                //        {
+                //            Keyboard.Focus(TxtResourceValue);
+                //        }));
+
+                //}
+                //else
+                //{
+                //    TxtResourceValue.Visibility = Visibility.Collapsed;
+                //    TxtResourceValue.Text = string.Empty;
+                //}
             }
         }
 
-        private void Stkl_TextChanged(string data)
+        private void ResourcePanel_StatusChanged(bool state)
         {
-            
+            if(state)
+                BtnSend.IsEnabled = true;
+            else
+                BtnSend.IsEnabled = false;
         }
 
         private void Tvi_Selected(object sender, RoutedEventArgs e)
@@ -517,41 +751,12 @@ namespace MobileComms_WPF
             TreeViewItem tvi = (TreeViewItem)sender;
             if(tvi.IsSelected)
                 tvi.IsSelected = false;
-
-            //if(!tvi.IsExpanded)
-            //    tvi.IsExpanded = true;
         }
 
-        private void BtnOpenSwagger_Click(object sender, RoutedEventArgs e)
-        {
-            //using(WebBrowser WebBrowser1 = new WebBrowser())
-            //{
-            //    String auth =
-            //        System.Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(App.Settings.RESTHost + ":" + TxtPassword.Password));
-            //    string headers = "Authorization: Basic " + auth + "\r\n";
-            //    WebBrowser1.Navigate($"https://{App.Settings.RESTHost}/swagger/", "_blank", null, headers);
+        private void BtnOpenSwagger_Click(object sender, RoutedEventArgs e) =>
+            System.Diagnostics.Process.Start($"https://toolkitadmin:{TxtPassword.Password}@{App.Settings.RESTHost}:8443/swagger/");
 
-            //}
-            ////string authHdr = "Authorization: Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes(App.Settings.RESTHost + ":" + TxtPassword.Password)) + "\r\n";
 
-            ////webBrowserCtl.Navigate("http://example.com", null, null, authHdr);
-            System.Diagnostics.Process.Start($"https://{App.Settings.RESTHost}/swagger/");
-        }
-
-        private void TxtResourceValue_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if(TxtResourceValue.Text.Length > 0)
-            {
-                TxtResourceName.Text = Regex.Replace((string)TxtResourceName.Tag, @"{.*}", delegate (Match match)
-                {
-                    return TxtResourceValue.Text;
-                });
-            }
-            else
-            {
-                TxtResourceName.Text = (string)TxtResourceName.Tag;
-            }
-        }
 
         private void ChkJSONString_Click(object sender, RoutedEventArgs e)
         {
@@ -585,11 +790,13 @@ namespace MobileComms_WPF
             App.Settings.RESTPassword = TxtPassword.Password;
         }
 
-        private void TxtHost_TextChanged(object sender, TextChangedEventArgs e)
-        {
+        private void BtnCopyResource_Click(object sender, RoutedEventArgs e) =>
+            Clipboard.SetText(REST.ConnectionString(App.Settings.RESTHost, ResourcePanel.Text));
 
-            //if(!IsLoaded) return;
-            //App.Settings.RESTHost = App.Settings.RESTHost;
-        }
+        private void BtnBrowseResource_Click(object sender, RoutedEventArgs e) =>
+            System.Diagnostics.Process.Start($"https://toolkitadmin:{TxtPassword.Password}@{App.Settings.RESTHost}:8443{ResourcePanel.Text}");
+
+        private void BtnCopyJSON_Click(object sender, RoutedEventArgs e) =>
+            Clipboard.SetText(StkJsonData.Text);
     }
 }

@@ -182,6 +182,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -196,7 +197,7 @@
     <Resource Include="Support\favicon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Support\question-mark.png" />
+    <EmbeddedResource Include="Support\questionmark.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ARCLManager\ARCLManager\ARCLManager.csproj">
@@ -214,6 +215,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Support\play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Support\stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Support\copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Support\browser.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Support\paste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Support\swagger.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

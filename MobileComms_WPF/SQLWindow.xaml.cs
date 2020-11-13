@@ -304,11 +304,11 @@ namespace MobileComms_WPF
             public delegate void TextChangedEvent(string data);
             public event TextChangedEvent TextChanged;
 
-            private TextBlock Start = new TextBlock() { Padding = new Thickness(0), Margin = new Thickness(0, 5, 0, 0), Background = null };
-            private TextBlock End = new TextBlock() { Text = $"'", Padding = new Thickness(0), Margin = new Thickness(0, 5, 0, 0), Background = null };
+            private TextBlock Start = new TextBlock() { Padding = new Thickness(0), Margin = new Thickness(0, 3, 0, 0), Background = null };
+            private TextBlock End = new TextBlock() { Text = $"'", Padding = new Thickness(0), Margin = new Thickness(0, 3, 0, 0), Background = null };
 
             private bool _isString;
-            private TextBox MidText = new TextBox() { MinWidth = 20, Padding = new Thickness(0), Margin = new Thickness(0, 5, 0, 0), VerticalContentAlignment = VerticalAlignment.Center, Background = null, BorderBrush = null };
+            private TextBox MidText = new TextBox() { MinWidth = 20, Padding = new Thickness(0), Margin = new Thickness(0, 3, 0, 0), VerticalContentAlignment = VerticalAlignment.Center, Background = null, BorderBrush = null };
 
             private bool _isEnum;
             private ComboBox Combo = new ComboBox() { BorderBrush = null, MinWidth = 40, Style = Application.Current.TryFindResource(ToolBar.ComboBoxStyleKey) as Style, Margin = new Thickness(0, 3, 0, 0) };

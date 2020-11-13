@@ -6,27 +6,7 @@
         xmlns:local="clr-namespace:MobileComms_WPF"
         mc:Ignorable="d"
         Title="MobileComms" Closing="Window_Closing" SizeToContent="WidthAndHeight" LocationChanged="Window_LocationChanged" Activated="AnyWindow_Activated" ResizeMode="NoResize" Icon="Support/favicon.ico" Loaded="Window_Loaded">
-    <Window.Resources>
-        <Style x:Key="dgStyleModbus" TargetType="{x:Type DataGrid}">
-            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-            <Setter Property="BorderBrush" Value="#FF688CAF"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="RowDetailsVisibilityMode" Value="VisibleWhenSelected"/>
-            <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
-            <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
-            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
-            <Style.Triggers>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsGrouping" Value="true"/>
-                        <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
-                    </MultiTrigger.Conditions>
-                    <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
-                </MultiTrigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
+
     <Grid>
         <Border Margin="5" Padding="10" VerticalAlignment="Top" BorderThickness="1" BorderBrush="Black" CornerRadius="10">
             <Grid>
