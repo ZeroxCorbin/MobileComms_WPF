@@ -209,7 +209,9 @@
                                       MinWidth="100"
                                       MinHeight="100"
                                       VerticalAlignment="Top"
-                                      HorizontalAlignment="Left" ScrollViewer.VerticalScrollBarVisibility="Auto" CanVerticallyScroll="True"/>
+                                      HorizontalAlignment="Left" ScrollViewer.VerticalScrollBarVisibility="Auto" CanVerticallyScroll="True">
+                                    
+                                </StackPanel>
 
                             </ScrollViewer>
 

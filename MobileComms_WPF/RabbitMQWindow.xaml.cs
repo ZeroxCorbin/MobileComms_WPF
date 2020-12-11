@@ -41,37 +41,9 @@ namespace MobileComms_WPF
             }
 
             TxtPassword.Password = App.Settings.RabbitMQPassword;
+            TxtResponse.Visibility = Visibility.Collapsed;
         }
 
-        //Window Changes
-        private double TopLast;
-        private double TopLeft;
-        private void Window_LocationChanged(object sender, EventArgs e)
-        {
-            if(!IsLoaded) return;
-
-            TopLast = App.Settings.RabbitMQWindow.Top;
-            TopLeft = App.Settings.RabbitMQWindow.Left;
-
-            App.Settings.RabbitMQWindow.Top = Top;
-            App.Settings.RabbitMQWindow.Left = Left;
-        }
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if(!IsLoaded) return;
-            if(WindowState != WindowState.Normal) return;
-
-            App.Settings.RabbitMQWindow.Height = Height;
-            App.Settings.RabbitMQWindow.Width = Width;
-        }
-        private void Window_StateChanged(object sender, EventArgs e)
-        {
-            if(!IsLoaded) return;
-
-            if(this.WindowState == WindowState.Minimized) return;
-
-            App.Settings.RabbitMQWindow.WindowState = this.WindowState;
-        }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
@@ -136,6 +108,8 @@ namespace MobileComms_WPF
         }
         private void BtnConnect_Click(object sender, RoutedEventArgs e)
         {
+            TxtResponse.Text = string.Empty;
+
             if(RabbitMQ.Connect(TxtHost.Text, TxtPassword.Password))
             {
                 BtnConnect.Background = Brushes.LightGreen;
@@ -153,6 +127,14 @@ namespace MobileComms_WPF
         private void BtnMonitorQueue_Click(object sender, RoutedEventArgs e)
         {
             WplMain.Children.Add(new RabbitMQQueueView(RabbitMQ, (KeyValuePair<string, Type>)((ListViewItem)LstOutboundQueueList.SelectedItem).Tag));
+        }
+
+        private void TxtResponse_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(TxtResponse.Text.Length > 0)
+                TxtResponse.Visibility = Visibility.Visible;
+            else
+                TxtResponse.Visibility = Visibility.Collapsed;
         }
     }
 }
