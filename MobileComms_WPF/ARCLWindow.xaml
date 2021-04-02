@@ -297,7 +297,7 @@
                             </LinearGradientBrush>
                         </Label.Background>
                     </Label>
-                    <TextBox Grid.Row="1" x:Name="TxtResponse" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TextChanged="TxtResponse_TextChanged" />
+                    <TextBox Grid.Row="1" x:Name="TxtResponse" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TextChanged="TxtResponse_TextChanged" />
                 </Grid>
             </Border>
         </Grid>

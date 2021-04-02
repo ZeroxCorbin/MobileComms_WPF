@@ -132,6 +132,8 @@
     </Compile>
     <Compile Include="Support\ApplicationSettings_Serializer.cs" />
     <Compile Include="Support\RingBuffer.cs" />
+    <Compile Include="ViewModels\ARCLJobQueueItemViewModel.cs" />
+    <Compile Include="ViewModels\ARCLWindowViewModel.cs" />
     <Page Include="ARCLWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -230,6 +232,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Support\swagger.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
