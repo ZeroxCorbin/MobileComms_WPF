@@ -1,4 +1,4 @@
-﻿using ApplicationSettingsNS;
+﻿using MahApps.Metro.Controls;
 using MobileComms_ITK.JSON.Types;
 using MobileComms_ITK.REST;
 using Newtonsoft.Json;
@@ -22,13 +22,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
-namespace MobileComms_WPF
+namespace MobileComms_WPF.WindowViews
 {
 
     /// <summary>
     /// Interaction logic for REST.xaml
     /// </summary>
-    public partial class RESTWindow : Window
+    public partial class RESTTabView : MetroTabItem
     {
         private REST REST { get; } = new REST();
         REST.Actions RestAction { get; set; } = REST.Actions.GET;
@@ -53,13 +53,13 @@ namespace MobileComms_WPF
             if(numberOfBytesRead == 0)
                 return;
 
-            Dispatcher.Invoke(DispatcherPriority.Render,
-                (Action)(() =>
-                {
-                    TxtErrorResponse.Text = Encoding.ASCII.GetString((byte[])ar.AsyncState, 0, numberOfBytesRead);
-                    TxtErrorResponse.Visibility = Visibility.Visible;
-                    //LblErrorResponse.Visibility = Visibility.Visible;
-                }));
+            //Dispatcher.Invoke(DispatcherPriority.Render,
+            //    (Action)(() =>
+            //    {
+            //        TxtErrorResponse.Text = Encoding.ASCII.GetString((byte[])ar.AsyncState, 0, numberOfBytesRead);
+            //        TxtErrorResponse.Visibility = Visibility.Visible;
+            //        //LblErrorResponse.Visibility = Visibility.Visible;
+            //    }));
 
             BeginReading();
         }
@@ -78,68 +78,66 @@ namespace MobileComms_WPF
 
         //private bool IsLoading { get; set; } = true;
         private JSONEditor_StackPanelParent StkJsonData = new JSONEditor_StackPanelParent() { Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0AFFFF00")), Margin = new Thickness(5), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
-        public RESTWindow(Window owner)
+        public RESTTabView()
         {
-            this.DataContext = App.Settings;
-            Owner = owner;
+
             InitializeComponent();
 
-            Assembly myAssembly = Assembly.GetExecutingAssembly();
-            Stream myStream = myAssembly.GetManifestResourceStream("MobileComms_WPF.Support.copy.png");
-            PngBitmapDecoder decoder = new PngBitmapDecoder(myStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-            ImageBrush imgbrush = new ImageBrush(decoder.Frames[0]);
+            //Assembly myAssembly = Assembly.GetExecutingAssembly();
+            //Stream myStream = myAssembly.GetManifestResourceStream("MobileComms_WPF.Support.copy.png");
+            //PngBitmapDecoder decoder = new PngBitmapDecoder(myStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+            //ImageBrush imgbrush = new ImageBrush(decoder.Frames[0]);
 
-            BtnCopyResource.Background = imgbrush;
-            BtnCopyJSON.Background = imgbrush;
+            //BtnCopyResource.Background = imgbrush;
+            //BtnCopyJSON.Background = imgbrush;
 
-            myStream = myAssembly.GetManifestResourceStream("MobileComms_WPF.Support.browser.png");
-            decoder = new PngBitmapDecoder(myStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-            imgbrush = new ImageBrush(decoder.Frames[0]);
+            //myStream = myAssembly.GetManifestResourceStream("MobileComms_WPF.Support.browser.png");
+            //decoder = new PngBitmapDecoder(myStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+            //imgbrush = new ImageBrush(decoder.Frames[0]);
 
-            BtnBrowseResource.Background = imgbrush;
+            //BtnBrowseResource.Background = imgbrush;
 
-            myStream = myAssembly.GetManifestResourceStream("MobileComms_WPF.Support.swagger.png");
-            decoder = new PngBitmapDecoder(myStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-            imgbrush = new ImageBrush(decoder.Frames[0]);
+            //myStream = myAssembly.GetManifestResourceStream("MobileComms_WPF.Support.swagger.png");
+            //decoder = new PngBitmapDecoder(myStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+            //imgbrush = new ImageBrush(decoder.Frames[0]);
 
-            BtnOpenSwagger.Background = imgbrush;
+            //BtnOpenSwagger.Background = imgbrush;
 
-            myStream = myAssembly.GetManifestResourceStream("MobileComms_WPF.Support.paste.png");
-            decoder = new PngBitmapDecoder(myStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-            imgbrush = new ImageBrush(decoder.Frames[0]);
+            //myStream = myAssembly.GetManifestResourceStream("MobileComms_WPF.Support.paste.png");
+            //decoder = new PngBitmapDecoder(myStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+            //imgbrush = new ImageBrush(decoder.Frames[0]);
 
-            BtnPasteJSON.Background = imgbrush;
+            //BtnPasteJSON.Background = imgbrush;
 
-            ScvJSONData.Content = StkJsonData;
+            //ScvJSONData.Content = StkJsonData;
 
-            Window_LoadSettings();
 
-            LoadResourceList();
+            //LoadResourceList();
         }
 
         private void Window_LoadSettings()
         {
-            if(double.IsNaN(App.Settings.RESTWindow.Left)
-                || !CheckOnScreen.IsOnScreen(this)
-                || Keyboard.IsKeyDown(Key.LeftShift))
-            {
-                Left = Owner.Left;
-                Top = Owner.Top + Owner.Height;
-                Height = 768;
-                Width = 1024;
-            }
+            //if(double.IsNaN(App.Settings.RESTWindow.Left)
+            //    || !CheckOnScreen.IsOnScreen(this)
+            //    || Keyboard.IsKeyDown(Key.LeftShift))
+            //{
+            //    Left = Owner.Left;
+            //    Top = Owner.Top + Owner.Height;
+            //    Height = 768;
+            //    Width = 1024;
+            //}
 
-            TxtPassword.Password = App.Settings.RESTPassword;
+            //TxtPassword.Password = App.Settings.RESTPassword;
         }
 
-        private void Window_StateChanged(object sender, EventArgs e)
-        {
-            if(!IsLoaded) return;
+        //private void Window_StateChanged(object sender, EventArgs e)
+        //{
+        //    if(!IsLoaded) return;
 
-            if(this.WindowState == WindowState.Minimized) return;
+        //    if(this.WindowState == WindowState.Minimized) return;
 
-            App.Settings.RESTWindow.WindowState = this.WindowState;
-        }
+        //   // App.Settings.RESTWindow.WindowState = this.WindowState;
+        //}
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             SetJSONVisibility();
@@ -200,7 +198,7 @@ namespace MobileComms_WPF
             {
                 case REST.Actions.GET:
 
-                    string resp = await REST.Get(REST.ConnectionString(App.Settings.RESTHost, ResourcePanel.Text), TxtPassword.Password);
+                    string resp = await REST.Get(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text), TxtPassword.Password);
 
                     if(REST.IsException)
                     {
@@ -222,23 +220,23 @@ namespace MobileComms_WPF
                     break;
 
                 case REST.Actions.PUT:
-                    TxtErrorResponse.Text = await REST.Put(REST.ConnectionString(App.Settings.RESTHost, ResourcePanel.Text), TxtPassword.Password, StkJsonData.Text);
+                    TxtErrorResponse.Text = await REST.Put(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text), TxtPassword.Password, StkJsonData.Text);
                     TxtErrorResponse.Visibility = Visibility.Visible;
                     break;
 
                 case REST.Actions.POST:
-                    TxtErrorResponse.Text = await REST.Post(REST.ConnectionString(App.Settings.RESTHost, ResourcePanel.Text), TxtPassword.Password, StkJsonData.Text);
+                    TxtErrorResponse.Text = await REST.Post(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text), TxtPassword.Password, StkJsonData.Text);
                     TxtErrorResponse.Visibility = Visibility.Visible;
                     break;
 
                 case REST.Actions.DELETE:
-                    TxtErrorResponse.Text = await REST.Delete(REST.ConnectionString(App.Settings.RESTHost, ResourcePanel.Text), TxtPassword.Password);
+                    TxtErrorResponse.Text = await REST.Delete(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text), TxtPassword.Password);
                     TxtErrorResponse.Visibility = Visibility.Visible;
                     break;
                 case REST.Actions.STREAM:
                     if(Stream == null)
                     {
-                        Stream = await REST.Stream(REST.ConnectionString(App.Settings.RESTHost, ResourcePanel.Text), TxtPassword.Password);
+                        Stream = await REST.Stream(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text), TxtPassword.Password);
                         if(Stream.CanRead)
                         {
                             BeginReading();
@@ -754,7 +752,7 @@ namespace MobileComms_WPF
         }
 
         private void BtnOpenSwagger_Click(object sender, RoutedEventArgs e) =>
-            System.Diagnostics.Process.Start($"https://toolkitadmin:{TxtPassword.Password}@{App.Settings.RESTHost}:8443/swagger/");
+            System.Diagnostics.Process.Start($"https://toolkitadmin:{TxtPassword.Password}@{App.Settings.GetValue("RESTHost")}:8443/swagger/");
 
 
 
@@ -787,14 +785,14 @@ namespace MobileComms_WPF
         private void TxtPassword_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if(!IsLoaded) return;
-            App.Settings.RESTPassword = TxtPassword.Password;
+            App.Settings.SetValue("RESTPassword", TxtPassword.Password);
         }
 
         private void BtnCopyResource_Click(object sender, RoutedEventArgs e) =>
-            Clipboard.SetText(REST.ConnectionString(App.Settings.RESTHost, ResourcePanel.Text));
+            Clipboard.SetText(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text));
 
         private void BtnBrowseResource_Click(object sender, RoutedEventArgs e) =>
-            System.Diagnostics.Process.Start($"https://toolkitadmin:{TxtPassword.Password}@{App.Settings.RESTHost}:8443{ResourcePanel.Text}");
+            System.Diagnostics.Process.Start($"https://toolkitadmin:{TxtPassword.Password}@{App.Settings.GetValue("RESTHost")}:8443{ResourcePanel.Text}");
 
         private void BtnCopyJSON_Click(object sender, RoutedEventArgs e) =>
             Clipboard.SetText(StkJsonData.Text);

@@ -1,4 +1,4 @@
-﻿using ApplicationSettingsNS;
+﻿using MahApps.Metro.Controls;
 using MobileComms_ITK;
 using Newtonsoft.Json;
 using System;
@@ -8,18 +8,16 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace MobileComms_WPF
+namespace MobileComms_WPF.WindowViews
 {
     /// <summary>
     /// Interaction logic for RabitMQWindow.xaml
     /// </summary>
-    public partial class RabbitMQWindow : Window
+    public partial class RabbitMQTabView : MetroTabItem
     {
-        private RabbitMQ RabbitMQ { get; } = new RabbitMQ();
-        public RabbitMQWindow(Window owner)
+        private MobileComms_ITK.RabbitMQ RabbitMQ { get; } = new MobileComms_ITK.RabbitMQ();
+        public RabbitMQTabView()
         {
-            DataContext = App.Settings;
-            Owner = owner;
 
             InitializeComponent();
 
@@ -30,18 +28,18 @@ namespace MobileComms_WPF
 
         private void Window_LoadSettings()
         {
-            if(double.IsNaN(App.Settings.RabbitMQWindow.Left)
-                || !CheckOnScreen.IsOnScreen(this)
-                || Keyboard.IsKeyDown(Key.LeftShift))
-            {
-                Left = Owner.Left;
-                Top = Owner.Top + Owner.Height;
-                Height = 768;
-                Width = 1024;
-            }
+            //if(double.IsNaN(App.Settings.RabbitMQWindow.Left)
+            //    || !CheckOnScreen.IsOnScreen(this)
+            //    || Keyboard.IsKeyDown(Key.LeftShift))
+            //{
+            //    Left = Owner.Left;
+            //    Top = Owner.Top + Owner.Height;
+            //    Height = 768;
+            //    Width = 1024;
+            //}
 
-            TxtPassword.Password = App.Settings.RabbitMQPassword;
-            TxtResponse.Visibility = Visibility.Collapsed;
+            //TxtPassword.Password = App.Settings.RabbitMQPassword;
+            //TxtResponse.Visibility = Visibility.Collapsed;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -104,7 +102,7 @@ namespace MobileComms_WPF
         private void TxtPassword_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if(!IsLoaded) return;
-            App.Settings.RabbitMQPassword = TxtPassword.Password;
+            //App.Settings.RabbitMQPassword = TxtPassword.Password;
         }
         private void BtnConnect_Click(object sender, RoutedEventArgs e)
         {

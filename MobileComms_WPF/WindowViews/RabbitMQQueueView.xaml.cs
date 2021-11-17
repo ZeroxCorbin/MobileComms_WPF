@@ -19,12 +19,12 @@ namespace MobileComms_WPF
     /// </summary>
     public partial class RabbitMQQueueView : UserControl
     {
-        private RabbitMQ RabbitMQ { get; }
+        private MobileComms_ITK.RabbitMQ RabbitMQ { get; }
         private string QueueName { get; set; }
         private string ChannelName { get; } = Guid.NewGuid().ToString();
         private Type ClassType { get; set; }
 
-        public RabbitMQQueueView(RabbitMQ rabbitMQ, KeyValuePair<string, Type> cmd)
+        public RabbitMQQueueView(MobileComms_ITK.RabbitMQ rabbitMQ, KeyValuePair<string, Type> cmd)
         {
             InitializeComponent();
 
@@ -44,7 +44,7 @@ namespace MobileComms_WPF
         {
             while(true)
             {
-                RabbitMQ.Messages lst = RabbitMQ.Get(QueueName, ChannelName);
+                MobileComms_ITK.RabbitMQ.Messages lst = RabbitMQ.Get(QueueName, ChannelName);
 
                 if(RabbitMQ.IsException)
                     break;
@@ -74,7 +74,7 @@ namespace MobileComms_WPF
                         LblState.Content = "Exited";
                     }));
         }
-        private void DeserializeJSONtoDataGrid(RabbitMQ.Messages messages)
+        private void DeserializeJSONtoDataGrid(MobileComms_ITK.RabbitMQ.Messages messages)
         {
 
             DataTable datatable = new DataTable();
@@ -131,7 +131,7 @@ namespace MobileComms_WPF
             };
             datatable.Columns.Add(col);
 
-            foreach(RabbitMQ.Message message in messages)
+            foreach(MobileComms_ITK.RabbitMQ.Message message in messages)
             {
                 JObject elem = JsonConvert.DeserializeObject<JObject>(message.Body);
 

@@ -12,103 +12,36 @@ using System.Windows.Threading;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Windows.Input;
-using ApplicationSettingsNS;
 using System.ComponentModel;
 using ARCLTypes;
 using ARCL;
 using Microsoft.Win32;
 using System.IO;
+using MahApps.Metro.Controls;
 
-namespace MobileComms_WPF
+namespace MobileComms_WPF.WindowViews
 {
     /// <summary>
     /// Interaction logic for ARCLWindow.xaml
     /// </summary>
-    public partial class ARCLWindow : Window
+    public partial class ARCLTabView : MetroTabItem
     {
 
 
         ARCL.ARCLConnection Connection { get; } = new ARCL.ARCLConnection();
-        public ARCLWindow(Window owner)
+        public ARCLTabView()
         {
-            Owner = owner;
 
             InitializeComponent();
 
-            Window_LoadSettings();
+           LoadARCLList();
 
-            LoadARCLList();
-
-            Connection.ConnectState += Connection_ConnectState;
-            Connection.DataReceived += Connection_DataReceived;
-        }
-        private void Window_LoadSettings()
-        {
-            if(Keyboard.IsKeyDown(Key.LeftShift))
-                App.Settings.ARCLWindow = new ApplicationSettings_Serializer.ApplicationSettings.WindowSettings();
-
-            if(double.IsNaN(App.Settings.ARCLWindow.Left))
-            {
-                App.Settings.ARCLWindow.Left = Owner.Left;
-                App.Settings.ARCLWindow.Top = Owner.Top + Owner.Height;
-                App.Settings.ARCLWindow.Height = 768;
-                App.Settings.ARCLWindow.Width = 1024;
-            }
-
-            this.Left = App.Settings.ARCLWindow.Left;
-            this.Top = App.Settings.ARCLWindow.Top;
-            this.Height = App.Settings.ARCLWindow.Height;
-            this.Width = App.Settings.ARCLWindow.Width;
-
-            if(!CheckOnScreen.IsOnScreen(this))
-            {
-                App.Settings.ARCLWindow.Left = Owner.Left;
-                App.Settings.ARCLWindow.Top = Owner.Top + Owner.Height;
-                App.Settings.ARCLWindow.Height = 768;
-                App.Settings.ARCLWindow.Width = 1024;
-
-                this.Left = App.Settings.ARCLWindow.Left;
-                this.Top = App.Settings.ARCLWindow.Top;
-                this.Height = App.Settings.ARCLWindow.Height;
-                this.Width = App.Settings.ARCLWindow.Width;
-            }
-
-            TxtConnectionString.Text = App.Settings.ARCLConnectionString;
+            //Connection.ConnectState += Connection_ConnectState;
+            //Connection.DataReceived += Connection_DataReceived;
         }
 
-        private double TopLast;
-        private double TopLeft;
-        private void Window_LocationChanged(object sender, EventArgs e)
-        {
-            if(!IsLoaded) return;
 
-            TopLast = App.Settings.ARCLWindow.Top;
-            TopLeft = App.Settings.ARCLWindow.Left;
 
-            App.Settings.ARCLWindow.Top = Top;
-            App.Settings.ARCLWindow.Left = Left;
-        }
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if(!IsLoaded) return;
-            if(WindowState != WindowState.Normal) return;
-
-            App.Settings.ARCLWindow.Height = Height;
-            App.Settings.ARCLWindow.Width = Width;
-        }
-        private void Window_StateChanged(object sender, EventArgs e)
-        {
-            if(!IsLoaded) return;
-
-            if(this.WindowState != WindowState.Normal)
-            {
-                App.Settings.ARCLWindow.Top = TopLast;
-                App.Settings.ARCLWindow.Left = TopLeft;
-            }
-            if(this.WindowState == WindowState.Minimized) return;
-
-            App.Settings.ARCLWindow.WindowState = this.WindowState;
-        }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             AddGoalComboBoxesToGrid();
@@ -264,16 +197,16 @@ namespace MobileComms_WPF
         {
             GoalNames.Clear();
 
-            SychronousCommands sychronousCommands = new SychronousCommands(Connection.ConnectionString);
+            //SychronousCommands sychronousCommands = new SychronousCommands(Connection.ConnectionString);
             List<string> goals;
 
-            if(sychronousCommands.Connect())
-                goals = sychronousCommands.GetGoals();
-            else
-                return;
+            //if(sychronousCommands.Connect())
+            //    goals = sychronousCommands.GetGoals();
+            //else
+            //    return;
 
-            foreach(string name in goals)
-                GoalNames.Add(name);
+            //foreach(string name in goals)
+            //    GoalNames.Add(name);
         }
 
         private void QueueLoop(object sender)
@@ -573,29 +506,29 @@ namespace MobileComms_WPF
 
         private void BtnConnect_Click(object sender, RoutedEventArgs e)
         {
-            if(Connection.IsConnected)
-            {
-                Connection.Close();
-            }
-            else
-            {
-                if(ARCL.ARCLConnection.ValidateConnectionString(TxtConnectionString.Text))
-                {
-                    TxtConnectionString.Background = Brushes.WhiteSmoke;
-                    Connection.ConnectionString = TxtConnectionString.Text;
-                    Connection.Connect();
-                }
-                else
-                {
-                    TxtConnectionString.Background = Brushes.Salmon;
-                }
-            }
+            //if(Connection.IsConnected)
+            //{
+            //    Connection.Close();
+            //}
+            //else
+            //{
+            //    if(ARCL.ARCLConnection.ValidateConnectionString(TxtConnectionString.Text))
+            //    {
+            //        TxtConnectionString.Background = Brushes.WhiteSmoke;
+            //        Connection.ConnectionString = TxtConnectionString.Text;
+            //        Connection.Connect();
+            //    }
+            //    else
+            //    {
+            //        TxtConnectionString.Background = Brushes.Salmon;
+            //    }
+            //}
 
         }
 
         private void BtnSend_Click(object sender, RoutedEventArgs e)
         {
-            Connection.Write(TxtCommand2Send.Text);
+            //Connection.Write(TxtCommand2Send.Text);
         }
 
 
@@ -631,7 +564,7 @@ namespace MobileComms_WPF
             foreach(var command in Commands2Check)
             {
                 CommandInCheck = command;
-                Connection.Write(command.Command);
+                //Connection.Write(command.Command);
                 CommandInCheckResult = -1;
 
                 int count = 0;
@@ -741,7 +674,7 @@ namespace MobileComms_WPF
         private void TxtConnectionString_TextChanged(object sender, TextChangedEventArgs e)
         {
             if(!IsLoaded) return;
-            App.Settings.ARCLConnectionString = TxtConnectionString.Text;
+            //App.Settings.ARCLConnectionString = TxtConnectionString.Text;
         }
 
 

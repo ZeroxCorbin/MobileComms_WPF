@@ -1,5 +1,4 @@
-﻿using ApplicationSettingsNS;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -15,21 +14,19 @@ using SqlKata.Compilers;
 using System.ComponentModel;
 using System.Reflection;
 using System.Linq;
+using MahApps.Metro.Controls;
 
-namespace MobileComms_WPF
+namespace MobileComms_WPF.WindowViews
 {
     /// <summary>
     /// Interaction logic for RabitMQWindow.xaml
     /// </summary>
-    public partial class SQLWindow : Window, INotifyPropertyChanged
+    public partial class SQLTabView : MetroTabItem, INotifyPropertyChanged
     {
         private SQL.QueryType SQLQueryType { get; set; } = SQL.QueryType.SELECT;
         private SQL SQL { get; } = new SQL();
-        public SQLWindow(Window owner)
+        public SQLTabView()
         {
-            DataContext = App.Settings;
-            Owner = owner;
-
             InitializeComponent();
 
             Window_LoadSettings();
@@ -41,28 +38,22 @@ namespace MobileComms_WPF
 
         private void Window_LoadSettings()
         {
-            if(double.IsNaN(App.Settings.SQLWindow.Left)
-                || !CheckOnScreen.IsOnScreen(this)
-                || Keyboard.IsKeyDown(Key.LeftShift))
-            {
-                Left = Owner.Left;
-                Top = Owner.Top + Owner.Height;
-                Height = 768;
-                Width = 1024;
-            }
+            //if(double.IsNaN(App.Settings.SQLWindow.Left)
+            //    || !CheckOnScreen.IsOnScreen(this)
+            //    || Keyboard.IsKeyDown(Key.LeftShift))
+            //{
+            //    Left = Owner.Left;
+            //    Top = Owner.Top + Owner.Height;
+            //    Height = 768;
+            //    Width = 1024;
+            //}
 
-            TxtPassword.Password = App.Settings.SQLPassword;
+            //TxtPassword.Password = App.Settings.SQLPassword;
 
             DisConnected();
         }
 
-        private void Window_StateChanged(object sender, EventArgs e)
-        {
-            if(!IsLoaded) return;
-            if(this.WindowState == WindowState.Minimized) return;
 
-            App.Settings.SQLWindow.WindowState = this.WindowState;
-        }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             ((TreeViewItem)TrvQueueList.Items[0]).IsSelected = true;
@@ -253,19 +244,19 @@ namespace MobileComms_WPF
         {
             if(BtnConnect.Tag == null)
             {
-                if(SQL.Connect(App.Settings.SQLHost, TxtPassword.Password))
-                {
-                    BtnConnect.Tag = "";
-                    BtnConnect.Background = Brushes.LightGreen;
+                //if(SQL.Connect(App.Settings.SQLHost, TxtPassword.Password))
+                //{
+                //    BtnConnect.Tag = "";
+                //    BtnConnect.Background = Brushes.LightGreen;
 
-                    Connected();
-                }
-                else
-                {
-                    BtnConnect.Background = Brushes.LightSalmon;
+                //    Connected();
+                //}
+                //else
+                //{
+                //    BtnConnect.Background = Brushes.LightSalmon;
 
-                    DisConnected();
-                }
+                //    DisConnected();
+                //}
             }
             else
             {
@@ -421,7 +412,7 @@ namespace MobileComms_WPF
         private void TxtPassword_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if(!IsLoaded) return;
-            App.Settings.SQLPassword = TxtPassword.Password;
+           // App.Settings.SQLPassword = TxtPassword.Password;
         }
         public double TxtWidth { get; set; }
         public double TxtHeight { get; set; }

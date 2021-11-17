@@ -1,0 +1,53 @@
+﻿<mah:MetroWindow x:Class="MobileComms_WPF.WindowViews.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:local="clr-namespace:MobileComms_WPF"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:WindowViewModels="clr-namespace:MobileComms_WPF.WindowViewModels"
+        xmlns:WindowViews="clr-namespace:MobileComms_WPF.WindowViews"
+        d:DataContext="{d:DesignInstance Type=WindowViewModels:MainWindowViewModel}"
+        mc:Ignorable="d"
+        d:DesignHeight="768" d:DesignWidth="768" 
+        Title="{Binding Title, Mode=OneWay}"
+        Left="{Binding Left, Mode=TwoWay}"
+        Top="{Binding Top, Mode=TwoWay}"
+        WindowState="{Binding WindowState, Mode=TwoWay}">
+
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands>>
+
+            <Button BorderThickness="0" 
+                        x:Name="btnLightTheme"
+                        Click="btnLightTheme_Click">
+                <Button.Content>
+                    <IconPacks:PackIconModern Width="20" Height="20" Kind="WeatherSun"/>
+                </Button.Content>
+
+            </Button>
+
+            <Button BorderThickness="0" 
+                        x:Name="btnDarkTheme"
+                        Click="btnDarkTheme_Click">
+                <Button.Content>
+                    <IconPacks:PackIconModern Width="20" Height="20" Kind="MoonWaningCrescent"/>
+                </Button.Content>
+            </Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
+
+    <Grid>
+        <mah:MetroTabControl SelectedValue="{Binding SelectedTab}">
+
+            <WindowViews:ARCLTabView x:Name="ARCLTabView"/>
+            <WindowViews:RESTTabView x:Name="RESTTabView"/>
+            <WindowViews:SQLTabView x:Name="SQLTabView"/>
+            <WindowViews:RabbitMQTabView x:Name="RabbitMQTabView"/>
+            
+        </mah:MetroTabControl>
+    </Grid>
+
+</mah:MetroWindow>
