@@ -40,6 +40,17 @@ namespace MobileComms_WPF.WindowViewModels
         }
         private object _SelectedTab;
 
+        public string TargetIPAddress
+        {
+            get { return App.Settings.GetValue("TargetIPAddress"); }
+            set
+            { 
+                App.Settings.SetValue("TargetIPAddress", value);
+                ARCLTab.UpdateTargetIPAddress();
+            }
+        }
+
+
         public ARCLTabViewModel ARCLTab { get; } = new ARCLTabViewModel();
         public RESTTabViewModel RESTTab { get; } = new RESTTabViewModel();
         public SQLTabViewModel SQLTab { get; } = new SQLTabViewModel();

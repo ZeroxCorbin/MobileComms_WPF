@@ -15,7 +15,6 @@
         <ItemContainerTemplate DataType="{x:Type WindowViewModels:RESTTabViewModel}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="SQL"/>
-                <mah:ProgressRing Foreground="{DynamicResource AccentColorBrush}" Width="16" Height="16" IsActive="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroTabItem}, Path=DataContext.IsLoading}" />
             </StackPanel>
         </ItemContainerTemplate>
     </mah:MetroTabItem.HeaderTemplate>

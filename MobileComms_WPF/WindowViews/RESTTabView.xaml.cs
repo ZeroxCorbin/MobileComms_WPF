@@ -28,7 +28,7 @@ namespace MobileComms_WPF.WindowViews
     /// <summary>
     /// Interaction logic for REST.xaml
     /// </summary>
-    public partial class RESTTabView : MetroTabItem
+    public partial class RESTTabView : MetroContentControl
     {
         private REST REST { get; } = new REST();
         REST.Actions RestAction { get; set; } = REST.Actions.GET;
@@ -198,7 +198,7 @@ namespace MobileComms_WPF.WindowViews
             {
                 case REST.Actions.GET:
 
-                    string resp = await REST.Get(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text), TxtPassword.Password);
+                    string resp = await REST.Get(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text), App.Settings.GetValue("ITKPassword"));
 
                     if(REST.IsException)
                     {
@@ -220,23 +220,23 @@ namespace MobileComms_WPF.WindowViews
                     break;
 
                 case REST.Actions.PUT:
-                    TxtErrorResponse.Text = await REST.Put(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text), TxtPassword.Password, StkJsonData.Text);
+                    TxtErrorResponse.Text = await REST.Put(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text), App.Settings.GetValue("ITKPassword"), StkJsonData.Text);
                     TxtErrorResponse.Visibility = Visibility.Visible;
                     break;
 
                 case REST.Actions.POST:
-                    TxtErrorResponse.Text = await REST.Post(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text), TxtPassword.Password, StkJsonData.Text);
+                    TxtErrorResponse.Text = await REST.Post(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text), App.Settings.GetValue("ITKPassword"), StkJsonData.Text);
                     TxtErrorResponse.Visibility = Visibility.Visible;
                     break;
 
                 case REST.Actions.DELETE:
-                    TxtErrorResponse.Text = await REST.Delete(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text), TxtPassword.Password);
+                    TxtErrorResponse.Text = await REST.Delete(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text), App.Settings.GetValue("ITKPassword"));
                     TxtErrorResponse.Visibility = Visibility.Visible;
                     break;
                 case REST.Actions.STREAM:
                     if(Stream == null)
                     {
-                        Stream = await REST.Stream(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text), TxtPassword.Password);
+                        Stream = await REST.Stream(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text), App.Settings.GetValue("ITKPassword"));
                         if(Stream.CanRead)
                         {
                             BeginReading();
@@ -752,7 +752,7 @@ namespace MobileComms_WPF.WindowViews
         }
 
         private void BtnOpenSwagger_Click(object sender, RoutedEventArgs e) =>
-            System.Diagnostics.Process.Start($"https://toolkitadmin:{TxtPassword.Password}@{App.Settings.GetValue("RESTHost")}:8443/swagger/");
+            System.Diagnostics.Process.Start($"https://toolkitadmin:{App.Settings.GetValue("ITKPassword")}@{App.Settings.GetValue("RESTHost")}:8443/swagger/");
 
 
 
@@ -782,17 +782,11 @@ namespace MobileComms_WPF.WindowViews
             }
         }
 
-        private void TxtPassword_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            if(!IsLoaded) return;
-            App.Settings.SetValue("RESTPassword", TxtPassword.Password);
-        }
-
         private void BtnCopyResource_Click(object sender, RoutedEventArgs e) =>
             Clipboard.SetText(REST.ConnectionString(App.Settings.GetValue("RESTHost"), ResourcePanel.Text));
 
         private void BtnBrowseResource_Click(object sender, RoutedEventArgs e) =>
-            System.Diagnostics.Process.Start($"https://toolkitadmin:{TxtPassword.Password}@{App.Settings.GetValue("RESTHost")}:8443{ResourcePanel.Text}");
+            System.Diagnostics.Process.Start($"https://toolkitadmin:{App.Settings.GetValue("ITKPassword")}@{App.Settings.GetValue("RESTHost")}:8443{ResourcePanel.Text}");
 
         private void BtnCopyJSON_Click(object sender, RoutedEventArgs e) =>
             Clipboard.SetText(StkJsonData.Text);

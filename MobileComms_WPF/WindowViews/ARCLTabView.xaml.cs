@@ -24,7 +24,7 @@ namespace MobileComms_WPF.WindowViews
     /// <summary>
     /// Interaction logic for ARCLWindow.xaml
     /// </summary>
-    public partial class ARCLTabView : MetroTabItem
+    public partial class ARCLTabView : MetroContentControl
     {
 
 
@@ -34,7 +34,7 @@ namespace MobileComms_WPF.WindowViews
 
             InitializeComponent();
 
-           LoadARCLList();
+           //LoadARCLList();
 
             //Connection.ConnectState += Connection_ConnectState;
             //Connection.DataReceived += Connection_DataReceived;
@@ -57,59 +57,59 @@ namespace MobileComms_WPF.WindowViews
             //CleanSock();
         }
 
-        private void LoadARCLList()
-        {
-            ARCLTypes.ARCLCommands commands = new ARCLTypes.ARCLCommands();
-            foreach(var kv in commands.ARCLCommands_2016_ARCL_en)
-            {
-                TreeViewItem tvi = new TreeViewItem();
-                Match key = Regex.Match(kv.Key, @"^[a-zA-Z]*");
+        //private void LoadARCLList()
+        //{
+        //    ARCLTypes.ARCLCommands commands = new ARCLTypes.ARCLCommands();
+        //    foreach(var kv in commands.ARCLCommands_2016_ARCL_en)
+        //    {
+        //        TreeViewItem tvi = new TreeViewItem();
+        //        Match key = Regex.Match(kv.Key, @"^[a-zA-Z]*");
 
-                var item = commands.ARCLCommands_I617_E_01.FirstOrDefault(x => x.Key.StartsWith(key.Value));
-                if(string.IsNullOrEmpty(item.Key))
-                    tvi.Header = "--" + kv.Value;
-                else
-                    tvi.Header = kv.Value;
+        //        var item = commands.ARCLCommands_I617_E_01.FirstOrDefault(x => x.Key.StartsWith(key.Value));
+        //        if(string.IsNullOrEmpty(item.Key))
+        //            tvi.Header = "--" + kv.Value;
+        //        else
+        //            tvi.Header = kv.Value;
 
-                //tvi.Items.Add(kv.Value);
-                TvARCLCommands1.Items.Add(tvi);
-            }
+        //        //tvi.Items.Add(kv.Value);
+        //        TvARCLCommands1.Items.Add(tvi);
+        //    }
 
-            foreach(var kv in commands.ARCLCommands_I617_E_01)
-            {
-                Match key = Regex.Match(kv.Key, @"^[a-zA-Z]*");
-                var item = commands.ARCLCommands_2016_ARCL_en.FirstOrDefault(x => x.Key.StartsWith(key.Value));
-                if(string.IsNullOrEmpty(item.Key))
-                {
-                    TreeViewItem tvi = new TreeViewItem
-                    {
-                        //Header = kv.Key,
-                        Header = kv.Value,
-                        //Background = Brushes.LightGreen
-                    };
-                    //tvi.Items.Add(kv.Value);
-                    TvARCLCommands1.Items.Add(tvi);
-                }
-            }
+        //    foreach(var kv in commands.ARCLCommands_I617_E_01)
+        //    {
+        //        Match key = Regex.Match(kv.Key, @"^[a-zA-Z]*");
+        //        var item = commands.ARCLCommands_2016_ARCL_en.FirstOrDefault(x => x.Key.StartsWith(key.Value));
+        //        if(string.IsNullOrEmpty(item.Key))
+        //        {
+        //            TreeViewItem tvi = new TreeViewItem
+        //            {
+        //                //Header = kv.Key,
+        //                Header = kv.Value,
+        //                //Background = Brushes.LightGreen
+        //            };
+        //            //tvi.Items.Add(kv.Value);
+        //            TvARCLCommands1.Items.Add(tvi);
+        //        }
+        //    }
 
-            foreach(var kv in commands.ARCLCommands_Help_4_10_1)
-            {
-                Match key = Regex.Match(kv.Key, @"^[a-zA-Z]*");
-                var item = commands.ARCLCommands_I617_E_01.FirstOrDefault(x => x.Key.StartsWith(key.Value));
-                if(string.IsNullOrEmpty(item.Key))
-                {
-                    TreeViewItem tvi = new TreeViewItem
-                    {
-                        Header = kv.Key,
-                        Background = Brushes.LightYellow
-                    };
-                    //tvi.Items.Add(kv.Value);
-                    TvARCLCommands1.Items.Add(tvi);
-                }
-            }
-            TvARCLCommands1.Items.SortDescriptions.Clear();
-            TvARCLCommands1.Items.SortDescriptions.Add(new SortDescription("Header", ListSortDirection.Ascending));
-        }
+        //    foreach(var kv in commands.ARCLCommands_Help_4_10_1)
+        //    {
+        //        Match key = Regex.Match(kv.Key, @"^[a-zA-Z]*");
+        //        var item = commands.ARCLCommands_I617_E_01.FirstOrDefault(x => x.Key.StartsWith(key.Value));
+        //        if(string.IsNullOrEmpty(item.Key))
+        //        {
+        //            TreeViewItem tvi = new TreeViewItem
+        //            {
+        //                Header = kv.Key,
+        //                Background = Brushes.LightYellow
+        //            };
+        //            //tvi.Items.Add(kv.Value);
+        //            TvARCLCommands1.Items.Add(tvi);
+        //        }
+        //    }
+        //    TvARCLCommands1.Items.SortDescriptions.Clear();
+        //    TvARCLCommands1.Items.SortDescriptions.Add(new SortDescription("Header", ListSortDirection.Ascending));
+        //}
 
         #region QueueManager
 
@@ -479,14 +479,13 @@ namespace MobileComms_WPF.WindowViews
                         if(state)
                         {
                             Connection.StartReceiveAsync();
-                            BtnConnect.Background = Brushes.LightGreen;
-
+ 
                             BrdQueueManager.IsEnabled = true;
                             BrdConfigurationManager.IsEnabled = true;
                         }
                         else
                         {
-                            BtnConnect.Background = Brushes.Salmon;
+
                             BrdQueueManager.IsEnabled = false;
                             BrdConfigurationManager.IsEnabled = false;
                         }
@@ -549,15 +548,15 @@ namespace MobileComms_WPF.WindowViews
         private CommandData CommandInCheck { get; set; }
         private List<CommandData> Commands2Check { get; set; }
 
-        private void BtnTest1_Click(object sender, RoutedEventArgs e)
-        {
-            Commands2Check = new List<CommandData>();
+        //private void BtnTest1_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Commands2Check = new List<CommandData>();
 
-            foreach(TreeViewItem tvi in TvARCLCommands1.Items)
-                Commands2Check.Add(new CommandData(Regex.Match(((string)tvi.Header).Trim('-'), @"^[a-zA-Z]*").Value, false));
+        //    foreach(TreeViewItem tvi in TvARCLCommands1.Items)
+        //        Commands2Check.Add(new CommandData(Regex.Match(((string)tvi.Header).Trim('-'), @"^[a-zA-Z]*").Value, false));
 
-            ThreadPool.QueueUserWorkItem(CheckCommandsThread_DoWork);
-        }
+        //    ThreadPool.QueueUserWorkItem(CheckCommandsThread_DoWork);
+        //}
 
         private void CheckCommandsThread_DoWork(object sender)
         {
@@ -583,20 +582,20 @@ namespace MobileComms_WPF.WindowViews
                     }));
         }
 
-        private void DisplayResults()
+        private void DisplayResults() 
         {
-            foreach(TreeViewItem tvi in TvARCLCommands1.Items)
-            {
-                Match key = Regex.Match(((string)tvi.Header).Trim('-'), @"^[a-zA-Z]*");
-                var item = Commands2Check.FirstOrDefault(x => x.Command.StartsWith(key.Value));
-                if(string.IsNullOrEmpty(item.Command))
-                {
-                    if(item.Result)
-                        tvi.Background = Brushes.LightGreen;
-                    else
-                        tvi.Background = Brushes.LightPink;
-                }
-            }
+            //foreach(TreeViewItem tvi in TvARCLCommands1.Items)
+            //{
+            //    Match key = Regex.Match(((string)tvi.Header).Trim('-'), @"^[a-zA-Z]*");
+            //    var item = Commands2Check.FirstOrDefault(x => x.Command.StartsWith(key.Value));
+            //    if(string.IsNullOrEmpty(item.Command))
+            //    {
+            //        if(item.Result)
+            //            tvi.Background = Brushes.LightGreen;
+            //        else
+            //            tvi.Background = Brushes.LightPink;
+            //    }
+            //}
 
         }
         private void Connection_DataReceived(object sender, string data)

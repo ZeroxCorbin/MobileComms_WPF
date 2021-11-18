@@ -16,89 +16,27 @@
         <ItemContainerTemplate DataType="{x:Type WindowViewModels:ARCLTabViewModel}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="RabbitMQ"/>
-                <mah:ProgressRing Foreground="{DynamicResource AccentColorBrush}" Width="16" Height="16" IsActive="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroTabItem}, Path=DataContext.IsLoading}" />
-            </StackPanel>
+           </StackPanel>
         </ItemContainerTemplate>
     </mah:MetroTabItem.HeaderTemplate>
-    
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="280"/>
-            <RowDefinition Height="1*"/>
 
-        </Grid.RowDefinitions>
+    <mah:MetroTabItem.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="280"/>
+                <RowDefinition Height="1*"/>
 
-        <Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="0,0,0,3"  Margin="5">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="34"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
+            </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Content="RabbitMQ" FontSize="18" HorizontalContentAlignment="Center">
-                    <Label.Background>
-                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="#FF4c88d6" Offset="0"/>
-                            <GradientStop Color="White" Offset="0.3"/>
-                        </LinearGradientBrush>
-                    </Label.Background>
-                </Label>
-                <Grid Grid.Row="1" Margin="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Button Grid.Column="1" Content="Connect" x:Name="BtnConnect" Width="94" HorizontalContentAlignment="Center" Click="BtnConnect_Click" Background="LightSalmon" BorderBrush="{x:Null}" HorizontalAlignment="Right"/>
-
-                    <Label Grid.Column="2" Content="amqps://" HorizontalContentAlignment="Right" />
-                    <Label Grid.Column="3" Content="toolkitadmin:" HorizontalContentAlignment="Center" />
-                    <PasswordBox Grid.Column="4" x:Name="TxtPassword" Background="#0AFFFF00" MinWidth="80" VerticalContentAlignment="Center" PasswordChanged="TxtPassword_PasswordChanged" BorderBrush="{x:Null}" ToolTip="ITK Password"/>
-                    <Label Grid.Column="5" Content="@:" HorizontalContentAlignment="Center" />
-
-
-                    <TextBox Grid.Column="6" Text="{Binding RabbitMQHost}" MinWidth="80" x:Name="TxtHost" Background="#0AFFFF00" VerticalContentAlignment="Center" BorderBrush="{x:Null}" ToolTip="Host name / IP"/>
-
-                    <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="6" x:Name="TxtResponse" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Background="#19000000" TextWrapping="Wrap" TextChanged="TxtResponse_TextChanged" />
-
-
-
-                </Grid>
-            </Grid>
-        </Border>
-
-
-
-        <Grid Grid.Column="0" Grid.Row="1">
-            <Grid.ColumnDefinitions>
-
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-
-
-            <Border Grid.Column="0" Grid.Row="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="0,0,0,3" Margin="5">
+            <Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="0,0,0,3"  Margin="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="34"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0" Content="Inbound Exchange Queues" FontSize="18" HorizontalContentAlignment="Center">
+                    <Label Grid.Row="0" Content="RabbitMQ" FontSize="18" HorizontalContentAlignment="Center">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#FF4c88d6" Offset="0"/>
@@ -106,150 +44,214 @@
                             </LinearGradientBrush>
                         </Label.Background>
                     </Label>
-                    <ListView Grid.Row="1" Grid.Column="0" Name="LstInboundQueueList" Background="{x:Null}" BorderBrush="{x:Null}"/>
+                    <Grid Grid.Row="1" Margin="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="1" Content="Connect" x:Name="BtnConnect" Width="94" HorizontalContentAlignment="Center" Click="BtnConnect_Click" Background="LightSalmon" BorderBrush="{x:Null}" HorizontalAlignment="Right"/>
+
+                        <Label Grid.Column="2" Content="amqps://" HorizontalContentAlignment="Right" />
+                        <Label Grid.Column="3" Content="toolkitadmin:" HorizontalContentAlignment="Center" />
+                        <PasswordBox Grid.Column="4" x:Name="TxtPassword" Background="#0AFFFF00" MinWidth="80" VerticalContentAlignment="Center" PasswordChanged="TxtPassword_PasswordChanged" BorderBrush="{x:Null}" ToolTip="ITK Password"/>
+                        <Label Grid.Column="5" Content="@:" HorizontalContentAlignment="Center" />
+
+
+                        <TextBox Grid.Column="6" Text="{Binding RabbitMQHost}" MinWidth="80" x:Name="TxtHost" Background="#0AFFFF00" VerticalContentAlignment="Center" BorderBrush="{x:Null}" ToolTip="Host name / IP"/>
+
+                        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="6" x:Name="TxtResponse" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Background="#19000000" TextWrapping="Wrap" TextChanged="TxtResponse_TextChanged" />
+
+
+
+                    </Grid>
                 </Grid>
             </Border>
 
-            <Border Grid.Column="1" Grid.Row="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="0,0,0,3" Margin="0,5,5,5" Width="220">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="34"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0" Content="Send Message" FontSize="18" HorizontalContentAlignment="Center">
-                        <Label.Background>
-                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="#FF4c88d6" Offset="0"/>
-                                <GradientStop Color="White" Offset="0.3"/>
-                            </LinearGradientBrush>
-                        </Label.Background>
-                    </Label>
 
-                    <Grid Grid.Row="1">
+            <Grid Grid.Column="0" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+
+
+                <Border Grid.Column="0" Grid.Row="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="0,0,0,3" Margin="5">
+                    <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="34"/>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
 
-                        <Grid Grid.Row="0">
+                        <Label Grid.Row="0" Content="Inbound Exchange Queues" FontSize="18" HorizontalContentAlignment="Center">
+                            <Label.Background>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="#FF4c88d6" Offset="0"/>
+                                    <GradientStop Color="White" Offset="0.3"/>
+                                </LinearGradientBrush>
+                            </Label.Background>
+                        </Label>
+                        <ListView Grid.Row="1" Grid.Column="0" Name="LstInboundQueueList" Background="{x:Null}" BorderBrush="{x:Null}"/>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="1" Grid.Row="1" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="0,0,0,3" Margin="0,5,5,5" Width="220">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="34"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Row="0" Content="Send Message" FontSize="18" HorizontalContentAlignment="Center">
+                            <Label.Background>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="#FF4c88d6" Offset="0"/>
+                                    <GradientStop Color="White" Offset="0.3"/>
+                                </LinearGradientBrush>
+                            </Label.Background>
+                        </Label>
+
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0"
+                                     Name="TxtInboundQueueName"
+                                     Background="{x:Null}"
+                                     VerticalContentAlignment="Bottom"
+                                     BorderBrush="{x:Null}"
+                                      IsReadOnly="True" MinWidth="80" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                <Button Grid.Column="1" 
+                                    Name="BtnInboundSend"
+                                    Click="BtnSend_Click"
+                                    Content="Send"
+                                    HorizontalAlignment="Left"
+                                    BorderBrush="{x:Null}"
+                                    VerticalAlignment="Top"
+                                    Padding="3"/>
+                            </Grid>
+
+
+                            <TextBox Grid.Row="1" Grid.Column="1"
+                                     Name="TxtJsonSchema"
+                                     Background="#0AFFFF00"
+                                     AcceptsReturn="True"
+                                     HorizontalScrollBarVisibility="Auto"
+                                     VerticalScrollBarVisibility="Auto"
+                                     BorderBrush="{x:Null}" VerticalAlignment="Top" MinWidth="80"/>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="0,0,0,3" Margin="5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="34"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Row="0" Content="Outbound Exchange Queues" FontSize="18" HorizontalContentAlignment="Center">
+                            <Label.Background>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="#FF4c88d6" Offset="0"/>
+                                    <GradientStop Color="White" Offset="0.3"/>
+                                </LinearGradientBrush>
+                            </Label.Background>
+                        </Label>
+
+                        <ListBox Grid.Row="2" Grid.Column="0" Name="LstOutboundQueueList" BorderBrush="{x:Null}"/>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="3" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="0,0,0,3" Margin="0,5,5,5" Width="220">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="34"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Row="0" Content="Receive Message" FontSize="18" HorizontalContentAlignment="Center">
+                            <Label.Background>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="#FF4c88d6" Offset="0"/>
+                                    <GradientStop Color="White" Offset="0.3"/>
+                                </LinearGradientBrush>
+                            </Label.Background>
+                        </Label>
+
+                        <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
+
                             <TextBox Grid.Column="0"
-                                 Name="TxtInboundQueueName"
-                                 Background="{x:Null}"
-                                 VerticalContentAlignment="Bottom"
-                                 BorderBrush="{x:Null}"
-                                  IsReadOnly="True" MinWidth="80" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                            <Button Grid.Column="1" 
-                                Name="BtnInboundSend"
-                                Click="BtnSend_Click"
-                                Content="Send"
-                                HorizontalAlignment="Left"
-                                BorderBrush="{x:Null}"
-                                VerticalAlignment="Top"
-                                Padding="3"/>
+                                     Name="TxtOutboundQueueName"
+                                     Background="{x:Null}"
+                                     BorderBrush="{x:Null}"
+                                      IsReadOnly="True"
+                                     MinWidth="80"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Top"
+                                     VerticalContentAlignment="Bottom"/>
+
+                            <Button x:Name="BtnMonitorQueue"
+                                    Grid.Column="1"
+                                    Click="BtnMonitorQueue_Click"
+                                    BorderBrush="{x:Null}"
+                                    Padding="3"
+                                    Content="Monitor"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"/>
+
                         </Grid>
+                        <TextBox Grid.Row="3"
+                                     Name="TxtOutboundJsonSchema"
+                                     Background="{x:Null}"
+                                     AcceptsReturn="True"
+                                     HorizontalScrollBarVisibility="Auto"
+                                     VerticalScrollBarVisibility="Auto"
+                                     BorderBrush="{x:Null}" VerticalAlignment="Top" MinWidth="80"/>
 
-
-                        <TextBox Grid.Row="1" Grid.Column="1"
-                                 Name="TxtJsonSchema"
-                                 Background="#0AFFFF00"
-                                 AcceptsReturn="True"
-                                 HorizontalScrollBarVisibility="Auto"
-                                 VerticalScrollBarVisibility="Auto"
-                                 BorderBrush="{x:Null}" VerticalAlignment="Top" MinWidth="80"/>
-                    </Grid>
-                </Grid>
-            </Border>
-
-            <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="0,0,0,3" Margin="5">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="34"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <Label Grid.Row="0" Content="Outbound Exchange Queues" FontSize="18" HorizontalContentAlignment="Center">
-                        <Label.Background>
-                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="#FF4c88d6" Offset="0"/>
-                                <GradientStop Color="White" Offset="0.3"/>
-                            </LinearGradientBrush>
-                        </Label.Background>
-                    </Label>
-
-                    <ListBox Grid.Row="2" Grid.Column="0" Name="LstOutboundQueueList" BorderBrush="{x:Null}"/>
-                </Grid>
-            </Border>
-
-            <Border Grid.Column="3" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="0,0,0,3" Margin="0,5,5,5" Width="220">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="34"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <Label Grid.Row="0" Content="Receive Message" FontSize="18" HorizontalContentAlignment="Center">
-                        <Label.Background>
-                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="#FF4c88d6" Offset="0"/>
-                                <GradientStop Color="White" Offset="0.3"/>
-                            </LinearGradientBrush>
-                        </Label.Background>
-                    </Label>
-
-                    <Grid Grid.Row="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBox Grid.Column="0"
-                                 Name="TxtOutboundQueueName"
-                                 Background="{x:Null}"
-                                 BorderBrush="{x:Null}"
-                                  IsReadOnly="True"
-                                 MinWidth="80"
-                                 HorizontalAlignment="Left"
-                                 VerticalAlignment="Top"
-                                 VerticalContentAlignment="Bottom"/>
-
-                        <Button x:Name="BtnMonitorQueue"
-                                Grid.Column="1"
-                                Click="BtnMonitorQueue_Click"
-                                BorderBrush="{x:Null}"
-                                Padding="3"
-                                Content="Monitor"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"/>
 
                     </Grid>
-                    <TextBox Grid.Row="3"
-                                 Name="TxtOutboundJsonSchema"
-                                 Background="{x:Null}"
-                                 AcceptsReturn="True"
-                                 HorizontalScrollBarVisibility="Auto"
-                                 VerticalScrollBarVisibility="Auto"
-                                 BorderBrush="{x:Null}" VerticalAlignment="Top" MinWidth="80"/>
+                </Border>
+
+            </Grid>
+            <Grid x:Name="grid" Grid.Row="2">
 
 
-                </Grid>
-            </Border>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
+                    <WrapPanel x:Name="WplMain" MaxWidth="{Binding ActualWidth, ElementName=grid, Mode=OneWay}" />
+
+                </ScrollViewer>
+            </Grid>
 
         </Grid>
-        <Grid x:Name="grid" Grid.Row="2">
-
-
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
-                <WrapPanel x:Name="WplMain" MaxWidth="{Binding ActualWidth, ElementName=grid, Mode=OneWay}" />
-
-            </ScrollViewer>
-        </Grid>
-
-    </Grid>
+    </mah:MetroTabItem.Content>
+  
 </mah:MetroTabItem>

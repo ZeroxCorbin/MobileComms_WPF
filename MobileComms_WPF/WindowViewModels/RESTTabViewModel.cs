@@ -1,26 +1,51 @@
-﻿using System;
+﻿using MobileComms_WPF.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace MobileComms_WPF.WindowViewModels
 {
     public  class RESTTabViewModel : Core.ViewModelBase
     {
-        public bool IsLoading
+        public string TargetIPAddress
         {
-            get { return _IsLoading; }
-            set { Set(ref _IsLoading, value); }
+            get { return App.Settings.GetValue("TargetIPAddress"); }
         }
-        private bool _IsLoading;
-
-        public bool IsVisible
+        public string ITKPassword
         {
-            get { return _IsVisible; }
-            set { Set(ref _IsVisible, value); }
+            get { return App.Settings.GetValue("ITKPassword", "adept"); }
+            set { App.Settings.SetValue("ITKPassword", value); }
         }
-        private bool _IsVisible = true;
+        public string ConnectButtonText { get => connectButtonText; set => Set(ref connectButtonText, value); }
+        private string connectButtonText = "Connect";
+        public bool ConnectionState { get => connectionState; set => Set(ref connectionState, value); }
+        private bool connectionState;
+        public string ConnectMessage { get => connectMessage; set { _ = Set(ref connectMessage, value); OnPropertyChanged("IsMessage"); } }
+        private string connectMessage;
 
+        public ICommand OpenSwaggerCommand;
+        private void OpenSwaggerCallback(object parameter)
+        {
+
+        }
+        public ICommand ConnectCommand { get; }
+        private void ConnectAction(object parameter)
+        {
+
+        }
+        public RESTTabViewModel()
+        {
+            OpenSwaggerCommand = new RelayCommand(OpenSwaggerCallback, c => true);
+            ConnectCommand = new RelayCommand(ConnectAction, c => true);
+        }
+
+        public void UpdateConnectionInfo()
+        {
+            OnPropertyChanged("TargetIPAddress");
+            OnPropertyChanged("ITKPassword");
+        }
     }
 }
