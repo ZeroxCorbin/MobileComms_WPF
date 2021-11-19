@@ -19,7 +19,7 @@ using Microsoft.Win32;
 using System.IO;
 using MahApps.Metro.Controls;
 
-namespace MobileComms_WPF.WindowViews
+namespace MobileComms_WPF.TabViews
 {
     /// <summary>
     /// Interaction logic for ARCLWindow.xaml
@@ -34,6 +34,7 @@ namespace MobileComms_WPF.WindowViews
 
             InitializeComponent();
 
+
            //LoadARCLList();
 
             //Connection.ConnectState += Connection_ConnectState;
@@ -46,11 +47,11 @@ namespace MobileComms_WPF.WindowViews
         {
             AddGoalComboBoxesToGrid();
 
-            BrdQueueManager.IsEnabled = false;
-            GrdJMMain.IsEnabled = false;
+            //BrdQueueManager.IsEnabled = false;
+            //GrdJMMain.IsEnabled = false;
 
-            BrdConfigurationManager.IsEnabled = false;
-            GrdCMMain.IsEnabled = false;
+            //BrdConfigurationManager.IsEnabled = false;
+            //GrdCMMain.IsEnabled = false;
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -152,7 +153,7 @@ namespace MobileComms_WPF.WindowViews
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(QueueLoop));
 
-            GrdJMMain.IsEnabled = true;
+            //GrdJMMain.IsEnabled = true;
 
             //SychronousCommands sychronousCommands = new SychronousCommands(TxtConnectionString.Text);
             //List<string> goals;
@@ -219,29 +220,29 @@ namespace MobileComms_WPF.WindowViews
         }
         private void QueueLoopLocal()
         {
-            if(QueueJobManager.SyncState.State == SyncStates.OK)
-                LblIsSynced.Background = Brushes.LightGreen;
-            else
-                LblIsSynced.Background = Brushes.LightSalmon;
+            //if(QueueJobManager.SyncState.State == SyncStates.OK)
+            //    LblIsSynced.Background = Brushes.LightGreen;
+            //else
+            //    LblIsSynced.Background = Brushes.LightSalmon;
 
-            LblJobCount.Content = $"Job Count = {QueueJobManager.Jobs.Count}";
+            //LblJobCount.Content = $"Job Count = {QueueJobManager.Jobs.Count}";
 
-            StkJobList.Children.Clear();
-            foreach(KeyValuePair<string, QueueManagerJob> kv in QueueJobManager.Jobs)
-            {
-                bool found = false;
-                foreach(StackPanel sp in StkJobList.Children)
-                {
-                    if((string)sp.Tag == kv.Value.ID)
-                    {
-                        found = true;
-                        UpdateJobPanel(kv.Value, sp);
-                        break;
-                    }
-                }
-                if(!found)
-                    StkJobList.Children.Add(GetJobPanel(kv.Value));
-            }
+            //StkJobList.Children.Clear();
+            //foreach(KeyValuePair<string, QueueManagerJob> kv in QueueJobManager.Jobs)
+            //{
+            //    bool found = false;
+            //    foreach(StackPanel sp in StkJobList.Children)
+            //    {
+            //        if((string)sp.Tag == kv.Value.ID)
+            //        {
+            //            found = true;
+            //            UpdateJobPanel(kv.Value, sp);
+            //            break;
+            //        }
+            //    }
+            //    if(!found)
+            //        StkJobList.Children.Add(GetJobPanel(kv.Value));
+            //}
 
         }
         private StackPanel GetJobPanel(QueueManagerJob job)
@@ -311,7 +312,7 @@ namespace MobileComms_WPF.WindowViews
             foreach(ComboBox cmb in GoalsComboBoxes)
             {
                 Grid.SetRow(cmb, i++);
-                GrdQueueManagerGoals.Children.Add(cmb);
+                //GrdQueueManagerGoals.Children.Add(cmb);
             }
         }
 
@@ -480,14 +481,14 @@ namespace MobileComms_WPF.WindowViews
                         {
                             Connection.StartReceiveAsync();
  
-                            BrdQueueManager.IsEnabled = true;
-                            BrdConfigurationManager.IsEnabled = true;
+                            //BrdQueueManager.IsEnabled = true;
+                            //BrdConfigurationManager.IsEnabled = true;
                         }
                         else
                         {
 
-                            BrdQueueManager.IsEnabled = false;
-                            BrdConfigurationManager.IsEnabled = false;
+                            //BrdQueueManager.IsEnabled = false;
+                            //BrdConfigurationManager.IsEnabled = false;
                         }
 
                     }));

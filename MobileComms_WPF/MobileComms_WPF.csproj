@@ -39,4 +39,17 @@
     <ProjectReference Include="..\..\SocketManager\SocketManager.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="ManagerViews\ConfigurationManagerView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="ManagerViews\ConfigurationManagerView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>

@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace MobileComms_WPF.WindowViewModels
+namespace MobileComms_WPF.TabViewModels
 {
-    public  class RESTTabViewModel : Core.ViewModelBase
+    public  class SQLTabViewModel : Core.ViewModelBase
     {
         public string TargetIPAddress
         {
@@ -26,19 +26,13 @@ namespace MobileComms_WPF.WindowViewModels
         public string ConnectMessage { get => connectMessage; set { _ = Set(ref connectMessage, value); OnPropertyChanged("IsMessage"); } }
         private string connectMessage;
 
-        public ICommand OpenSwaggerCommand;
-        private void OpenSwaggerCallback(object parameter)
-        {
-
-        }
         public ICommand ConnectCommand { get; }
         private void ConnectAction(object parameter)
         {
 
         }
-        public RESTTabViewModel()
+        public SQLTabViewModel()
         {
-            OpenSwaggerCommand = new RelayCommand(OpenSwaggerCallback, c => true);
             ConnectCommand = new RelayCommand(ConnectAction, c => true);
         }
 
@@ -47,5 +41,6 @@ namespace MobileComms_WPF.WindowViewModels
             OnPropertyChanged("TargetIPAddress");
             OnPropertyChanged("ITKPassword");
         }
+
     }
 }

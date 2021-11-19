@@ -1,26 +1,26 @@
-﻿<mah:MetroTabItem x:Class="MobileComms_WPF.WindowViews.RabbitMQTabView"
+﻿<mah:MetroContentControl x:Class="MobileComms_WPF.TabViews.RabbitMQTabView"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             xmlns:WindowViewModels="clr-namespace:MobileComms_WPF.WindowViewModels"
-             xmlns:local="clr-namespace:MobileComms_WPF.WindowViews"
-             d:DataContext="{d:DesignInstance Type=WindowViewModels:RabbitMQTabViewModel}"
+             xmlns:TabViewModels="clr-namespace:MobileComms_WPF.TabViewModels"
+             xmlns:local="clr-namespace:MobileComms_WPF.TabViews"
+             d:DataContext="{d:DesignInstance Type=TabViewModels:RabbitMQTabViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
-             Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+             d:DesignHeight="450" d:DesignWidth="800">
+    
+    <mah:MetroContentControl.Resources>
 
-    <mah:MetroTabItem.HeaderTemplate>
-        <ItemContainerTemplate DataType="{x:Type WindowViewModels:ARCLTabViewModel}">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="RabbitMQ"/>
-           </StackPanel>
-        </ItemContainerTemplate>
-    </mah:MetroTabItem.HeaderTemplate>
+        <LinearGradientBrush x:Key="Header" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="{DynamicResource MahApps.Colors.AccentBase}" Offset="0"/>
+            <GradientStop Color="{DynamicResource MahApps.Colors.ThemeBackground}" Offset="0.3"/>
+        </LinearGradientBrush>
 
-    <mah:MetroTabItem.Content>
+    </mah:MetroContentControl.Resources>
+    
+    <mah:MetroContentControl.Content>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -29,56 +29,17 @@
 
             </Grid.RowDefinitions>
 
-            <Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="0,0,0,3"  Margin="5">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="34"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
 
-                    <Label Grid.Row="0" Content="RabbitMQ" FontSize="18" HorizontalContentAlignment="Center">
-                        <Label.Background>
-                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="#FF4c88d6" Offset="0"/>
-                                <GradientStop Color="White" Offset="0.3"/>
-                            </LinearGradientBrush>
-                        </Label.Background>
-                    </Label>
-                    <Grid Grid.Row="1" Margin="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                <Label Content="amqps://"/>
+                <Label Content="toolkitadmin:"/>
+                <PasswordBox PasswordChar="{Binding ITKPassword}" mah:TextBoxHelper.Watermark="ITK Password" />
+                <Label Content="@"/>
+                <Label Content="{Binding TargetIPAddress}"/>
+                <Button Content="{Binding ConnectButtonText}"
+                                     Command="{Binding ConnectCommand}"/>
 
-                        <Button Grid.Column="1" Content="Connect" x:Name="BtnConnect" Width="94" HorizontalContentAlignment="Center" Click="BtnConnect_Click" Background="LightSalmon" BorderBrush="{x:Null}" HorizontalAlignment="Right"/>
-
-                        <Label Grid.Column="2" Content="amqps://" HorizontalContentAlignment="Right" />
-                        <Label Grid.Column="3" Content="toolkitadmin:" HorizontalContentAlignment="Center" />
-                        <PasswordBox Grid.Column="4" x:Name="TxtPassword" Background="#0AFFFF00" MinWidth="80" VerticalContentAlignment="Center" PasswordChanged="TxtPassword_PasswordChanged" BorderBrush="{x:Null}" ToolTip="ITK Password"/>
-                        <Label Grid.Column="5" Content="@:" HorizontalContentAlignment="Center" />
-
-
-                        <TextBox Grid.Column="6" Text="{Binding RabbitMQHost}" MinWidth="80" x:Name="TxtHost" Background="#0AFFFF00" VerticalContentAlignment="Center" BorderBrush="{x:Null}" ToolTip="Host name / IP"/>
-
-                        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="6" x:Name="TxtResponse" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Background="#19000000" TextWrapping="Wrap" TextChanged="TxtResponse_TextChanged" />
-
-
-
-                    </Grid>
-                </Grid>
-            </Border>
-
-
+            </StackPanel>
 
             <Grid Grid.Column="0" Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -98,14 +59,8 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <Label Grid.Row="0" Content="Inbound Exchange Queues" FontSize="18" HorizontalContentAlignment="Center">
-                            <Label.Background>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="#FF4c88d6" Offset="0"/>
-                                    <GradientStop Color="White" Offset="0.3"/>
-                                </LinearGradientBrush>
-                            </Label.Background>
-                        </Label>
+                        <Label Grid.Row="0" Content="Inbound Exchange Queues"
+                            Background="{StaticResource Header}" FontSize="18" HorizontalContentAlignment="Center"/>
                         <ListView Grid.Row="1" Grid.Column="0" Name="LstInboundQueueList" Background="{x:Null}" BorderBrush="{x:Null}"/>
                     </Grid>
                 </Border>
@@ -117,15 +72,9 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <Label Grid.Row="0" Content="Send Message" FontSize="18" HorizontalContentAlignment="Center">
-                            <Label.Background>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="#FF4c88d6" Offset="0"/>
-                                    <GradientStop Color="White" Offset="0.3"/>
-                                </LinearGradientBrush>
-                            </Label.Background>
-                        </Label>
-
+                        <Label Grid.Row="0" Content="Send Message"
+                            Background="{StaticResource Header}" FontSize="18" HorizontalContentAlignment="Center"/>
+                        
                         <Grid Grid.Row="1">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
@@ -173,15 +122,8 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <Label Grid.Row="0" Content="Outbound Exchange Queues" FontSize="18" HorizontalContentAlignment="Center">
-                            <Label.Background>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="#FF4c88d6" Offset="0"/>
-                                    <GradientStop Color="White" Offset="0.3"/>
-                                </LinearGradientBrush>
-                            </Label.Background>
-                        </Label>
-
+                        <Label Grid.Row="0" Content="Outbound Exchange Queues"
+                            Background="{StaticResource Header}" FontSize="18" HorizontalContentAlignment="Center"/>
                         <ListBox Grid.Row="2" Grid.Column="0" Name="LstOutboundQueueList" BorderBrush="{x:Null}"/>
                     </Grid>
                 </Border>
@@ -194,15 +136,9 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <Label Grid.Row="0" Content="Receive Message" FontSize="18" HorizontalContentAlignment="Center">
-                            <Label.Background>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="#FF4c88d6" Offset="0"/>
-                                    <GradientStop Color="White" Offset="0.3"/>
-                                </LinearGradientBrush>
-                            </Label.Background>
-                        </Label>
-
+                        <Label Grid.Row="0" Content="Receive Message"
+                            Background="{StaticResource Header}" FontSize="18" HorizontalContentAlignment="Center"/>
+                        
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
@@ -252,6 +188,6 @@
             </Grid>
 
         </Grid>
-    </mah:MetroTabItem.Content>
+    </mah:MetroContentControl.Content>
   
-</mah:MetroTabItem>
+</mah:MetroContentControl>

@@ -1,4 +1,5 @@
 ﻿using MobileComms_WPF.Core;
+using MobileComms_WPF.ManagerViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,7 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace MobileComms_WPF.WindowViewModels
+namespace MobileComms_WPF.TabViewModels
 {
     public class ARCLTabViewModel : Core.ViewModelBase
     {
@@ -36,6 +37,9 @@ namespace MobileComms_WPF.WindowViewModels
         private string connectMessage;
 
         public ObservableCollection<ARCLCommand> ARCLCommands { get; } = new ObservableCollection<ARCLCommand>();
+
+        public JobQueueManagerViewModel JobQueueManager { get; } = new JobQueueManagerViewModel();
+        public ConfigurationManagerViewModel ConfigurationManager { get; } = new ConfigurationManagerViewModel();
 
         public ARCLTabViewModel()
         {
@@ -122,8 +126,8 @@ namespace MobileComms_WPF.WindowViewModels
                     ARCLCommand tvi = new ARCLCommand
                     {
                         State = ARCLCommandState.Obsolete,
-                    Name = kv.Key,
-                     };
+                        Name = kv.Key,
+                    };
                     ARCLCommands.Add(tvi);
                 }
             }

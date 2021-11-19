@@ -16,12 +16,12 @@ using System.Reflection;
 using System.Linq;
 using MahApps.Metro.Controls;
 
-namespace MobileComms_WPF.WindowViews
+namespace MobileComms_WPF.TabViews
 {
     /// <summary>
     /// Interaction logic for RabitMQWindow.xaml
     /// </summary>
-    public partial class SQLTabView : MetroTabItem, INotifyPropertyChanged
+    public partial class SQLTabView : MetroContentControl, INotifyPropertyChanged
     {
         private SQL.QueryType SQLQueryType { get; set; } = SQL.QueryType.SELECT;
         private SQL SQL { get; } = new SQL();
@@ -242,32 +242,32 @@ namespace MobileComms_WPF.WindowViews
 
         private void BtnConnect_Click(object sender, RoutedEventArgs e)
         {
-            if(BtnConnect.Tag == null)
-            {
-                //if(SQL.Connect(App.Settings.SQLHost, TxtPassword.Password))
-                //{
-                //    BtnConnect.Tag = "";
-                //    BtnConnect.Background = Brushes.LightGreen;
+            //if(BtnConnect.Tag == null)
+            //{
+            //    //if(SQL.Connect(App.Settings.SQLHost, TxtPassword.Password))
+            //    //{
+            //    //    BtnConnect.Tag = "";
+            //    //    BtnConnect.Background = Brushes.LightGreen;
 
-                //    Connected();
-                //}
-                //else
-                //{
-                //    BtnConnect.Background = Brushes.LightSalmon;
+            //    //    Connected();
+            //    //}
+            //    //else
+            //    //{
+            //    //    BtnConnect.Background = Brushes.LightSalmon;
 
-                //    DisConnected();
-                //}
-            }
-            else
-            {
-                BtnConnect.Tag = null;
+            //    //    DisConnected();
+            //    //}
+            //}
+            //else
+            //{
+            //    BtnConnect.Tag = null;
 
-                SQL.Close();
+            //    SQL.Close();
 
-                BtnConnect.Background = Brushes.LightSalmon;
+            //    BtnConnect.Background = Brushes.LightSalmon;
 
-                DisConnected();
-            }
+            //    DisConnected();
+            //}
 
 
         }
@@ -277,16 +277,16 @@ namespace MobileComms_WPF.WindowViews
             BtnSend.IsEnabled = true;
             BtnShowSchema.IsEnabled = true;
 
-            TxtPassword.IsEnabled = false;
-            TxtHost.IsEnabled = false;
+            //TxtPassword.IsEnabled = false;
+            //TxtHost.IsEnabled = false;
         }
         private void DisConnected()
         {
             BtnSend.IsEnabled = false;
             BtnShowSchema.IsEnabled = false;
 
-            TxtPassword.IsEnabled = true;
-            TxtHost.IsEnabled = true;
+            //TxtPassword.IsEnabled = true;
+            //TxtHost.IsEnabled = true;
         }
 
 

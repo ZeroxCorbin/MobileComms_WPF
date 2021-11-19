@@ -22,7 +22,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
-namespace MobileComms_WPF.WindowViews
+namespace MobileComms_WPF.TabViews
 {
 
     /// <summary>

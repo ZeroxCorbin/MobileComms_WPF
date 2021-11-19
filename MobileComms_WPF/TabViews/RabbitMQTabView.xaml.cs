@@ -8,12 +8,12 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace MobileComms_WPF.WindowViews
+namespace MobileComms_WPF.TabViews
 {
     /// <summary>
     /// Interaction logic for RabitMQWindow.xaml
     /// </summary>
-    public partial class RabbitMQTabView : MetroTabItem
+    public partial class RabbitMQTabView : MetroContentControl
     {
         private MobileComms_ITK.RabbitMQ RabbitMQ { get; } = new MobileComms_ITK.RabbitMQ();
         public RabbitMQTabView()
@@ -106,20 +106,20 @@ namespace MobileComms_WPF.WindowViews
         }
         private void BtnConnect_Click(object sender, RoutedEventArgs e)
         {
-            TxtResponse.Text = string.Empty;
+            //TxtResponse.Text = string.Empty;
 
-            if(RabbitMQ.Connect(TxtHost.Text, TxtPassword.Password))
-            {
-                BtnConnect.Background = Brushes.LightGreen;
-            }
-            else
-            {
-                if(RabbitMQ.IsException)
-                {
-                    TxtResponse.Text = RabbitMQ.RabbitMQException.Message;
-                }
-                BtnConnect.Background = Brushes.LightSalmon;
-            }
+            //if(RabbitMQ.Connect(TxtHost.Text, TxtPassword.Password))
+            //{
+            //    BtnConnect.Background = Brushes.LightGreen;
+            //}
+            //else
+            //{
+            //    if(RabbitMQ.IsException)
+            //    {
+            //        TxtResponse.Text = RabbitMQ.RabbitMQException.Message;
+            //    }
+            //    BtnConnect.Background = Brushes.LightSalmon;
+            //}
         }
 
         private void BtnMonitorQueue_Click(object sender, RoutedEventArgs e)
@@ -129,10 +129,10 @@ namespace MobileComms_WPF.WindowViews
 
         private void TxtResponse_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if(TxtResponse.Text.Length > 0)
-                TxtResponse.Visibility = Visibility.Visible;
-            else
-                TxtResponse.Visibility = Visibility.Collapsed;
+            //if(TxtResponse.Text.Length > 0)
+            //    TxtResponse.Visibility = Visibility.Visible;
+            //else
+            //    TxtResponse.Visibility = Visibility.Collapsed;
         }
     }
 }

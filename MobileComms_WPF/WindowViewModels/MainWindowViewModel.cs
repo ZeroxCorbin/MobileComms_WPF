@@ -1,5 +1,6 @@
 ﻿using MahApps.Metro.Controls.Dialogs;
 using MobileComms_WPF.Core;
+using MobileComms_WPF.TabViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;

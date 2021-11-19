@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:MobileComms_WPF"
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:WindowViewModels="clr-namespace:MobileComms_WPF.WindowViewModels"
-        xmlns:WindowViews="clr-namespace:MobileComms_WPF.WindowViews"
+        xmlns:TabViews="clr-namespace:MobileComms_WPF.TabViews"
         d:DataContext="{d:DesignInstance Type=WindowViewModels:MainWindowViewModel}"
         mc:Ignorable="d"
         d:DesignHeight="768" d:DesignWidth="1024" 
@@ -86,13 +86,17 @@ If you change the version all open connections will be closed.
                 </Grid>
             </mah:MetroTabItem>
             <mah:MetroTabItem Header="ARCL">
-                <WindowViews:ARCLTabView x:Name="ARCLTabView" />
+                <TabViews:ARCLTabView x:Name="ARCLTabView" />
             </mah:MetroTabItem>
             <mah:MetroTabItem Header="REST">
-                <WindowViews:RESTTabView x:Name="RESTTabView" />
+                <TabViews:RESTTabView x:Name="RESTTabView" />
             </mah:MetroTabItem>
-            <WindowViews:SQLTabView x:Name="SQLTabView"/>
-            <WindowViews:RabbitMQTabView x:Name="RabbitMQTabView"/>
+            <mah:MetroTabItem Header="SQL">
+                <TabViews:SQLTabView x:Name="SQLTabView" />
+            </mah:MetroTabItem>
+            <mah:MetroTabItem Header="RabbitMQ">
+                <TabViews:RabbitMQTabView x:Name="RabbitMQTabView" />
+            </mah:MetroTabItem>
 
         </mah:MetroTabControl>
     </Grid>
